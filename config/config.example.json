@@ -1,0 +1,30 @@
+{
+  "llm": {
+    "provider": "gemini",
+    "model": "gemini-3.5-flash",
+    "temperature": 0.2,
+    "max_tokens": 2048,
+    "gemini_api_key": "",
+    "openai_api_key": "",
+    "openai_base_url": "https://api.openai.com/v1",
+    "ollama_base_url": "http://localhost:11434"
+  },
+  "runtime": {
+    "max_actions": 50,
+    "action_delay": 1.5,
+    "safety_mode": "balanced",
+    "screenshot_resolution": [
+      1280,
+      720
+    ],
+    "log_level": "INFO"
+  },
+  "voice": {
+    "enabled": true,
+    "rate": 1,
+    "volume": 100
+  },
+  "fast_path": {
+    "enabled": true
+  }
+}

@@ -1,0 +1,67 @@
+{
+  "facts": {
+    "my project": {
+      "value": "ciel",
+      "saved_at": 1789624826.1160963
+    }
+  },
+  "preferences": {},
+  "notes": [],
+  "last_updated": 1789624826.1160963,
+  "app_aliases": {
+    "spotify": "spotify:",
+    "discord": "discord:",
+    "calc": "calc.exe",
+    "notepad": "notepad.exe",
+    "settings": "ms-settings:"
+  },
+  "preferred_browser": "chrome",
+  "verified_workflows": {
+    "spotify_play": [
+      {
+        "action": "open_application",
+        "args": {
+          "app_name": "Spotify"
+        }
+      },
+      {
+        "action": "wait",
+        "args": {
+          "seconds": 2.0
+        }
+      },
+      {
+        "action": "click_ui_element",
+        "args": {
+          "name": "Search",
+          "role": "TextBox"
+        }
+      },
+      {
+        "action": "type_text",
+        "args": {
+          "text": "{query}"
+        }
+      },
+      {
+        "action": "press_key",
+        "args": {
+          "key": "enter"
+        }
+      },
+      {
+        "action": "wait",
+        "args": {
+          "seconds": 1.5
+        }
+      },
+      {
+        "action": "click_ui_element",
+        "args": {
+          "name": "Play",
+          "role": "Button"
+        }
+      }
+    ]
+  }
+}

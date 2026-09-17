@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>CIEL // Autonomous Windows 11 Assistant HUD</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    :root {
+      --bg: #0a0e17;
+      --panel: #111927;
+      --cyan: #00f0ff;
+      --blue: #0070f3;
+      --green: #00ff88;
+      --amber: #ffaa00;
+      --red: #ff3366;
+      --text: #e2e8f0;
+      --dim: #64748b;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', system-ui, -apple-system, sans-serif; }
+    body { background: var(--bg); color: var(--text); min-height: 100vh; display: flex; flex-direction: column; overflow-x: hidden; }
+    
+    header {
+      border-bottom: 1px solid rgba(0, 240, 255, 0.2);
+      padding: 16px 24px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: rgba(17, 25, 39, 0.8);
+      backdrop-filter: blur(10px);
+    }
+    .brand { font-size: 20px; font-weight: 800; letter-spacing: 2px; color: var(--cyan); display: flex; align-items: center; gap: 10px; }
+    .status-pill {
+      display: inline-flex; align-items: center; gap: 8px;
+      padding: 4px 12px; border-radius: 20px; font-size: 12px;
+      background: rgba(0, 240, 255, 0.1); border: 1px solid var(--cyan);
+      color: var(--cyan); text-transform: uppercase; font-weight: 700;
+    }
+    .pulse { width: 8px; height: 8px; border-radius: 50%; background: var(--cyan); box-shadow: 0 0 10px var(--cyan); animation: pulse 1.5s infinite; }
+    @keyframes pulse { 0% { opacity: 0.4; } 50% { opacity: 1; } 100% { opacity: 0.4; } }
+
+    main { padding: 24px; display: grid; grid-template-columns: 1fr 340px; gap: 24px; flex: 1; max-width: 1400px; margin: 0 auto; width: 100%; }
+
+    .card {
+      background: var(--panel);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 12px;
+      padding: 20px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+    }
+    .card-title { font-size: 13px; font-weight: 700; letter-spacing: 1px; color: var(--dim); text-transform: uppercase; margin-bottom: 16px; }
+
+    .command-box { display: flex; gap: 12px; margin-bottom: 20px; }
+    input[type="text"] {
+      flex: 1; background: #070a10; border: 1px solid rgba(0, 240, 255, 0.3);
+      padding: 12px 16px; border-radius: 8px; color: #fff; font-size: 15px; outline: none;
+    }
+    input[type="text"]:focus { border-color: var(--cyan); box-shadow: 0 0 15px rgba(0, 240, 255, 0.2); }
+    button {
+      padding: 12px 20px; border-radius: 8px; font-weight: 700; cursor: pointer;
+      border: none; transition: 0.2s; font-size: 14px;
+    }
+    .btn-exec { background: var(--cyan); color: #000; }
+    .btn-exec:hover { filter: brightness(1.2); box-shadow: 0 0 15px var(--cyan); }
+    .btn-stop { background: var(--red); color: #fff; }
+    .btn-stop:hover { filter: brightness(1.2); }
+
+    .gauges { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-bottom: 20px; }
+    .gauge { background: #070a10; padding: 14px; border-radius: 8px; border: 1px solid rgba(255, 255, 255, 0.05); text-align: center; }
+    .gauge-val { font-size: 22px; font-weight: 800; color: var(--cyan); margin-top: 4px; }
+    .gauge-lbl { font-size: 11px; color: var(--dim); text-transform: uppercase; }
+
+    .reactor-container {
+      display: flex; justify-content: center; align-items: center;
+      padding: 24px; position: relative;
+    }
+    .reactor {
+      width: 140px; height: 140px; border-radius: 50%;
+      border: 2px solid rgba(0, 240, 255, 0.3);
+      display: flex; justify-content: center; align-items: center;
+      position: relative; animation: rotate 20s linear infinite;
+    }
+    @keyframes rotate { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+    .reactor-core {
+      width: 80px; height: 80px; border-radius: 50%;
+      background: radial-gradient(circle, var(--cyan) 0%, rgba(0, 112, 243, 0.4) 70%, transparent 100%);
+      box-shadow: 0 0 35px var(--cyan); animation: core-pulse 2s infinite ease-in-out;
+    }
+    @keyframes core-pulse { 0%, 100% { transform: scale(0.9); opacity: 0.8; } 50% { transform: scale(1.05); opacity: 1; } }
+
+    .log-stream {
+      background: #070a10; border-radius: 8px; padding: 12px; height: 260px;
+      overflow-y: auto; font-family: monospace; font-size: 13px; line-height: 1.6;
+    }
+    .log-item { margin-bottom: 6px; border-bottom: 1px solid rgba(255, 255, 255, 0.04); padding-bottom: 4px; }
+    .log-time { color: var(--dim); font-size: 11px; }
+    .log-tool { color: var(--cyan); font-weight: 700; }
+
+    .screen-preview {
+      width: 100%; height: 180px; background: #000; border-radius: 8px;
+      object-fit: cover; border: 1px solid rgba(255, 255, 255, 0.1); margin-top: 10px;
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <div class="brand">
+    <span>CIEL // OS</span>
+  </div>
+  <div style="display: flex; gap: 12px; align-items: center;">
+    <div id="phase-pill" class="status-pill">
+      <div class="pulse"></div>
+      <span id="phase-text">ONLINE // DORMANT</span>
+    </div>
+    <button class="btn-stop" onclick="stopAgent()">KILL SWITCH</button>
+  </div>
+</header>
+
+<main>
+  <div>
+    <div class="card" style="margin-bottom: 24px;">
+      <div class="card-title">Directive Input</div>
+      <div class="command-box">
+        <input type="text" id="goal-input" placeholder="Enter task (e.g. open spotify and play harvey, system stats, volume 50)..." onkeydown="if(event.key==='Enter') executeTask()">
+        <button class="btn-exec" onclick="executeTask()">EXECUTE</button>
+      </div>
+      <div class="gauges">
+        <div class="gauge">
+          <div class="gauge-lbl">CPU Usage</div>
+          <div id="gauge-cpu" class="gauge-val">0%</div>
+        </div>
+        <div class="gauge">
+          <div class="gauge-lbl">RAM Usage</div>
+          <div id="gauge-ram" class="gauge-val">0%</div>
+        </div>
+        <div class="gauge">
+          <div class="gauge-lbl">Power State</div>
+          <div id="gauge-pwr" class="gauge-val">100%</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">Activity & Reasoning Stream</div>
+      <div id="log-stream" class="log-stream">
+        <div class="log-item"><span class="log-time">[SYSTEM]</span> CIEL autonomous kernel initialized. Ready for task.</div>
+      </div>
+    </div>
+  </div>
+
+  <div>
+    <div class="card" style="margin-bottom: 24px;">
+      <div class="card-title">Reactor Status</div>
+      <div class="reactor-container">
+        <div class="reactor">
+          <div class="reactor-core"></div>
+        </div>
+      </div>
+      <div style="text-align: center; color: var(--dim); font-size: 12px; margin-top: 8px;" id="active-win-lbl">Active: Desktop</div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">Desktop Observation</div>
+      <img id="screen-img" class="screen-preview" src="/api/screenshot" alt="Desktop Screenshot" onerror="this.style.opacity=0.3">
+    </div>
+  </div>
+</main>
+
+<script>
+  async function pollStatus() {
+    try {
+      const res = await fetch('/api/status');
+      const data = await res.json();
+      
+      const phasePill = document.getElementById('phase-text');
+      if (data.status === 'running') {
+        phasePill.textContent = 'EXECUTING // ' + (data.goal || 'STEP ' + data.step);
+        phasePill.style.color = 'var(--green)';
+      } else if (data.status === 'stopped') {
+        phasePill.textContent = 'ABORTED // KILL SWITCH';
+        phasePill.style.color = 'var(--red)';
+      } else {
+        phasePill.textContent = 'ONLINE // DORMANT';
+        phasePill.style.color = 'var(--cyan)';
+      }
+
+      if (data.active_window) {
+        document.getElementById('active-win-lbl').textContent = 'Focused: ' + data.active_window;
+      }
+    } catch (e) {}
+
+    try {
+      const tRes = await fetch('/api/telemetry');
+      const tData = await tRes.json();
+      document.getElementById('gauge-cpu').textContent = tData.cpu_percent + '%';
+      document.getElementById('gauge-ram').textContent = tData.memory.memory_load_percent + '%';
+      if (tData.power.has_battery) {
+        document.getElementById('gauge-pwr').textContent = tData.power.battery_percent + '%';
+      } else {
+        document.getElementById('gauge-pwr').textContent = 'AC LINE';
+      }
+    } catch (e) {}
+  }
+
+  async function executeTask() {
+    const input = document.getElementById('goal-input');
+    const goal = input.value.trim();
+    if (!goal) return;
+
+    appendLog('[TASK SUBMITTED] ' + goal);
+    input.value = '';
+
+    try {
+      const res = await fetch('/api/task', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ goal })
+      });
+      const data = await res.json();
+      appendLog('[RUNNER] ' + (data.message || 'Started.'));
+    } catch (e) {
+      appendLog('[ERROR] ' + e.message);
+    }
+  }
+
+  async function stopAgent() {
+    try {
+      await fetch('/api/stop', { method: 'POST' });
+      appendLog('[!] EMERGENCY STOP TRIGGERED');
+    } catch (e) {}
+  }
+
+  function appendLog(text) {
+    const stream = document.getElementById('log-stream');
+    const d = new Date();
+    const timeStr = d.toLocaleTimeString();
+    const div = document.createElement('div');
+    div.className = 'log-item';
+    div.innerHTML = `<span class="log-time">[${timeStr}]</span> ${text}`;
+    stream.appendChild(div);
+    stream.scrollTop = stream.scrollHeight;
+  }
+
+  setInterval(pollStatus, 2000);
+  pollStatus();
+</script>
+
+</body>
+</html>
