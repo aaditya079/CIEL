@@ -1,9 +1,18 @@
 """Tests for CIEL API Server and Standalone Server Fallback."""
 
+import json
 import threading
 import time
+import urllib.request
 import requests
 import pytest
+
+try:
+    import comtypes
+    comtypes.CoInitialize()
+except Exception:
+    pass
+
 from server.standalone_server import run_standalone_server
 from http.server import ThreadingHTTPServer
 from server.standalone_server import CIELRequestHandler
@@ -47,3 +56,13 @@ def test_standalone_memory_endpoint(live_standalone_server):
     assert res.status_code == 200
     data = res.json()
     assert "memories" in data
+
+
+def test_standalone_compliance_endpoint(live_standalone_server):
+    res = requests.get(f"{live_standalone_server}/api/compliance")
+    assert res.status_code == 200
+    data = res.json()
+    assert "author" in data
+    assert "Aaditya Srinivasan" in data["author"]
+    assert "privacy" in data
+

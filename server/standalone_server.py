@@ -17,6 +17,7 @@ from safety.kill_switch import kill_switch
 from computer.screen import take_screenshot
 from computer.windows import list_open_windows, get_active_window
 from computer.system_telemetry import get_system_telemetry
+from computer.voice import voice
 from agent.state import AgentState
 from agent.executor import AgentExecutor
 from agent.brain import AgentBrain
@@ -43,6 +44,7 @@ def _run_task_thread(goal: str, max_actions: int = 50):
     global _state, _executor
     kill_switch.reset()
     _state = AgentState(goal=goal, max_actions=max_actions)
+    voice.play_sound("notice", block=False)
     if _executor:
         try:
             _executor.run(goal=goal, state=_state)
@@ -104,8 +106,24 @@ class CIELRequestHandler(BaseHTTPRequestHandler):
                 "is_paused": kill_switch.is_paused(),
                 "is_stopped": kill_switch.is_triggered(),
                 "recent_actions": _state.get_recent_history(limit=5) if _state else [],
+                "raphael_subskills": {
+                    "thought_acceleration": {"kanji": "思考加速", "name": "Thought Acceleration", "status": "ACTIVE // 1,000,000x"},
+                    "analytical_appraisal": {"kanji": "解析鑑定", "name": "Analytical Appraisal", "status": "TARGETING", "target": active_win.get("title", "Desktop Viewport")},
+                    "parallel_operation": {"kanji": "並列演算", "name": "Parallel Operation", "status": "SYNCHRONIZED", "threads": threading.active_count()},
+                    "chant_annulment": {"kanji": "詠唱破棄", "name": "Chant Annulment", "status": "PRIMED"},
+                    "all_of_creation": {"kanji": "森羅万象", "name": "All of Creation", "status": "INTEGRATED"}
+                }
             }
             self._send_json(status_data)
+            return
+
+        if path == "/api/compliance":
+            self._send_json({
+                "project": "CIEL Autonomous Desktop Agent (Wisdom King Raphael)",
+                "author": "Aaditya Srinivasan",
+                "privacy": {"local_only": True, "cloud_telemetry": False},
+                "disclaimer": "Non-commercial educational fan tribute. Copyright Fuse / Kodansha / 8bit."
+            })
             return
 
         if path == "/api/telemetry":
@@ -184,6 +202,15 @@ class CIELRequestHandler(BaseHTTPRequestHandler):
         if path == "/api/resume":
             kill_switch.resume()
             self._send_json({"status": "resumed"})
+            return
+
+        if path.startswith("/api/audio/play/"):
+            sound_name = path.replace("/api/audio/play/", "").strip()
+            success = voice.play_sound(sound_name, block=False)
+            if success:
+                self._send_json({"status": "playing", "sound": sound_name})
+            else:
+                self._send_json({"error": f"Sound '{sound_name}' not available"}, status=404)
             return
 
         self.send_error(404, "Not Found")

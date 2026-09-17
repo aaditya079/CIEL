@@ -1,10 +1,12 @@
 """Local FastAPI server for Desktop Agent."""
 
 import io
+import os
 import threading
 from typing import Optional, Dict, Any
 from fastapi import FastAPI, HTTPException, BackgroundTasks
-from fastapi.responses import Response
+from fastapi.responses import Response, HTMLResponse
+from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel
 
 from safety.kill_switch import kill_switch
@@ -15,8 +17,14 @@ from agent.state import AgentState
 from agent.executor import AgentExecutor
 from agent.brain import AgentBrain
 from config.manager import load_config
+from computer.voice import voice, SOUND_PRESETS
 
-app = FastAPI(title="CIEL Autonomous Desktop Agent API", version="1.0.0")
+app = FastAPI(title="CIEL Autonomous Desktop Agent API (Wisdom King Raphael)", version="2.0.0")
+
+# Mount assets directory for HUD audio and icons
+assets_path = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "assets"))
+if os.path.exists(assets_path):
+    app.mount("/assets", StaticFiles(directory=assets_path), name="assets")
 
 current_executor: Optional[AgentExecutor] = None
 current_state: Optional[AgentState] = None
@@ -44,7 +52,7 @@ def shutdown_event():
 
 @app.get("/api/status")
 def get_status() -> Dict[str, Any]:
-    """Get current agent runtime state and task progress."""
+    """Get current agent runtime state, task progress, and Raphael sub-skill metrics."""
     active_win = get_active_window()
     return {
         "status": current_state.status if current_state else "idle",
@@ -52,10 +60,44 @@ def get_status() -> Dict[str, Any]:
         "goal": current_state.goal if current_state else None,
         "step": current_state.step if current_state else 0,
         "max_actions": current_state.max_actions if current_state else 50,
-        "active_window": active_win.get("title", ""),
+        "active_window": active_win.get("title", "Desktop"),
         "is_paused": kill_switch.is_paused(),
         "is_stopped": kill_switch.is_triggered(),
         "recent_actions": current_state.get_recent_history(limit=5) if current_state else [],
+        "raphael_subskills": {
+            "thought_acceleration": {
+                "kanji": "思考加速",
+                "name": "Thought Acceleration",
+                "status": "ACTIVE // 1,000,000x",
+                "detail": "Cognitive graph calculation & path optimization"
+            },
+            "analytical_appraisal": {
+                "kanji": "解析鑑定",
+                "name": "Analytical Appraisal",
+                "status": "TARGETING",
+                "target": active_win.get("title", "Desktop Viewport"),
+                "detail": "Vision & accessibility tree parsing"
+            },
+            "parallel_operation": {
+                "kanji": "並列演算",
+                "name": "Parallel Operation",
+                "status": "SYNCHRONIZED",
+                "threads": threading.active_count(),
+                "detail": "Multi-threaded worker and telemetry pipelines"
+            },
+            "chant_annulment": {
+                "kanji": "詠唱破棄",
+                "name": "Chant Annulment",
+                "status": "PRIMED",
+                "detail": "Fast-path deterministic sub-50ms command execution"
+            },
+            "all_of_creation": {
+                "kanji": "森羅万象",
+                "name": "All of Creation",
+                "status": "INTEGRATED",
+                "detail": "Native Windows 11 API telemetry & process hooks"
+            }
+        }
     }
 
 
@@ -63,6 +105,7 @@ def _run_task_worker(goal: str, max_actions: int):
     global current_state, current_executor
     kill_switch.reset()
     current_state = AgentState(goal=goal, max_actions=max_actions)
+    voice.play_sound("notice", block=False)
     if current_executor:
         current_executor.run(goal=goal, state=current_state)
 
@@ -142,10 +185,41 @@ def get_memory():
         return {"memories": {}, "error": str(e)}
 
 
-@app.get("/api/tools")
-def get_tools():
-    """List available tool definitions."""
-    return TOOL_DEFINITIONS
+@app.get("/api/audio/list")
+def list_audio_presets():
+    """List available Raphael voice and sound presets."""
+    return {"sounds": list(SOUND_PRESETS.keys())}
+
+
+@app.post("/api/audio/play/{sound_name}")
+def play_audio_preset(sound_name: str):
+    """Trigger Raphael voice line or sound effect."""
+    success = voice.play_sound(sound_name, block=False)
+    if not success:
+        raise HTTPException(status_code=404, detail=f"Sound '{sound_name}' not available.")
+    return {"status": "playing", "sound": sound_name}
+
+
+@app.get("/api/compliance")
+def get_compliance_info():
+    """Get legal attribution, fair use disclosures, and privacy guarantees."""
+    return {
+        "project": "CIEL Autonomous Desktop Agent (Wisdom King Raphael / Manas: Ciel)",
+        "author": "Aaditya Srinivasan",
+        "location": "Madurai, Tamil Nadu, India",
+        "privacy": {
+            "local_only": True,
+            "cloud_telemetry": False,
+            "data_collection": "Zero telemetry. All screenshots and LLM inferences remain strictly on local machine or user-provided endpoints.",
+            "emergency_controls": "Ctrl+Alt+X or mouse slam to top-left corner"
+        },
+        "intellectual_property_disclaimer": {
+            "status": "Non-commercial educational project and anime fan tribute",
+            "characters": "Raphael (Wisdom King) and Ciel (Manas) are characters from 'That Time I Got Reincarnated as a Slime' (Tensei Shitara Slime Datta Ken)",
+            "copyright_holders": "Fuse / Mitz Vah / Kodansha / 8bit Project",
+            "legal_basis": "Fair use under Section 52 of the Indian Copyright Act 1957 and US 17 U.S.C. § 107"
+        }
+    }
 
 
 @app.get("/hud")

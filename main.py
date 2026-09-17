@@ -88,24 +88,26 @@ def rich_confirmation_handler(tool_name: str, arguments: dict, tier: SafetyLevel
 
 
 def print_banner():
-    banner_text = """[bold cyan]
+    banner_text = """[bold red]
    ____ ___ _____ _     
   / ___|_ _| ____| |    
  | |    | ||  _| | |    
  | |___ | || |___| |___ 
   \\____|___|_____|_____|
-           CIEL: AUTONOMOUS WINDOWS 11 AGENT
-[/bold cyan]
-[dim]* Control Hierarchy: Fast-Path Direct APIs -> UI Automation -> Vision -> Coordinates[/dim]
+    CIEL // WISDOM KING RAPHAEL (智慧之王)
+[/bold red]
+[bold yellow]* Ultimate Skill: Raphael (Lord of Wisdom) // Manas: Ciel[/bold yellow]
+[dim]* Sub-Skills: Thought Acceleration | Analytical Appraisal | Parallel Operation | Chant Annulment[/dim]
+[dim]* Control Hierarchy: Chant Annulment (Direct API) -> UI Automation -> Vision -> Coordinates[/dim]
 [dim]* Emergency Kill Switch: [bold red]Ctrl + Alt + X[/bold red] (or slam mouse to upper-left corner)[/dim]
-[dim]* Voice Feedback: [bold green]Active[/bold green] (SAPI Speech)[/dim]
+[dim]* Voice Synthesizer: [bold green]Active[/bold green] (Raphael Sound Pack & SAPI Voice)[/dim]
 """
     console.print(banner_text)
 
 
 def run_single_goal(executor: AgentExecutor, goal: str, max_actions: int = 50):
     """Execute a single goal with live terminal updates."""
-    console.print(Panel(f"[bold white]{goal}[/bold white]", title="Current Task", border_style="cyan"))
+    console.print(Panel(f"[bold white]{goal}[/bold white]", title="Current Task", border_style="red"))
 
     # Check fast-path router first (<50ms execution without LLM)
     fast_res = fast_router.route(goal)
@@ -117,24 +119,25 @@ def run_single_goal(executor: AgentExecutor, goal: str, max_actions: int = 50):
 
         console.print(f"\n[bold green][FAST-PATH][/bold green] Tool: [bold]{tool}[/bold]({args})")
         console.print(f"[bold green][OK] TASK COMPLETED:[/bold green] {msg}\n")
+        voice.play_sound("notice", block=False)
         if spoken:
             voice.speak(spoken)
         return
 
     # Multimodal vision agent execution
-    voice.speak("On it.")
+    voice.speak_raphael("Directive acknowledged. Commencing execution.", prefix="Notice", with_chime=True)
 
     kill_switch.reset()
     state = AgentState(goal=goal, max_actions=max_actions)
     state.start()
 
     global _current_status
-    with console.status("[bold green]CIEL is observing desktop...", spinner="dots") as status:
+    with console.status("[bold red]Raphael is observing desktop (Analytical Appraisal)...", spinner="dots") as status:
         _current_status = status
         try:
             while not state.is_finished() and state.step < state.max_actions:
                 kill_switch.check()
-                status.update(f"[bold green]Step {state.step + 1}: Observing & Deciding...")
+                status.update(f"[bold red]Step {state.step + 1}: Observing & Deciding...")
 
                 step_res = executor.step(state)
 
@@ -142,11 +145,11 @@ def run_single_goal(executor: AgentExecutor, goal: str, max_actions: int = 50):
                     if step_res.get("success", True) and not step_res.get("error"):
                         compl_msg = step_res.get("message") or "Task completed."
                         console.print(f"\n[bold green][OK] TASK COMPLETED:[/bold green] {compl_msg}")
-                        voice.speak(str(compl_msg))
+                        voice.speak_raphael(str(compl_msg), prefix="Report", with_chime=False)
                     else:
                         fail_msg = step_res.get("message") or step_res.get("error") or "Task failed."
                         console.print(f"\n[bold red][X] TASK FAILED:[/bold red] {fail_msg}")
-                        voice.speak("Task failed.")
+                        voice.speak_raphael("Directive execution failed. Irregularity detected.", prefix="Notice", with_chime=False)
                     break
 
                 # Print step summary table
@@ -303,14 +306,14 @@ def main():
 
     # Start global summon hotkey listener (Ctrl+Alt+C)
     from agent.hotkey_listener import hotkey_listener
-    hotkey_listener.start(callback=lambda: voice.speak("I am here. How can I help?"))
+    hotkey_listener.start(callback=lambda: (voice.play_sound("notice", block=False), voice.speak_raphael("Wisdom King Raphael is listening. How may I assist you, Master?", prefix="Notice", with_chime=False)))
 
     if args.serve or args.hud:
         if args.hud:
             import webbrowser
             import threading
             threading.Timer(1.0, lambda: webbrowser.open(f"http://localhost:{args.port}/hud")).start()
-        console.print(f"[bold green]Starting CIEL HUD on http://localhost:{args.port}/hud ...[/bold green]")
+        console.print(f"[bold red]Starting CIEL Wisdom King Raphael HUD on http://localhost:{args.port}/hud ...[/bold red]")
         try:
             import uvicorn
             uvicorn.run("server.api:app", host="0.0.0.0", port=args.port, reload=False)

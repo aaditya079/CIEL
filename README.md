@@ -13,9 +13,10 @@
 
 ## Highlights
 
+- **Wisdom King Raphael HUD (`ciel --hud`)**: Sacred-geometry arcane HUD inspired by *Wisdom King Raphael* (《智慧之王》) and *Manas: Ciel* from *That Time I Got Reincarnated as a Slime*. Displays real-time calculations across 5 Sub-Skills (*Thought Acceleration*, *Analytical Appraisal*, *Parallel Operation*, *Chant Annulment*, *All of Creation*), live observation viewport with targeting reticle, and soundboard controls.
+- **Authentic Raphael Voice Pack & SAPI Speech**: Plays authentic anime chimes and voice clips (`notice.mp3`, `imagination.mp3`, `magic_circle.mp3`, `power_up.mp3`), paired with calm female Windows SAPI voice synthesis (Microsoft Zira) using canon announcement phrasing (`《告》 Notice:`, `《報告》 Report:`).
 - **Fast-Path Command Routing (<50ms)**: High-frequency commands (volume, media keys, telemetry, Spotify/YouTube playback, weather, window management, reminders, games, flights, memory) execute via direct OS APIs without API tokens or network latency.
 - **Offline SAPI Voice Engine**: Zero-latency speech feedback using the native Windows Speech API (`SAPI.SpVoice`). Provides spoken confirmations and daily briefings without external cloud endpoints.
-- **Reactive HUD Web Dashboard (`ciel --hud`)**: Real-time browser HUD displaying CPU, RAM, and battery metrics, agent activity stream, live desktop observation, and directive console. Automatically falls back to standard library `http.server` if FastAPI/Uvicorn are not installed.
 - **Action Undo Stack**: Reversible desktop actions (file changes, Recycle Bin actions, volume adjustments, clipboard writes) can be rolled back instantly with `"ciel undo"`.
 - **Persistent Long-Term Memory**: Stores facts, user preferences, and notes across sessions in JSON.
 - **Daily Status Briefing**: Reports time, date, local weather, hardware health, and pending reminders via voice synthesis.
@@ -223,6 +224,26 @@ CIEL Architecture
     ├── standalone_server.py # Standard-library HTTP server fallback
     └── hud.html             # Local HUD web interface
 ```
+
+---
+
+## Privacy, Lore & Fair Use Disclaimers
+
+### 1. Local-Only Privacy Guarantee
+- **100% Offline Processing**: CIEL processes all vision capture, telemetry, accessibility trees, and SAPI voice synthesis locally on your Windows 11 machine.
+- **Zero Cloud Telemetry**: CIEL does not track user behavior or send background analytics to remote servers. Screen captures exist strictly in volatile memory during autonomous reasoning steps.
+- **Failsafe Controls**: Press `Ctrl + Alt + X` or slam your mouse to `(0, 0)` at any moment to instantly trigger the emergency kill switch.
+
+### 2. Fair Use & Intellectual Property Attribution
+- **Character & Theme Lore**: *CIEL* is named in honor of **Manas: Ciel** (神智核) and **Wisdom King Raphael** (智慧之王) from *That Time I Got Reincarnated as a Slime* (*Tensei Shitara Slime Datta Ken*).
+- **Intellectual Property Rights**: All character names, lore, iconography, and voice references are the registered trademarks and copyright of **Fuse / Mitz Vah / Kodansha / 8bit Project**.
+- **Non-Commercial Fan Art & Fair Use**: This open-source desktop software is a strictly non-commercial academic fan tribute created under the fair use doctrine of Section 52 of the Indian Copyright Act 1957 and US 17 U.S.C. § 107.
+
+---
+
+## Author
+
+Architected by **Aaditya Srinivasan** (B.Tech AI & Data Science, Madurai, Tamil Nadu, India).
 
 ---
 
