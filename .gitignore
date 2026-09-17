@@ -21,3 +21,7 @@ config/config.json
 
 # Scratch work
 scratch/
+
+# Model weights & indices (large binary artifacts)
+models/*.pth
+models/*.index

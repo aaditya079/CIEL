@@ -3,6 +3,8 @@
 Runs native Windows SAPI text-to-speech configured for Raphael's calm synthetic
 persona (Microsoft Zira), and plays authentic Tensura audio clips and sound effects
 via Windows native multimedia API (winmm.dll mciSendString).
+
+reze ma queen 🥀
 """
 
 import os
@@ -30,6 +32,7 @@ SOUND_PRESETS: Dict[str, str] = {
     "success": "task_success.wav",
     "failed": "task_failed.wav",
     "stop": "emergency_stop.wav",
+    "demo": "demo_raphael.mp3",
 }
 
 
