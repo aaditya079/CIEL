@@ -95,16 +95,21 @@ class CIELRequestHandler(BaseHTTPRequestHandler):
             return
 
         if path == "/api/status":
-            active_win = get_active_window()
+            try:
+                active_win = get_active_window(check_kill_switch=False)
+            except Exception:
+                active_win = {"title": "Desktop"}
+            is_stopped = kill_switch.is_triggered()
+            status_str = "stopped" if is_stopped else (_state.status if _state else "idle")
             status_data = {
-                "status": _state.status if _state else "idle",
+                "status": status_str,
                 "task_id": _state.task_id if _state else None,
                 "goal": _state.goal if _state else None,
                 "step": _state.step if _state else 0,
                 "max_actions": _state.max_actions if _state else 50,
-                "active_window": active_win.get("title", ""),
+                "active_window": active_win.get("title", "Desktop"),
                 "is_paused": kill_switch.is_paused(),
-                "is_stopped": kill_switch.is_triggered(),
+                "is_stopped": is_stopped,
                 "recent_actions": _state.get_recent_history(limit=5) if _state else [],
                 "raphael_subskills": {
                     "thought_acceleration": {"kanji": "思考加速", "name": "Thought Acceleration", "status": "ACTIVE // 1,000,000x"},
@@ -132,7 +137,7 @@ class CIELRequestHandler(BaseHTTPRequestHandler):
 
         if path in ("/api/screen", "/api/screenshot"):
             try:
-                img = take_screenshot(resize_max=(1280, 720))
+                img = take_screenshot(resize_max=(1280, 720), check_kill_switch=False)
                 buf = io.BytesIO()
                 img.save(buf, format="JPEG", quality=80)
                 val = buf.getvalue()
@@ -142,7 +147,16 @@ class CIELRequestHandler(BaseHTTPRequestHandler):
                 self.end_headers()
                 self.wfile.write(val)
             except Exception as e:
-                self.send_error(500, str(e))
+                from PIL import Image
+                img = Image.new("RGB", (1280, 720), color=(15, 15, 25))
+                buf = io.BytesIO()
+                img.save(buf, format="JPEG", quality=80)
+                val = buf.getvalue()
+                self.send_response(200)
+                self.send_header("Content-Type", "image/jpeg")
+                self.send_header("Content-Length", str(len(val)))
+                self.end_headers()
+                self.wfile.write(val)
             return
 
         if path == "/api/windows":
@@ -202,6 +216,13 @@ class CIELRequestHandler(BaseHTTPRequestHandler):
         if path == "/api/resume":
             kill_switch.resume()
             self._send_json({"status": "resumed"})
+            return
+
+        if path == "/api/reset":
+            kill_switch.reset()
+            if _state:
+                _state.status = "idle"
+            self._send_json({"status": "idle", "message": "Emergency kill switch reset."})
             return
 
         if path.startswith("/api/audio/play/"):

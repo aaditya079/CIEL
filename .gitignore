@@ -25,3 +25,6 @@ scratch/
 # Model weights & indices (large binary artifacts)
 models/*.pth
 models/*.index
+
+# Generated TTS cache
+assets/sounds/cache/

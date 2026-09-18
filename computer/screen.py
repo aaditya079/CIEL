@@ -54,9 +54,11 @@ def _grab_internal(crop_box: Optional[Tuple[int, int, int, int]] = None) -> Imag
 def take_screenshot(
     crop_box: Optional[Tuple[int, int, int, int]] = None,
     resize_max: Optional[Tuple[int, int]] = (1280, 720),
+    check_kill_switch: bool = True,
 ) -> Image.Image:
     """Capture screen and return a PIL Image."""
-    kill_switch.check()
+    if check_kill_switch:
+        kill_switch.check()
     img = run_on_input_desktop(_grab_internal, crop_box)
 
     if resize_max:

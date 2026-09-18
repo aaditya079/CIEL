@@ -38,9 +38,10 @@ def _get_active_window_internal() -> Dict[str, Any]:
     }
 
 
-def get_active_window() -> Dict[str, Any]:
+def get_active_window(check_kill_switch: bool = True) -> Dict[str, Any]:
     """Get the currently focused foreground window details."""
-    kill_switch.check()
+    if check_kill_switch:
+        kill_switch.check()
     return run_on_input_desktop(_get_active_window_internal)
 
 

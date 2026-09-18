@@ -121,7 +121,7 @@ def run_single_goal(executor: AgentExecutor, goal: str, max_actions: int = 50):
         console.print(f"[bold green][OK] TASK COMPLETED:[/bold green] {msg}\n")
         voice.play_sound("notice", block=False)
         if spoken:
-            voice.speak(spoken)
+            voice.speak_raphael(spoken, prefix="Report", with_chime=False)
         return
 
     # Multimodal vision agent execution

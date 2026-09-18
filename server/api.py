@@ -53,16 +53,23 @@ def shutdown_event():
 @app.get("/api/status")
 def get_status() -> Dict[str, Any]:
     """Get current agent runtime state, task progress, and Raphael sub-skill metrics."""
-    active_win = get_active_window()
+    try:
+        active_win = get_active_window(check_kill_switch=False)
+    except Exception:
+        active_win = {"title": "Desktop"}
+
+    is_stopped = kill_switch.is_triggered()
+    status_str = "stopped" if is_stopped else (current_state.status if current_state else "idle")
+
     return {
-        "status": current_state.status if current_state else "idle",
+        "status": status_str,
         "task_id": current_state.task_id if current_state else None,
         "goal": current_state.goal if current_state else None,
         "step": current_state.step if current_state else 0,
         "max_actions": current_state.max_actions if current_state else 50,
         "active_window": active_win.get("title", "Desktop"),
         "is_paused": kill_switch.is_paused(),
-        "is_stopped": kill_switch.is_triggered(),
+        "is_stopped": is_stopped,
         "recent_actions": current_state.get_recent_history(limit=5) if current_state else [],
         "raphael_subskills": {
             "thought_acceleration": {
@@ -149,17 +156,31 @@ def resume_agent() -> Dict[str, Any]:
     return {"status": "resumed"}
 
 
+@app.post("/api/reset")
+def reset_agent() -> Dict[str, Any]:
+    """Reset emergency stop state and return to idle."""
+    kill_switch.reset()
+    if current_state:
+        current_state.status = "idle"
+    return {"status": "idle", "message": "Emergency kill switch reset. Agent ready."}
+
+
 @app.get("/api/screen")
 @app.get("/api/screenshot")
 def get_screen_image():
     """Retrieve real-time JPEG screenshot."""
     try:
-        img = take_screenshot(resize_max=(1280, 720))
+        img = take_screenshot(resize_max=(1280, 720), check_kill_switch=False)
         buf = io.BytesIO()
         img.save(buf, format="JPEG", quality=85)
         return Response(content=buf.getvalue(), media_type="image/jpeg")
     except Exception as e:
-        raise HTTPException(status_code=500, detail=str(e))
+        logger.debug(f"Screenshot capture fallback: {e}")
+        from PIL import Image
+        img = Image.new("RGB", (1280, 720), color=(15, 15, 25))
+        buf = io.BytesIO()
+        img.save(buf, format="JPEG", quality=85)
+        return Response(content=buf.getvalue(), media_type="image/jpeg")
 
 
 @app.get("/api/windows")

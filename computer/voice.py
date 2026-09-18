@@ -26,12 +26,12 @@ SOUND_PRESETS: Dict[str, str] = {
     "imagination": "imagination.mp3",
     "magic_circle": "magic_circle.mp3",
     "power_up": "power_up.mp3",
-    "greeting": "greeting.wav",
-    "acknowledged": "notice_acknowledged.wav",
-    "analysis": "analysis_complete.wav",
-    "success": "task_success.wav",
-    "failed": "task_failed.wav",
-    "stop": "emergency_stop.wav",
+    "greeting": "greeting.mp3",
+    "acknowledged": "notice_acknowledged.mp3",
+    "analysis": "analysis_complete.mp3",
+    "success": "task_success.mp3",
+    "failed": "task_failed.mp3",
+    "stop": "emergency_stop.mp3",
     "demo": "demo_raphael.mp3",
 }
 
@@ -82,8 +82,36 @@ def play_audio_file(filepath: str, block: bool = False) -> bool:
         return False
 
 
+def _synthesize_neural_audio(text: str) -> Optional[str]:
+    """Synthesize high-fidelity neural speech via Edge-TTS (AriaNeural with analytical cadence)."""
+    try:
+        import asyncio
+        import hashlib
+        import edge_tts
+        import re
+
+        clean = re.sub(r'《[^》]+》', '', text)
+        clean = re.sub(r'[*#_`]', '', clean).strip()
+        if not clean:
+            return None
+
+        cache_dir = os.path.join(SOUNDS_DIR, "cache")
+        os.makedirs(cache_dir, exist_ok=True)
+        text_hash = hashlib.md5(clean.encode("utf-8")).hexdigest()[:12]
+        cached_file = os.path.join(cache_dir, f"speech_{text_hash}.mp3")
+
+        if not os.path.exists(cached_file) or os.path.getsize(cached_file) == 0:
+            comm = edge_tts.Communicate(clean, voice="en-US-AriaNeural", rate="+3%", pitch="+2Hz")
+            asyncio.run(comm.save(cached_file))
+
+        return cached_file
+    except Exception as e:
+        logger.debug(f"Neural TTS synthesis failed ({e}), falling back to SAPI.")
+        return None
+
+
 class VoiceEngine:
-    """Non-blocking background voice synthesizer using Windows SAPI COM and Raphael sound packs."""
+    """Non-blocking background voice synthesizer using Edge-TTS neural speech, Raphael sound packs, and SAPI fallback."""
 
     def __init__(self, enabled: bool = True, rate: int = 0, volume: int = 100):
         self.enabled = enabled
@@ -107,7 +135,7 @@ class VoiceEngine:
         self._thread.start()
 
     def _worker_loop(self):
-        """Worker thread that initializes COM and processes speech items."""
+        """Worker thread that processes neural speech items with SAPI fallback."""
         try:
             import comtypes
             comtypes.CoInitialize()
@@ -119,7 +147,7 @@ class VoiceEngine:
             import comtypes.client
             speaker = comtypes.client.CreateObject("SAPI.SpVoice")
             try:
-                # Prioritize calm female voice (Microsoft Zira) for Raphael persona
+                # Prioritize calm female voice (Microsoft Zira) for SAPI fallback
                 voices = speaker.GetVoices()
                 for i in range(voices.Count):
                     desc = voices.Item(i).GetDescription().lower()
@@ -131,10 +159,11 @@ class VoiceEngine:
             except Exception:
                 pass
         except Exception as e:
-            logger.warning(f"Failed to create SAPI.SpVoice: {e}. Voice feedback disabled.")
-            return
+            logger.debug(f"SAPI.SpVoice fallback not available: {e}")
 
         self._current_speaker = speaker
+
+        import re
 
         while not self._stop_event.is_set():
             try:
@@ -146,14 +175,39 @@ class VoiceEngine:
                 break
 
             text, done_event = item
-            if self.enabled and text and speaker:
+            if self.enabled and text:
                 with self._lock:
                     self._is_speaking = True
                 try:
-                    # SAPI Speech flags: 0 = synchronous within this worker thread
-                    speaker.Speak(text, 0)
+                    # 1. Match canonical pre-rendered neural voice phrases
+                    lower_text = text.lower()
+                    matched_sound = None
+                    if "wisdom king raphael active" in lower_text or "awaiting your directive" in lower_text:
+                        matched_sound = "greeting"
+                    elif "directive acknowledged" in lower_text:
+                        matched_sound = "acknowledged"
+                    elif "analytical appraisal complete" in lower_text:
+                        matched_sound = "analysis"
+                    elif "directive successfully executed" in lower_text:
+                        matched_sound = "success"
+                    elif "directive execution failed" in lower_text or "irregularity detected" in lower_text:
+                        matched_sound = "failed"
+                    elif "emergency kill switch activated" in lower_text:
+                        matched_sound = "stop"
+
+                    if matched_sound:
+                        self.play_sound(matched_sound, block=True)
+                    else:
+                        # 2. Dynamic neural TTS synthesis via Edge-TTS
+                        cached_audio = _synthesize_neural_audio(text)
+                        if cached_audio and os.path.exists(cached_audio):
+                            play_audio_file(cached_audio, block=True)
+                        elif speaker:
+                            # 3. Local fallback to Windows SAPI (Microsoft Zira)
+                            clean_sapi = re.sub(r'《[^》]+》', '', text).strip()
+                            speaker.Speak(clean_sapi, 0)
                 except Exception as e:
-                    logger.debug(f"SAPI Speak error: {e}")
+                    logger.debug(f"Voice output error: {e}")
                 finally:
                     with self._lock:
                         self._is_speaking = False
