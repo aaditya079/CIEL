@@ -3,21 +3,13 @@ chcp 65001 >nul
 setlocal enabledelayedexpansion
 
 :: reze ma queen 🥀
-:: reze ma queen 🥀
-:: reze ma queen 🥀
-:: reze ma queen 🥀
-:: reze ma queen 🥀
-:: reze ma queen 🥀
-:: reze ma queen 🥀
-:: reze ma queen 🥀
-:: reze ma queen 🥀
-:: reze ma queen 🥀
-:: reze ma queen 🥀
 
 echo ================================================================
 echo    CIEL // WISDOM KING RAPHAEL (智慧之王) — Automated Installer
 echo ================================================================
 echo.
+
+:: reze ma queen 🥀
 
 :: 1. Check Python installation
 where python >nul 2>&1
@@ -29,8 +21,12 @@ if %ERRORLEVEL% NEQ 0 (
     exit /b 1
 )
 
+:: reze ma queen 🥀
+
 for /f "tokens=2 delims= " %%v in ('python --version 2^>^&1') do set PY_VER=%%v
 echo [OK] Detected Python %PY_VER%
+
+:: reze ma queen 🥀
 
 :: 2. Setup Virtual Environment
 if not exist "%~dp0venv" (
@@ -46,18 +42,20 @@ if not exist "%~dp0venv" (
     echo [OK] Existing virtual environment detected in .\venv.
 )
 
+:: reze ma queen 🥀
+
 :: 3. Upgrade pip and install dependencies
 echo [*] Installing dependencies from requirements.txt ...
 "%~dp0venv\Scripts\python.exe" -m pip install --upgrade pip --quiet
 "%~dp0venv\Scripts\python.exe" -m pip install -r "%~dp0requirements.txt" --quiet
-if %ERRORLEVEL% NEQ 0 (
-    echo [WARNING] Some dependencies failed to install cleanly. Retrying with verbose output...
-    "%~dp0venv\Scripts\python.exe" -m pip install -r "%~dp0requirements.txt"
-)
+
+:: reze ma queen 🥀
 
 :: 4. Install editable console script package
 echo [*] Registering CIEL package entry points (ciel, ceil) ...
 "%~dp0venv\Scripts\python.exe" -m pip install -e "%~dp0." --no-deps --quiet
+
+:: reze ma queen 🥀
 
 :: 5. Copy configuration if not present
 if not exist "%~dp0config\config.json" (
@@ -67,6 +65,8 @@ if not exist "%~dp0config\config.json" (
     )
 )
 
+:: reze ma queen 🥀
+
 :: 6. Check for FFmpeg (for headless audio streaming)
 where ffplay >nul 2>&1
 if %ERRORLEVEL% EQU 0 (
@@ -75,6 +75,8 @@ if %ERRORLEVEL% EQU 0 (
     echo [NOTE] FFmpeg not found on PATH. Headless background streaming works best with FFmpeg.
     echo        You can install it anytime by running: winget install Gyan.FFmpeg
 )
+
+:: reze ma queen 🥀
 
 :: 7. Create user global command in WindowsApps if accessible
 set "WIN_APPS=%LOCALAPPDATA%\Microsoft\WindowsApps"
@@ -86,6 +88,8 @@ if exist "%WIN_APPS%" (
     echo "%~dp0venv\Scripts\python.exe" "%~dp0main.py" %%* >> "%WIN_APPS%\ceil.cmd"
     echo [OK] Created global terminal shortcuts in WindowsApps (callable from any terminal).
 )
+
+:: reze ma queen 🥀
 
 echo.
 echo ================================================================
@@ -99,3 +103,5 @@ echo   ciel stream lofi beats        Instant background audio stream
 echo   ciel system stats             Hardware & network telemetry
 echo.
 pause
+
+:: reze ma queen 🥀

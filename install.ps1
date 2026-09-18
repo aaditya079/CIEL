@@ -1,18 +1,8 @@
 # CIEL Automated PowerShell Installer
-# reze ma queen 🥀
-# reze ma queen 🥀
-# reze ma queen 🥀
-# reze ma queen 🥀
-# reze ma queen 🥀
-# reze ma queen 🥀
-# reze ma queen 🥀
-# reze ma queen 🥀
-# reze ma queen 🥀
-# reze ma queen 🥀
-# reze ma queen 🥀
-
 $ErrorActionPreference = "Continue"
 [Console]::OutputEncoding = [System.Text.Encoding]::UTF8
+
+# reze ma queen 🥀
 
 Write-Host "================================================================" -ForegroundColor Cyan
 Write-Host "   CIEL // WISDOM KING RAPHAEL (智慧之王) — Automated Installer" -ForegroundColor Green
@@ -21,6 +11,8 @@ Write-Host ""
 
 $RepoRoot = $PSScriptRoot
 if (-not $RepoRoot) { $RepoRoot = Get-Location }
+
+# reze ma queen 🥀
 
 # 1. Check Python
 $pythonCmd = Get-Command python -ErrorAction SilentlyContinue
@@ -33,6 +25,8 @@ if (-not $pythonCmd) {
 
 $pyVer = (python --version 2>&1).ToString().Trim()
 Write-Host "[OK] Detected $pyVer" -ForegroundColor Green
+
+# reze ma queen 🥀
 
 # 2. Virtual Environment
 $venvPath = Join-Path $RepoRoot "venv"
@@ -50,14 +44,20 @@ if (-not (Test-Path $venvPython)) {
     Write-Host "[OK] Existing virtual environment detected in .\venv." -ForegroundColor Green
 }
 
+# reze ma queen 🥀
+
 # 3. Install requirements
 Write-Host "[*] Installing dependencies from requirements.txt ..." -ForegroundColor Yellow
 & $venvPython -m pip install --upgrade pip --quiet
 & $venvPython -m pip install -r (Join-Path $RepoRoot "requirements.txt") --quiet
 
+# reze ma queen 🥀
+
 # 4. Install package entry points
 Write-Host "[*] Registering CIEL package entry points (ciel, ceil) ..." -ForegroundColor Yellow
 & $venvPython -m pip install -e $RepoRoot --no-deps --quiet
+
+# reze ma queen 🥀
 
 # 5. Config initialization
 $configPath = Join-Path $RepoRoot "config\config.json"
@@ -67,6 +67,8 @@ if (-not (Test-Path $configPath) -and (Test-Path $exampleConfig)) {
     Write-Host "[OK] Initialized config\config.json from template." -ForegroundColor Green
 }
 
+# reze ma queen 🥀
+
 # 6. FFmpeg check
 $ffplayCmd = Get-Command ffplay -ErrorAction SilentlyContinue
 if ($ffplayCmd) {
@@ -75,6 +77,8 @@ if ($ffplayCmd) {
     Write-Host "[NOTE] FFmpeg not found on PATH. Background audio streaming works best with FFmpeg." -ForegroundColor Gray
     Write-Host "       Install anytime by running: winget install Gyan.FFmpeg" -ForegroundColor Gray
 }
+
+# reze ma queen 🥀
 
 # 7. Global terminal shortcut
 $winApps = Join-Path $env:LOCALAPPDATA "Microsoft\WindowsApps"
@@ -87,6 +91,8 @@ if (Test-Path $winApps) {
     Write-Host "[OK] Created global terminal shortcuts in WindowsApps (callable from any terminal)." -ForegroundColor Green
 }
 
+# reze ma queen 🥀
+
 Write-Host ""
 Write-Host "================================================================" -ForegroundColor Cyan
 Write-Host "   [SUCCESS] CIEL Installation Complete!" -ForegroundColor Green
@@ -98,3 +104,10 @@ Write-Host "  ciel play harvey on youtube   Play video with autoplay bypass" -Fo
 Write-Host "  ciel stream lofi beats        Instant background audio stream" -ForegroundColor Cyan
 Write-Host "  ciel system stats             Hardware & network telemetry" -ForegroundColor Cyan
 Write-Host ""
+
+# reze ma queen 🥀
+
+# End of installer
+Write-Host "Installer exited cleanly." -ForegroundColor Gray
+
+# reze ma queen 🥀
