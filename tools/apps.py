@@ -59,6 +59,51 @@ KNOWN_APPS = {
             r"C:\Program Files (x86)\Google\Chrome\Application\chrome.exe",
         ],
     },
+    "brave": {
+        "executables": ["brave.exe"],
+        "paths": [
+            os.path.expandvars(r"%LOCALAPPDATA%\BraveSoftware\Brave-Browser\Application\brave.exe"),
+            r"C:\Program Files\BraveSoftware\Brave-Browser\Application\brave.exe",
+            r"C:\Program Files (x86)\BraveSoftware\Brave-Browser\Application\brave.exe",
+        ],
+    },
+    "brave-browser": {
+        "executables": ["brave.exe"],
+        "paths": [
+            os.path.expandvars(r"%LOCALAPPDATA%\BraveSoftware\Brave-Browser\Application\brave.exe"),
+            r"C:\Program Files\BraveSoftware\Brave-Browser\Application\brave.exe",
+            r"C:\Program Files (x86)\BraveSoftware\Brave-Browser\Application\brave.exe",
+        ],
+    },
+    "brave browser": {
+        "executables": ["brave.exe"],
+        "paths": [
+            os.path.expandvars(r"%LOCALAPPDATA%\BraveSoftware\Brave-Browser\Application\brave.exe"),
+            r"C:\Program Files\BraveSoftware\Brave-Browser\Application\brave.exe",
+            r"C:\Program Files (x86)\BraveSoftware\Brave-Browser\Application\brave.exe",
+        ],
+    },
+    "firefox": {
+        "executables": ["firefox.exe"],
+        "paths": [
+            r"C:\Program Files\Mozilla Firefox\firefox.exe",
+            r"C:\Program Files (x86)\Mozilla Firefox\firefox.exe",
+        ],
+    },
+    "vscode": {
+        "executables": ["code.cmd", "code.exe"],
+        "paths": [
+            os.path.expandvars(r"%LOCALAPPDATA%\Programs\Microsoft VS Code\Code.exe"),
+            r"C:\Program Files\Microsoft VS Code\Code.exe",
+        ],
+    },
+    "code": {
+        "executables": ["code.cmd", "code.exe"],
+        "paths": [
+            os.path.expandvars(r"%LOCALAPPDATA%\Programs\Microsoft VS Code\Code.exe"),
+            r"C:\Program Files\Microsoft VS Code\Code.exe",
+        ],
+    },
     "edge": {
         "protocols": ["microsoft-edge:"],
         "executables": ["msedge.exe"],
@@ -112,19 +157,32 @@ def is_app_running(app_name: str) -> bool:
     return False
 
 
-def open_application(app_name: str, wait_timeout: float = 8.0) -> bool:
+def open_application(
+    app_name: str = "",
+    application_name: str = "",
+    name: str = "",
+    wait_timeout: float = 8.0,
+    **kwargs
+) -> bool:
     """Open an application by friendly name, executable, or protocol URI.
     
     If the application is already running, brings its window to foreground.
+    Accepts app_name, application_name, or name aliases.
     """
     kill_switch.check()
-    norm_name = app_name.lower().strip()
-    logger.info(f"Opening application '{app_name}'...")
+    target_raw = app_name or application_name or name or kwargs.get("app") or kwargs.get("program") or ""
+    target_str = str(target_raw).strip()
+    if not target_str:
+        logger.error("open_application called without target application name.")
+        return False
+
+    norm_name = target_str.lower()
+    logger.info(f"Opening application '{target_str}'...")
 
     # If already running, focus the window
     existing_win = find_window(norm_name)
     if existing_win:
-        logger.info(f"App '{app_name}' already open; focusing existing window.")
+        logger.info(f"App '{target_str}' already open; focusing existing window.")
         focus_window(existing_win["hwnd"])
         return True
 
@@ -171,7 +229,7 @@ def open_application(app_name: str, wait_timeout: float = 8.0) -> bool:
         _wait_for_window_or_process(norm_name, wait_timeout)
         return True
     except Exception as e:
-        logger.error(f"Failed to open '{app_name}': {e}")
+        logger.error(f"Failed to open '{target_str}': {e}")
         return False
 
 
@@ -191,11 +249,22 @@ def _wait_for_window_or_process(app_name: str, timeout: float = 8.0) -> bool:
     return False
 
 
-def close_application(app_name: str) -> bool:
+def close_application(
+    app_name: str = "",
+    application_name: str = "",
+    name: str = "",
+    **kwargs
+) -> bool:
     """Close an application gracefully or terminate its process."""
     kill_switch.check()
-    norm_name = app_name.lower().strip()
-    logger.info(f"Closing application '{app_name}'...")
+    target_raw = app_name or application_name or name or kwargs.get("app") or kwargs.get("program") or ""
+    target_str = str(target_raw).strip()
+    if not target_str:
+        logger.error("close_application called without target application name.")
+        return False
+
+    norm_name = target_str.lower()
+    logger.info(f"Closing application '{target_str}'...")
 
     # First attempt graceful window close
     win = find_window(norm_name)

@@ -85,13 +85,15 @@ TOOL_DEFINITIONS = [
     },
     {
         "name": "open_application",
-        "description": "Launch or focus a Windows application by name, protocol, or executable (e.g. 'Spotify', 'Discord', 'Chrome', 'Notepad', 'Settings').",
+        "description": "Launch or focus a Windows application by name, protocol, or executable (e.g. 'Spotify', 'Discord', 'Chrome', 'Brave', 'Notepad', 'Settings').",
         "parameters": {
             "type": "object",
             "properties": {
-                "app_name": {"type": "string", "description": "Application name or protocol (e.g. 'Spotify', 'Discord', 'calc')"},
+                "app_name": {"type": "string", "description": "Application name or protocol (e.g. 'Spotify', 'Discord', 'Brave', 'calc')"},
+                "application_name": {"type": "string", "description": "Alias for app_name"},
+                "name": {"type": "string", "description": "Alias for app_name"},
             },
-            "required": ["app_name"],
+            "required": [],
         },
     },
     {
@@ -101,8 +103,9 @@ TOOL_DEFINITIONS = [
             "type": "object",
             "properties": {
                 "app_name": {"type": "string", "description": "Application name or process name to close"},
+                "application_name": {"type": "string", "description": "Alias for app_name"},
             },
-            "required": ["app_name"],
+            "required": [],
         },
     },
     {
@@ -143,6 +146,7 @@ TOOL_DEFINITIONS = [
                 "x": {"type": "integer", "description": "X coordinate in pixels"},
                 "y": {"type": "integer", "description": "Y coordinate in pixels"},
                 "button": {"type": "string", "enum": ["left", "right", "middle"], "description": "Mouse button (default: left)"},
+                "clicks": {"type": "integer", "description": "Number of clicks (default: 1)"},
             },
             "required": [],
         },
@@ -732,7 +736,15 @@ class ToolDispatcher:
 
         handler = self._handlers[tool_name]
         try:
-            res = handler(**arguments)
+            import inspect
+            sig = inspect.signature(handler)
+            has_var_kw = any(p.kind == inspect.Parameter.VAR_KEYWORD for p in sig.parameters.values())
+            if has_var_kw:
+                call_args = arguments
+            else:
+                call_args = {k: v for k, v in arguments.items() if k in sig.parameters}
+
+            res = handler(**call_args)
             return {
                 "success": True,
                 "error": None,

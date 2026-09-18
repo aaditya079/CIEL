@@ -89,12 +89,27 @@ def list_open_windows(only_visible: bool = True) -> List[Dict[str, Any]]:
 
 
 def find_window(query: str) -> Optional[Dict[str, Any]]:
-    """Find a window whose title matches query (case-insensitive substring)."""
-    q = query.lower()
+    """Find a window whose title matches query (case-insensitive substring).
+    Falls back to matching process name if the window title has changed (e.g. Spotify playing track).
+    """
+    q = query.lower().strip()
     windows = list_open_windows(only_visible=True)
     for win in windows:
         if q in win["title"].lower():
             return win
+
+    # Fallback to process name match
+    try:
+        from tools.apps import get_running_processes
+        procs = get_running_processes()
+        matching_pids = {p["pid"] for p in procs if q in p["name"].lower() and p.get("pid")}
+        if matching_pids:
+            for w in windows:
+                if w.get("pid") in matching_pids:
+                    return w
+    except Exception:
+        pass
+
     return None
 
 

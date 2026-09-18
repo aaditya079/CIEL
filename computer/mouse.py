@@ -59,8 +59,14 @@ def move_to(x: int, y: int, duration: float = 0.15) -> Tuple[int, int]:
     return target_x, target_y
 
 
-def click(x: Optional[int] = None, y: Optional[int] = None, button: str = "left") -> Tuple[int, int]:
-    """Click mouse button at specified or current coordinates."""
+def click(
+    x: Optional[int] = None,
+    y: Optional[int] = None,
+    button: str = "left",
+    clicks: int = 1,
+    **kwargs
+) -> Tuple[int, int]:
+    """Click mouse button at specified or current coordinates, supporting multiple clicks."""
     kill_switch.check()
     ensure_cursor_away_from_corner()
     if x is not None and y is not None:
@@ -68,46 +74,49 @@ def click(x: Optional[int] = None, y: Optional[int] = None, button: str = "left"
     else:
         target_x, target_y = get_mouse_position()
 
-    logger.debug(f"Clicking {button} button at ({target_x}, {target_y})")
+    num_clicks = max(1, int(clicks)) if clicks is not None else 1
+    logger.debug(f"Clicking {button} button {num_clicks} time(s) at ({target_x}, {target_y})")
 
     def _do_click():
-        try:
-            win32api.SetCursorPos((target_x, target_y))
-            time.sleep(0.02)
-            btn = button.lower()
-            if btn == "left":
-                win32api.mouse_event(win32con.MOUSEEVENTF_LEFTDOWN, target_x, target_y, 0, 0)
-                time.sleep(0.04)
-                win32api.mouse_event(win32con.MOUSEEVENTF_LEFTUP, target_x, target_y, 0, 0)
-            elif btn == "right":
-                win32api.mouse_event(win32con.MOUSEEVENTF_RIGHTDOWN, target_x, target_y, 0, 0)
-                time.sleep(0.04)
-                win32api.mouse_event(win32con.MOUSEEVENTF_RIGHTUP, target_x, target_y, 0, 0)
-            elif btn == "middle":
-                win32api.mouse_event(win32con.MOUSEEVENTF_MIDDLEDOWN, target_x, target_y, 0, 0)
-                time.sleep(0.04)
-                win32api.mouse_event(win32con.MOUSEEVENTF_MIDDLEUP, target_x, target_y, 0, 0)
-        except Exception:
-            pyautogui.click(x=target_x, y=target_y, button=button)
+        for _ in range(num_clicks):
+            try:
+                win32api.SetCursorPos((target_x, target_y))
+                time.sleep(0.02)
+                btn = button.lower()
+                if btn == "left":
+                    win32api.mouse_event(win32con.MOUSEEVENTF_LEFTDOWN, target_x, target_y, 0, 0)
+                    time.sleep(0.04)
+                    win32api.mouse_event(win32con.MOUSEEVENTF_LEFTUP, target_x, target_y, 0, 0)
+                elif btn == "right":
+                    win32api.mouse_event(win32con.MOUSEEVENTF_RIGHTDOWN, target_x, target_y, 0, 0)
+                    time.sleep(0.04)
+                    win32api.mouse_event(win32con.MOUSEEVENTF_RIGHTUP, target_x, target_y, 0, 0)
+                elif btn == "middle":
+                    win32api.mouse_event(win32con.MOUSEEVENTF_MIDDLEDOWN, target_x, target_y, 0, 0)
+                    time.sleep(0.04)
+                    win32api.mouse_event(win32con.MOUSEEVENTF_MIDDLEUP, target_x, target_y, 0, 0)
+            except Exception:
+                pyautogui.click(x=target_x, y=target_y, button=button)
+            if num_clicks > 1:
+                time.sleep(0.05)
 
     run_on_input_desktop(_do_click)
     kill_switch.check()
     return target_x, target_y
 
 
-def double_click(x: Optional[int] = None, y: Optional[int] = None) -> Tuple[int, int]:
+def double_click(x: Optional[int] = None, y: Optional[int] = None, **kwargs) -> Tuple[int, int]:
     """Double-click mouse left button."""
-    target_x, target_y = click(x=x, y=y, button="left")
-    time.sleep(0.08)
-    return click(x=target_x, y=target_y, button="left")
+    target_x, target_y = click(x=x, y=y, button="left", clicks=2, **kwargs)
+    return target_x, target_y
 
 
-def right_click(x: Optional[int] = None, y: Optional[int] = None) -> Tuple[int, int]:
+def right_click(x: Optional[int] = None, y: Optional[int] = None, **kwargs) -> Tuple[int, int]:
     """Right-click mouse button."""
-    return click(x=x, y=y, button="right")
+    return click(x=x, y=y, button="right", **kwargs)
 
 
-def scroll(clicks: int, x: Optional[int] = None, y: Optional[int] = None) -> None:
+def scroll(clicks: int = 1, x: Optional[int] = None, y: Optional[int] = None, **kwargs) -> None:
     """Scroll mouse wheel vertically (positive = up, negative = down)."""
     kill_switch.check()
     ensure_cursor_away_from_corner()
@@ -128,7 +137,7 @@ def scroll(clicks: int, x: Optional[int] = None, y: Optional[int] = None) -> Non
     kill_switch.check()
 
 
-def drag(from_x: int, from_y: int, to_x: int, to_y: int, duration: float = 0.5) -> None:
+def drag(from_x: int, from_y: int, to_x: int, to_y: int, duration: float = 0.5, **kwargs) -> None:
     """Click and drag from start position to target position."""
     kill_switch.check()
     ensure_cursor_away_from_corner()

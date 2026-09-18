@@ -29,7 +29,7 @@ def _normalize_key(key: str) -> str:
     return KEY_ALIASES.get(lower_key, lower_key)
 
 
-def type_text(text: str, interval: float = 0.01, use_clipboard_fallback: bool = True) -> None:
+def type_text(text: str, interval: float = 0.01, use_clipboard_fallback: bool = True, **kwargs) -> None:
     """Type text safely on the interactive input desktop."""
     kill_switch.check()
     ensure_cursor_away_from_corner()
@@ -61,7 +61,7 @@ def type_text(text: str, interval: float = 0.01, use_clipboard_fallback: bool = 
     kill_switch.check()
 
 
-def press_key(key: str) -> None:
+def press_key(key: str, **kwargs) -> None:
     """Press and release a single key on the input desktop."""
     kill_switch.check()
     ensure_cursor_away_from_corner()
@@ -75,7 +75,7 @@ def press_key(key: str) -> None:
     kill_switch.check()
 
 
-def hotkey(*keys: str) -> None:
+def hotkey(*keys: str, **kwargs) -> None:
     """Press a key combination (e.g., 'ctrl', 'c' or 'alt', 'tab') on the input desktop."""
     kill_switch.check()
     ensure_cursor_away_from_corner()
@@ -89,7 +89,7 @@ def hotkey(*keys: str) -> None:
     kill_switch.check()
 
 
-def key_down(key: str) -> None:
+def key_down(key: str, **kwargs) -> None:
     """Hold a key down."""
     kill_switch.check()
     ensure_cursor_away_from_corner()
@@ -97,7 +97,7 @@ def key_down(key: str) -> None:
     run_on_input_desktop(lambda: pyautogui.keyDown(norm_key))
 
 
-def key_up(key: str) -> None:
+def key_up(key: str, **kwargs) -> None:
     """Release a key."""
     kill_switch.check()
     ensure_cursor_away_from_corner()
