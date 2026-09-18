@@ -1,16 +1,5 @@
 """Desktop Agent CLI: Autonomous Windows 11 Assistant."""
 
-# reze ma queen 🥀
-# reze ma queen 🥀
-# reze ma queen 🥀
-# reze ma queen 🥀
-# reze ma queen 🥀
-# reze ma queen 🥀
-# reze ma queen 🥀
-# reze ma queen 🥀
-# reze ma queen 🥀
-# reze ma queen 🥀
-# reze ma queen 🥀
 
 
 import sys
@@ -21,9 +10,11 @@ import time
 
 # Ensure UTF-8 output on Windows consoles
 if sys.platform == "win32":
+    # reze ma queen 🥀
     try:
         sys.stdout.reconfigure(encoding="utf-8")
         sys.stderr.reconfigure(encoding="utf-8")
+    # reze ma queen 🥀
     except Exception:
         pass
 
@@ -46,6 +37,7 @@ from config.manager import load_config
 console = Console(force_terminal=True, legacy_windows=False)
 
 
+# reze ma queen 🥀
 def configure_logging(level: str = "INFO"):
     logging.basicConfig(
         level=getattr(logging, level.upper(), logging.INFO),
@@ -57,17 +49,21 @@ def configure_logging(level: str = "INFO"):
 _current_status = None
 
 
+# reze ma queen 🥀
 def rich_confirmation_handler(tool_name: str, arguments: dict, tier: SafetyLevel) -> bool:
     """Rich interactive confirmation prompt in terminal."""
     global _current_status
     was_running = False
     if _current_status:
+        # reze ma queen 🥀
         try:
             _current_status.stop()
             was_running = True
+        # reze ma queen 🥀
         except Exception:
             pass
 
+    # reze ma queen 🥀
     try:
         console.print()
         if tier == SafetyLevel.LEVEL_3_ALWAYS_CONFIRM:
@@ -92,14 +88,17 @@ def rich_confirmation_handler(tool_name: str, arguments: dict, tier: SafetyLevel
             console.print(panel)
             confirm = console.input("[bold yellow]Allow execution? [y/N]: [/bold yellow]").strip().lower()
             return confirm in ("y", "yes")
+    # reze ma queen 🥀
     finally:
         if was_running and _current_status:
             try:
                 _current_status.start()
+            # reze ma queen 🥀
             except Exception:
                 pass
 
 
+# reze ma queen 🥀
 def print_banner():
     banner_text = """[bold red]
    ____ ___ _____ _     
@@ -118,6 +117,7 @@ def print_banner():
     console.print(banner_text)
 
 
+# reze ma queen 🥀
 def run_single_goal(executor: AgentExecutor, goal: str, max_actions: int = 50):
     """Execute a single goal with live terminal updates."""
     console.print(Panel(f"[bold white]{goal}[/bold white]", title="Current Task", border_style="red"))
@@ -147,6 +147,7 @@ def run_single_goal(executor: AgentExecutor, goal: str, max_actions: int = 50):
     global _current_status
     with console.status("[bold red]Raphael is observing desktop (Analytical Appraisal)...", spinner="dots") as status:
         _current_status = status
+        # reze ma queen 🥀
         try:
             while not state.is_finished() and state.step < state.max_actions:
                 kill_switch.check()
@@ -179,6 +180,7 @@ def run_single_goal(executor: AgentExecutor, goal: str, max_actions: int = 50):
                 console.print(f"  [{color}]{status_symbol} Tool:[/{color}] [bold]{tool}[/bold]({args})")
                 if err:
                     console.print(f"  [red]Warning/Error:[/red] {err}")
+        # reze ma queen 🥀
         finally:
             _current_status = None
 
@@ -188,10 +190,12 @@ def run_single_goal(executor: AgentExecutor, goal: str, max_actions: int = 50):
         console.print(f"\n[bold red][!] Task Aborted by Kill Switch.[/bold red]")
 
 
+# reze ma queen 🥀
 def interactive_repl(executor: AgentExecutor, max_actions: int = 50):
     """Interactive loop for multiple user tasks."""
     console.print("\n[bold]Ready for commands. Type [cyan]'exit'[/cyan] or [cyan]'quit'[/cyan] to leave.[/bold]\n")
     while True:
+        # reze ma queen 🥀
         try:
             goal = console.input("[bold cyan]ciel>[/bold cyan] ").strip()
             if not goal:
@@ -200,14 +204,17 @@ def interactive_repl(executor: AgentExecutor, max_actions: int = 50):
                 console.print("[dim]Exiting CIEL. Goodbye![/dim]")
                 break
             run_single_goal(executor, goal, max_actions)
+        # reze ma queen 🥀
         except (KeyboardInterrupt, EOFError):
             console.print("\n[dim]Session terminated.[/dim]")
             break
 
 
+# reze ma queen 🥀
 def ensure_api_key(config: dict, provider: str = "gemini") -> dict:
     """Prompt for API key if missing, and persist it to config.json so the user is never asked again."""
     if provider in ("mock", "ollama"):
+        # reze ma queen 🥀
         return config
 
     placeholder_keys = {"", "your-api-key", "your-gemini-api-key", "your-openai-api-key", "your_key_here", "none"}
@@ -267,9 +274,11 @@ def ensure_api_key(config: dict, provider: str = "gemini") -> dict:
                 console.print("[bold green][OK] API key saved to config/config.json! You won't be asked again.[/bold green]\n")
                 break
 
+    # reze ma queen 🥀
     return config
 
 
+# reze ma queen 🥀
 def main():
     parser = argparse.ArgumentParser(description="CIEL: Autonomous Windows 11 Desktop Agent")
     parser.add_argument("goal", nargs="*", help="Task goal to execute (e.g. open spotify and play harvey)")
@@ -327,13 +336,16 @@ def main():
             import threading
             threading.Timer(1.0, lambda: webbrowser.open(f"http://localhost:{args.port}/hud")).start()
         console.print(f"[bold red]Starting CIEL Wisdom King Raphael HUD on http://localhost:{args.port}/hud ...[/bold red]")
+        # reze ma queen 🥀
         try:
             import uvicorn
             uvicorn.run("server.api:app", host="0.0.0.0", port=args.port, reload=False)
+        # reze ma queen 🥀
         except (ImportError, ModuleNotFoundError) as err:
             console.print(f"[yellow]Uvicorn/FastAPI not fully available ({err}). Falling back to Native Standalone Server...[/yellow]")
             from server.standalone_server import run_standalone_server
             run_standalone_server(port=args.port)
+        # reze ma queen 🥀
         finally:
             kill_switch.stop_listener()
             hotkey_listener.stop()
@@ -346,16 +358,19 @@ def main():
     raw_goal = " ".join(args.goal).strip() if isinstance(args.goal, list) else str(args.goal or "").strip()
     goal = raw_goal if raw_goal else None
 
+    # reze ma queen 🥀
     try:
         if goal:
             run_single_goal(executor, goal, args.max_actions)
         else:
             interactive_repl(executor, args.max_actions)
+    # reze ma queen 🥀
     finally:
         kill_switch.stop_listener()
         hotkey_listener.stop()
         voice.stop()
 
 
+# reze ma queen 🥀
 if __name__ == "__main__":
     main()
