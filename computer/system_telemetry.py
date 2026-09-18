@@ -156,3 +156,57 @@ def get_system_telemetry() -> Dict[str, Any]:
         "display": {"width": screen_w, "height": screen_h},
         "summary": summary,
     }
+
+
+def get_network_latency_ms(host: str = "www.youtube.com", port: int = 443, timeout: float = 1.2) -> float:
+    """Measure round-trip TCP connection latency in milliseconds to evaluate network speed.
+    Returns estimated latency in ms (e.g. 25ms-500ms), or 999.0 on timeout/network unreachable.
+    """
+    import socket
+    t0 = time.time()
+    try:
+        s = socket.create_connection((host, port), timeout=timeout)
+        s.close()
+        return round((time.time() - t0) * 1000.0, 1)
+    except Exception:
+        return 999.0
+
+
+def get_performance_adaptation_factor(target_host: str = "www.youtube.com") -> Dict[str, Any]:
+    """Calculate an adaptive multiplier (1.0x - 3.5x) based on real-time device load and network latency.
+    Allows CIEL to intelligently adjust UI wait loops, browser render timeouts, and search polling
+    on slower hardware or congested connections.
+    """
+    multiplier = 1.0
+    telemetry = get_system_telemetry()
+    cpu = telemetry.get("cpu_percent", 0.0)
+    mem = telemetry.get("memory", {}).get("memory_load_percent", 0)
+    pwr = telemetry.get("power", {})
+
+    # 1. Device hardware load penalty
+    if cpu > 80.0 or mem > 85:
+        multiplier += 0.75
+    elif cpu > 50.0 or mem > 70:
+        multiplier += 0.35
+
+    # 2. Power state: battery saver mode clocks CPU down significantly
+    if pwr.get("has_battery") and not pwr.get("ac_connected"):
+        multiplier += 0.25
+
+    # 3. Network latency penalty
+    latency = get_network_latency_ms(host=target_host)
+    if latency > 600.0:
+        multiplier += 1.2
+    elif latency > 250.0:
+        multiplier += 0.6
+    elif latency > 100.0:
+        multiplier += 0.25
+
+    final_factor = round(min(3.5, max(1.0, multiplier)), 2)
+    return {
+        "factor": final_factor,
+        "cpu_percent": cpu,
+        "memory_load_percent": mem,
+        "network_latency_ms": latency,
+        "on_battery": bool(pwr.get("has_battery") and not pwr.get("ac_connected")),
+    }

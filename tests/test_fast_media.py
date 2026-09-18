@@ -84,3 +84,58 @@ def test_fast_router_watch_intent():
         assert route is not None
         assert route["tool"] == "play_youtube"
         assert route["arguments"]["query"] == "queen"
+
+
+def test_performance_adaptation_factor():
+    from computer.system_telemetry import get_performance_adaptation_factor
+    res = get_performance_adaptation_factor()
+    assert isinstance(res, dict)
+    assert "factor" in res
+    assert 1.0 <= res["factor"] <= 3.5
+    assert "cpu_percent" in res
+    assert "memory_load_percent" in res
+    assert "network_latency_ms" in res
+    assert isinstance(res["on_battery"], bool)
+
+
+def test_network_latency_ms():
+    from computer.system_telemetry import get_network_latency_ms
+    latency = get_network_latency_ms(timeout=0.8)
+    assert isinstance(latency, float)
+    assert latency > 0.0
+
+
+def test_youtube_red_play_button_detector():
+    from PIL import Image, ImageDraw
+    from tools.web import _find_youtube_play_button
+
+    # Create synthetic display canvas (1000x700)
+    img = Image.new("RGB", (1000, 700), color=(20, 20, 20))
+    draw = ImageDraw.Draw(img)
+
+    # Draw YouTube signature red play button (68x48) in center at (500, 350)
+    # Box: left=466, top=326, right=534, bottom=374
+    draw.rounded_rectangle([466, 326, 534, 374], radius=10, fill=(255, 0, 0))
+
+    coords = _find_youtube_play_button(img)
+    assert coords is not None
+    cx, cy = coords
+    # Centroid should be within 2px of (500, 350)
+    assert abs(cx - 500) <= 2
+    assert abs(cy - 350) <= 2
+
+
+def test_youtube_detector_ignores_header_logo():
+    from PIL import Image, ImageDraw
+    from tools.web import _find_youtube_play_button
+
+    img = Image.new("RGB", (1000, 700), color=(20, 20, 20))
+    draw = ImageDraw.Draw(img)
+
+    # Draw small header logo at top (top < 0.15 * h, e.g. y=30)
+    draw.rounded_rectangle([30, 20, 60, 40], radius=4, fill=(255, 0, 0))
+
+    coords = _find_youtube_play_button(img)
+    # Header logo must be ignored
+    assert coords is None
+

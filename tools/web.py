@@ -71,8 +71,50 @@ def scrape_first_youtube_video_id(query: str) -> Optional[str]:
     return None
 
 
+def _find_youtube_play_button(img) -> Optional[tuple[int, int]]:
+    """Detect the central red YouTube play button overlay using OpenCV connected components.
+    Matches the red rounded-rectangle button displayed when video autoplay is blocked by Chromium MEI.
+    """
+    try:
+        import cv2
+        import numpy as np
+
+        w, h = img.size
+        arr = np.array(img.convert("RGB"))
+        r = arr[:, :, 0]
+        g = arr[:, :, 1]
+        b = arr[:, :, 2]
+
+        # Red play button signature: high Red, suppressed Green and Blue
+        mask = (r > 180) & (g < 70) & (b < 70)
+        mask_u8 = (mask * 255).astype(np.uint8)
+
+        num_labels, labels, stats, centroids = cv2.connectedComponentsWithStats(mask_u8)
+        candidates = []
+        for i in range(1, num_labels):
+            area = stats[i, cv2.CC_STAT_AREA]
+            left = stats[i, cv2.CC_STAT_LEFT]
+            top = stats[i, cv2.CC_STAT_TOP]
+            width = stats[i, cv2.CC_STAT_WIDTH]
+            height = stats[i, cv2.CC_STAT_HEIGHT]
+            cx, cy = centroids[i]
+            aspect = width / max(1, height)
+
+            # Restrict to central screen/player area (ignore header logo at top or sidebars)
+            if 0.15 * h < top < 0.85 * h and 0.15 * w < left < 0.85 * w:
+                if area >= 350 and 1.1 <= aspect <= 1.8 and width >= 25 and height >= 18:
+                    candidates.append((area, int(round(cx)), int(round(cy))))
+
+        if candidates:
+            candidates.sort(key=lambda c: c[0], reverse=True)
+            return (candidates[0][1], candidates[0][2])
+    except Exception as e:
+        logger.debug(f"YouTube play button detection failed: {e}")
+    return None
+
+
 def play_youtube(query: str, browser_name: str = "", **kwargs) -> Dict[str, Any]:
-    """Find and play a YouTube video directly in the browser with autoplay blocker bypass."""
+    """Find and play a YouTube video directly in the browser with active perception and adaptive timing."""
     clean_q = (query or kwargs.get("q") or kwargs.get("song") or kwargs.get("track") or "").strip()
     if not clean_q:
         return {"success": False, "error": "Query cannot be empty."}
@@ -89,41 +131,88 @@ def play_youtube(query: str, browser_name: str = "", **kwargs) -> Dict[str, Any]
 
     _open_url(target_url)
 
-    # Autoplay Blocker Bypass:
-    # Chromium (Chrome/Brave) requires document user interaction before allowing video autoplay.
-    # We focus the browser window, then click directly on the video canvas center.
+    # Adaptive Active Perception & Autoplay Bypass:
+    # Chromium/Brave blocks autoplay until genuine user activation occurs.
+    # Instead of a static sleep (which fails on slower devices/connections),
+    # CIEL calculates an adaptation budget and actively polls for the player and red play button.
     try:
         import time
         import computer.windows as windows
         import computer.mouse as mouse
         import computer.keyboard as keyboard
+        import computer.screen as screen
+        from computer.system_telemetry import get_performance_adaptation_factor
 
-        # Allow browser tab to mount
-        time.sleep(1.2)
+        adaptation = get_performance_adaptation_factor(target_host="www.youtube.com")
+        factor = adaptation.get("factor", 1.0)
+        logger.info(
+            f"YouTube playback adaptation factor: {factor:.2f}x "
+            f"(CPU: {adaptation.get('cpu_percent')}%, Net RTT: {adaptation.get('network_latency_ms')}ms)"
+        )
 
-        # Locate and focus the browser window
+        # Dynamic timeout budget: 7s base multiplied by hardware/network adaptation factor
+        timeout = min(20.0, max(7.0, 7.0 * factor))
+        start_time = time.time()
+        played = False
         browser_win = None
-        for candidate in ("youtube", target_browser, "brave", "chrome", "firefox", "edge"):
-            if candidate:
-                browser_win = windows.find_window(candidate)
-                if browser_win:
-                    windows.focus_window(browser_win["hwnd"])
+
+        while time.time() - start_time < timeout:
+            # 1. Bring target browser to the foreground
+            for candidate in ("youtube", target_browser, "brave", "chrome", "firefox", "edge"):
+                if candidate:
+                    win = windows.find_window(candidate)
+                    if win:
+                        browser_win = win
+                        windows.focus_window(win["hwnd"])
+                        break
+
+            # 2. Visual inspection: check if the Big Red Play Button overlay has appeared
+            try:
+                img = screen.take_screenshot(resize_max=None)
+                btn_pos = _find_youtube_play_button(img)
+                if btn_pos:
+                    bx, by = btn_pos
+                    logger.info(f"Detected YouTube central play button at ({bx}, {by}). Punching autoplay...")
+                    mouse.click(bx, by)
+                    time.sleep(0.2)
+                    keyboard.press_key("space")
+                    played = True
+                    break
+            except Exception as e:
+                logger.debug(f"Perception check failed: {e}")
+
+            # 3. Check if window title reflects video metadata (page finished loading)
+            if browser_win:
+                win_title = browser_win.get("title", "").lower()
+                # If title contains video title words and "youtube", video page is mounted
+                words = [w for w in clean_q.lower().split() if len(w) > 2]
+                if "youtube" in win_title and (any(w in win_title for w in words) or "-" in win_title):
+                    win_rect = browser_win.get("rect", {})
+                    cx = win_rect.get("left", 0) + int(win_rect.get("width", 1000) * 0.45)
+                    cy = win_rect.get("top", 0) + int(win_rect.get("height", 600) * 0.45)
+                    # Gentle punch on player canvas + play shortcut key 'k'
+                    mouse.click(cx, cy)
+                    time.sleep(0.15)
+                    keyboard.press_key("k")
+                    played = True
                     break
 
-        if browser_win and browser_win.get("width", 0) > 300:
-            win_rect = browser_win["rect"]
-            cx = win_rect["left"] + int(win_rect["width"] * 0.45)
-            cy = win_rect["top"] + int(win_rect["height"] * 0.45)
-            # Click video canvas center to punch through autoplay barrier
-            mouse.click(cx, cy)
-            time.sleep(0.15)
-            keyboard.press_key("space")
-        else:
-            time.sleep(0.5)
-            keyboard.press_key("k")
+            time.sleep(0.35)
+
+        # Fallback if loop timed out without visual lock
+        if not played:
+            if browser_win and browser_win.get("width", 0) > 300:
+                win_rect = browser_win["rect"]
+                cx = win_rect["left"] + int(win_rect["width"] * 0.45)
+                cy = win_rect["top"] + int(win_rect["height"] * 0.45)
+                mouse.click(cx, cy)
+                time.sleep(0.15)
+                keyboard.press_key("space")
+            else:
+                keyboard.press_key("k")
 
     except Exception as e:
-        logger.debug(f"Autoplay bypass exception: {e}")
+        logger.debug(f"Autoplay active perception exception: {e}")
 
     return {
         "success": True,

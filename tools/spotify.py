@@ -124,8 +124,12 @@ def play_spotify(query: str = "", **kwargs) -> Dict[str, Any]:
             time.sleep(0.05)
             keyboard.press_key("enter")
 
-            # Allow Spotify results to populate
-            time.sleep(0.4)
+            from computer.system_telemetry import get_performance_adaptation_factor
+            adaptation = get_performance_adaptation_factor("api.spotify.com")
+            factor = adaptation.get("factor", 1.0)
+
+            # Allow Spotify results to populate with adaptive wait based on hardware/network speed
+            time.sleep(0.4 * factor)
 
             # Hover over the Top Result card to reveal the circular green play button
             spot_win = windows.find_window("spotify")
@@ -134,10 +138,10 @@ def play_spotify(query: str = "", **kwargs) -> Dict[str, Any]:
                 card_y = spot_win["top"] + int(spot_win["height"] * 0.25)
                 import computer.mouse as mouse
                 mouse.move_to(card_x, card_y, duration=0.08)
-                time.sleep(0.15)
+                time.sleep(0.15 * factor)
 
             # Click the green play button on the Top Result card
-            clicked = _find_and_click_spotify_play_button(timeout=1.5)
+            clicked = _find_and_click_spotify_play_button(timeout=1.5 * factor)
 
             # Fallback: Double-click top result card area or send Enter
             if not clicked:
