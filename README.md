@@ -93,30 +93,97 @@ CIEL evaluates commands through a tiered architecture to prioritize speed and mi
 ## Installation & Setup
 
 ### Prerequisites
-- **Operating System**: Windows 11 (or Windows 10)
-- **Python**: Version 3.10, 3.11, or 3.12
+- **Operating System**: Windows 11 or Windows 10 (64-bit)
+- **Python**: Version 3.10, 3.11, or 3.12 (check **"Add Python to PATH"** during installation)
+- **FFmpeg & ffplay** (Recommended for Headless Background Audio):
+  ```powershell
+  winget install Gyan.FFmpeg
+  ```
 
-### Quick Install
+---
+
+### Option 1: Automated 1-Click Install (Recommended)
+
+Clone the repository and run the automated installer:
+
+```cmd
+git clone https://github.com/aaditya079/CIEL.git
+cd CIEL
+install.bat
+```
+
+Or via PowerShell:
 ```powershell
 git clone https://github.com/aaditya079/CIEL.git
 cd CIEL
-python -m pip install -r requirements.txt
+.\install.ps1
 ```
 
-### Global CLI Access
-Invoke CIEL directly from any terminal prompt:
+**What the installer does automatically:**
+1. Verifies Python 3.10+ installation.
+2. Creates an isolated virtual environment (`venv`).
+3. Installs all required packages (`pip install -r requirements.txt`).
+4. Registers CIEL package entry points (`pip install -e .`).
+5. Initializes `config/config.json` from `config/config.example.json`.
+6. Checks for FFmpeg and `yt-dlp`.
+7. Adds global terminal launchers (`ciel`, `ceil`) to `%LOCALAPPDATA%\Microsoft\WindowsApps` so you can call `ciel` from any terminal prompt immediately without manually setting environment variables.
+
+---
+
+### Option 2: Manual Developer Setup
+
+If you prefer full control over your environment:
 
 ```powershell
-ciel "open spotify and play harvey"
+# 1. Clone the repository
+git clone https://github.com/aaditya079/CIEL.git
+cd CIEL
+
+# 2. Create and activate virtual environment
+python -m venv venv
+.\venv\Scripts\activate
+
+# 3. Upgrade pip and install dependencies
+python -m pip install --upgrade pip
+pip install -r requirements.txt
+pip install -e .
+
+# 4. Initialize configuration
+copy config\config.example.json config\config.json
+```
+
+---
+
+### Global Terminal Shortcuts
+Once installed, you can invoke CIEL directly from PowerShell, Command Prompt, or Windows Terminal:
+
+```powershell
+# Launch the Raphael Arcane Web HUD
 ciel --hud
+
+# Instant music & media commands (Zero-token offline fast-path)
+ciel play harvey on youtube
+ciel open spotify and play stress relief
+ciel stream lofi hip hop
+
+# System telemetry & controls
+ciel system stats
+ciel volume 50
+ciel mute
+ciel lock pc
 ```
 
-### API Key Configuration (For Multimodal Vision)
-Set your vision model API key for visual desktop tasks:
+---
+
+### API Key Configuration (Optional — For Multimodal Vision)
+> [!NOTE]
+> All fast-path commands (media playback, Spotify, YouTube, headless streaming, volume, telemetry, weather, windows, reminders, games, and undo) **work 100% offline with zero API keys and zero cost**.
+
+An API key is only required if you ask CIEL to perform complex visual desktop interactions via multimodal LLMs:
 
 ```powershell
-# Save to config.json
-python main.py --set-key "your-gemini-api-key"
+# Save Gemini API key permanently to config.json
+ciel --set-key "your-gemini-api-key"
 
 # Or configure environment variables
 $env:GEMINI_API_KEY="your-gemini-api-key"
@@ -129,14 +196,16 @@ $env:OPENAI_API_KEY="your-openai-api-key"
 
 ### Command Line
 ```powershell
-# Media playback
+# Media playback (Spotify / YouTube / Headless Gemini-style stream)
 ciel play harvey on spotify
-ciel play lofi beats on youtube
+ciel play bohemian rhapsody on youtube
+ciel stream lofi beats
 
-# System and audio
+# System, audio & hardware
 ciel volume 40
 ciel mute
 ciel system stats
+ciel weather in tokyo
 
 # Daily briefing
 ciel morning briefing
@@ -190,7 +259,7 @@ Run the automated test suite:
 python -m pytest tests/ -v
 ```
 
-All 54 unit and integration tests run offline without external API dependencies.
+All 71 unit and integration tests run offline without external API dependencies.
 
 ---
 
@@ -198,6 +267,11 @@ All 54 unit and integration tests run offline without external API dependencies.
 
 ```
 CIEL Architecture
+├── install.bat              # 1-click Windows automated installer
+├── install.ps1              # Automated PowerShell installer
+├── setup.py                 # Setuptools console_scripts installer
+├── ciel.cmd / ceil.cmd      # Smart venv-detecting terminal launchers
+├── main.py                  # CLI entry point and argument dispatcher
 ├── agent/
 │   ├── fast_router.py       # Low-latency regex intent dispatcher
 │   ├── brain.py             # Multimodal LLM client (Gemini, GPT-4o, Ollama)
@@ -208,7 +282,7 @@ CIEL Architecture
 │   └── verifier.py          # Post-action verification
 ├── computer/
 │   ├── voice.py             # Native Windows SAPI voice synthesizer
-│   ├── system_telemetry.py  # CPU, RAM, and Battery metrics
+│   ├── system_telemetry.py  # CPU, RAM, Battery, and Network RTT metrics
 │   ├── system_monitor.py    # Background threshold alert monitor
 │   ├── ui.py                # Windows UI Automation (UIA) tree inspector
 │   ├── windows.py           # Window discovery and focus control
@@ -220,14 +294,16 @@ CIEL Architecture
 ├── memory/
 │   └── long_term.py         # Persistent JSON key-value and fact store
 ├── tools/
+│   ├── streamer.py          # Headless background progressive audio stream (yt-dlp + ffplay)
+│   ├── spicetify_bridge.py  # Native sub-10ms Spotify WebSocket bridge
+│   ├── spotify.py           # Spotify playback automation with instant search sequence
+│   ├── web.py               # YouTube autoplay with active perception & web search
 │   ├── proactive.py         # Daily briefing generator
 │   ├── clipboard.py         # Clipboard inspection and manipulation
 │   ├── flights.py           # Flight search query generator
 │   ├── games.py             # Steam and Epic Games integrations
 │   ├── audio.py             # Sound settings and volume mixer
 │   ├── code_helper.py       # Python syntax validation
-│   ├── spotify.py           # Spotify playback automation
-│   ├── web.py               # YouTube autoplay and web search
 │   ├── desktop_control.py   # Desktop and window management
 │   ├── browser.py           # Browser navigation and tab management
 │   ├── reminders.py         # Scheduled reminders and timers

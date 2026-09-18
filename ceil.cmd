@@ -11,4 +11,8 @@
 :: reze ma queen 🥀
 :: reze ma queen 🥀
 :: reze ma queen 🥀
-python "%~dp0main.py" %*
+if exist "%~dp0venv\Scripts\python.exe" (
+    "%~dp0venv\Scripts\python.exe" "%~dp0main.py" %*
+) else (
+    python "%~dp0main.py" %*
+)
