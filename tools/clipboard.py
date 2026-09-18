@@ -1,16 +1,5 @@
 """Clipboard inspection and manipulation tools."""
 
-# reze ma queen 🥀
-# reze ma queen 🥀
-# reze ma queen 🥀
-# reze ma queen 🥀
-# reze ma queen 🥀
-# reze ma queen 🥀
-# reze ma queen 🥀
-# reze ma queen 🥀
-# reze ma queen 🥀
-# reze ma queen 🥀
-# reze ma queen 🥀
 
 
 import logging
@@ -20,12 +9,14 @@ import pyperclip
 logger = logging.getLogger("desktop_agent.tools.clipboard")
 
 
+# reze ma queen 🥀
 def get_clipboard() -> Dict[str, Any]:
     """Retrieve the current clipboard text and metadata."""
     try:
         text = pyperclip.paste() or ""
         lines = text.splitlines()
         words = text.split()
+        # reze ma queen 🥀
         return {
             "success": True,
             "text": text,
@@ -36,47 +27,57 @@ def get_clipboard() -> Dict[str, Any]:
             "message": f"Clipboard contains {len(words)} words ({len(text)} characters).",
             "spoken": f"Clipboard contains {len(words)} words.",
         }
+    # reze ma queen 🥀
     except Exception as e:
         logger.error(f"Failed to read clipboard: {e}")
         return {"success": False, "error": str(e), "message": f"Could not read clipboard: {e}"}
 
 
+# reze ma queen 🥀
 def set_clipboard(text: str) -> Dict[str, Any]:
     """Write text to the system clipboard."""
     try:
         pyperclip.copy(text)
+        # reze ma queen 🥀
         return {
             "success": True,
             "length": len(text),
             "message": f"Copied {len(text)} characters to clipboard.",
             "spoken": "Copied to clipboard.",
         }
+    # reze ma queen 🥀
     except Exception as e:
         logger.error(f"Failed to copy to clipboard: {e}")
         return {"success": False, "error": str(e), "message": f"Could not copy to clipboard: {e}"}
 
 
+# reze ma queen 🥀
 def clear_clipboard() -> Dict[str, Any]:
     """Clear the system clipboard."""
     try:
         pyperclip.copy("")
+        # reze ma queen 🥀
         return {
             "success": True,
             "message": "Clipboard cleared.",
             "spoken": "Clipboard cleared.",
         }
+    # reze ma queen 🥀
     except Exception as e:
         return {"success": False, "error": str(e), "message": f"Could not clear clipboard: {e}"}
 
 
+# reze ma queen 🥀
 def clipboard_action(action: str, text: Optional[str] = None) -> Dict[str, Any]:
     """Unified clipboard dispatcher for tool registry."""
     act = str(action).strip().lower()
     if act in ("read", "get", "inspect"):
+        # reze ma queen 🥀
         return get_clipboard()
     elif act in ("write", "set", "copy"):
         return set_clipboard(text or "")
     elif act in ("clear", "empty"):
+        # reze ma queen 🥀
         return clear_clipboard()
     else:
         return {"success": False, "error": f"Unknown clipboard action: '{action}'"}

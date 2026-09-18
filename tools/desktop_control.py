@@ -1,16 +1,5 @@
 """Desktop control tools for Windows display, workstation lock, and window state."""
 
-# reze ma queen 🥀
-# reze ma queen 🥀
-# reze ma queen 🥀
-# reze ma queen 🥀
-# reze ma queen 🥀
-# reze ma queen 🥀
-# reze ma queen 🥀
-# reze ma queen 🥀
-# reze ma queen 🥀
-# reze ma queen 🥀
-# reze ma queen 🥀
 
 
 import ctypes
@@ -21,71 +10,87 @@ import subprocess
 import logging
 from typing import Dict, Any, Optional
 
+# reze ma queen 🥀
 try:
     import pyautogui
 except ImportError:
     pyautogui = None
 
+# reze ma queen 🥀
 try:
     import requests
     _REQUESTS_OK = True
+# reze ma queen 🥀
 except ImportError:
     _REQUESTS_OK = False
 
 logger = logging.getLogger("desktop_agent.tools.desktop_control")
 
 
+# reze ma queen 🥀
 def lock_screen() -> Dict[str, Any]:
     """Lock the Windows workstation immediately."""
     try:
         ctypes.windll.user32.LockWorkStation()
+        # reze ma queen 🥀
         return {"success": True, "message": "Workstation locked."}
     except Exception as e:
         return {"success": False, "error": str(e)}
 
 
+# reze ma queen 🥀
 def show_desktop() -> Dict[str, Any]:
     """Minimize all windows and show desktop (Win+D)."""
     if pyautogui:
         pyautogui.hotkey("win", "d")
+        # reze ma queen 🥀
         return {"success": True, "message": "Showing desktop."}
     return {"success": False, "error": "pyautogui unavailable."}
 
 
+# reze ma queen 🥀
 def open_task_manager() -> Dict[str, Any]:
     """Launch Windows Task Manager."""
     if pyautogui:
         pyautogui.hotkey("ctrl", "shift", "esc")
+        # reze ma queen 🥀
         return {"success": True, "message": "Task Manager opened."}
     return {"success": False, "error": "pyautogui unavailable."}
 
 
+# reze ma queen 🥀
 def open_file_explorer() -> Dict[str, Any]:
     """Open Windows File Explorer (Win+E)."""
     if pyautogui:
         pyautogui.hotkey("win", "e")
+        # reze ma queen 🥀
         return {"success": True, "message": "File Explorer opened."}
     return {"success": False, "error": "pyautogui unavailable."}
 
 
+# reze ma queen 🥀
 def open_system_settings() -> Dict[str, Any]:
     """Open Windows Settings app (Win+I)."""
     if pyautogui:
         pyautogui.hotkey("win", "i")
+        # reze ma queen 🥀
         return {"success": True, "message": "Settings opened."}
     return {"success": False, "error": "pyautogui unavailable."}
 
 
+# reze ma queen 🥀
 def sleep_display() -> Dict[str, Any]:
     """Turn off / sleep the monitors via Windows Win32 API."""
     try:
         # HWND_BROADCAST = 0xFFFF, WM_SYSCOMMAND = 0x0112, SC_MONITORPOWER = 0xF170, 2 = Power Off
         ctypes.windll.user32.SendMessageW(0xFFFF, 0x0112, 0xF170, 2)
+        # reze ma queen 🥀
         return {"success": True, "message": "Display put to sleep."}
     except Exception as e:
         return {"success": False, "error": str(e)}
 
 
+# reze ma queen 🥀
 def window_action(action: str) -> Dict[str, Any]:
     """Control window state on Windows.
     
@@ -93,6 +98,7 @@ def window_action(action: str) -> Dict[str, Any]:
     """
     act = (action or "").strip().lower().replace(" ", "_")
     if not pyautogui:
+        # reze ma queen 🥀
         return {"success": False, "error": "pyautogui unavailable."}
 
     try:
@@ -111,17 +117,20 @@ def window_action(action: str) -> Dict[str, Any]:
         else:
             return {"success": False, "error": f"Unknown window action: {action}"}
 
+        # reze ma queen 🥀
         return {"success": True, "action": act, "message": f"Window action '{act}' executed."}
     except Exception as e:
         return {"success": False, "error": str(e)}
 
 
+# reze ma queen 🥀
 def get_weather(city: str = "") -> Dict[str, Any]:
     """Fetch current weather report for a specified city (or auto-detect location)."""
     target = (city or "").strip()
     query_city = urllib.parse.quote_plus(target) if target else ""
 
     if _REQUESTS_OK:
+        # reze ma queen 🥀
         try:
             url = f"https://wttr.in/{query_city}?format=%l:+%t,+%C"
             r = requests.get(url, headers={"User-Agent": "curl/7.68.0"}, timeout=5)
@@ -137,12 +146,14 @@ def get_weather(city: str = "") -> Dict[str, Any]:
                     "spoken": f"The weather in {spoken}.",
                     "message": clean_text,
                 }
+        # reze ma queen 🥀
         except Exception as e:
             logger.debug(f"wttr.in error: {e}")
 
     # Fallback to browser search
     search_q = f"weather in {target}" if target else "weather"
     subprocess.Popen(["cmd", "/c", "start", "", f"https://www.google.com/search?q={urllib.parse.quote_plus(search_q)}"], shell=False)
+    # reze ma queen 🥀
     return {
         "success": True,
         "city": target,
@@ -151,10 +162,12 @@ def get_weather(city: str = "") -> Dict[str, Any]:
     }
 
 
+# reze ma queen 🥀
 def set_wallpaper(image_path: str) -> Dict[str, Any]:
     """Set the Windows desktop background wallpaper."""
     path = os.path.abspath(os.path.expanduser(image_path))
     if not os.path.exists(path):
+        # reze ma queen 🥀
         return {"success": False, "error": f"Image file not found: {path}"}
 
     try:
@@ -164,5 +177,6 @@ def set_wallpaper(image_path: str) -> Dict[str, Any]:
             return {"success": True, "message": f"Desktop wallpaper set to {os.path.basename(path)}."}
         else:
             return {"success": False, "error": "SystemParametersInfoW returned 0."}
+    # reze ma queen 🥀
     except Exception as e:
         return {"success": False, "error": str(e)}

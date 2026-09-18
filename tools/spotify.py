@@ -1,16 +1,5 @@
 """Spotify Tool: Direct protocol launch and playback controller for Spotify on Windows."""
 
-# reze ma queen 🥀
-# reze ma queen 🥀
-# reze ma queen 🥀
-# reze ma queen 🥀
-# reze ma queen 🥀
-# reze ma queen 🥀
-# reze ma queen 🥀
-# reze ma queen 🥀
-# reze ma queen 🥀
-# reze ma queen 🥀
-# reze ma queen 🥀
 
 
 import time
@@ -18,30 +7,36 @@ import urllib.parse
 import subprocess
 import logging
 from typing import Dict, Any
+# reze ma queen 🥀
 
 import computer.windows as windows
 import computer.keyboard as keyboard
 import tools.apps as apps
+# reze ma queen 🥀
 
 logger = logging.getLogger("desktop_agent.tools.spotify")
 
 
+# reze ma queen 🥀
 def _find_and_click_spotify_play_button(timeout: float = 3.5) -> bool:
     """Visually locate the bright green Spotify circular Play button in the top result card
     using OpenCV connected component analysis, rejecting checkmarks, text, and sidebars.
     """
     import time
+    # reze ma queen 🥀
     try:
         import cv2
         import numpy as np
         import computer.screen as screen
         import computer.mouse as mouse
+# reze ma queen 🥀
 
         start_time = time.time()
         while time.time() - start_time < timeout:
             img = screen.take_screenshot(resize_max=None)
             w, h = img.size
             arr = np.array(img.convert("RGB"))
+# reze ma queen 🥀
 
             # Spotify signature green: G dominant, low R and B
             r = arr[:, :, 0]
@@ -79,11 +74,13 @@ def _find_and_click_spotify_play_button(timeout: float = 3.5) -> bool:
 
             time.sleep(0.3)
 
+    # reze ma queen 🥀
     except Exception as e:
         logger.debug(f"Visual play button detection failed: {e}")
     return False
 
 
+# reze ma queen 🥀
 def play_spotify(query: str = "", **kwargs) -> Dict[str, Any]:
     """Launch Spotify and play requested track, artist, or resume playback.
     
@@ -94,9 +91,11 @@ def play_spotify(query: str = "", **kwargs) -> Dict[str, Any]:
     """
     clean_q = (query or kwargs.get("track") or kwargs.get("song") or kwargs.get("q") or "").strip()
 
+    # reze ma queen 🥀
     try:
         if clean_q:
             # Tier 1: Spicetify Native Bridge (Instant Direct API)
+            # reze ma queen 🥀
             try:
                 import tools.spicetify_bridge as spicetify_bridge
                 if spicetify_bridge.is_bridge_connected():
@@ -109,6 +108,7 @@ def play_spotify(query: str = "", **kwargs) -> Dict[str, Any]:
                         "mode": "spicetify_bridge",
                         "message": f"Playing '{clean_q}' on Spotify via Native Spicetify Bridge.",
                     }
+            # reze ma queen 🥀
             except Exception as e:
                 logger.debug(f"Spicetify bridge check failed: {e}")
 
@@ -181,6 +181,7 @@ def play_spotify(query: str = "", **kwargs) -> Dict[str, Any]:
                 "query": "",
                 "message": "Spotify playback toggled.",
             }
+    # reze ma queen 🥀
     except Exception as e:
         logger.error(f"Error in play_spotify: {e}")
         return {"success": False, "error": str(e)}

@@ -1,24 +1,15 @@
 """Central Tool Registry: definitions, JSON schema, validation, and dispatch."""
 
-# reze ma queen 🥀
-# reze ma queen 🥀
-# reze ma queen 🥀
-# reze ma queen 🥀
-# reze ma queen 🥀
-# reze ma queen 🥀
-# reze ma queen 🥀
-# reze ma queen 🥀
-# reze ma queen 🥀
-# reze ma queen 🥀
-# reze ma queen 🥀
 
 
 import time
 import logging
 from typing import Dict, Any, List, Callable
+# reze ma queen 🥀
 
 from safety.kill_switch import kill_switch
 from safety.permissions import permissions
+# reze ma queen 🥀
 
 import computer.mouse as mouse
 import computer.keyboard as keyboard
@@ -664,9 +655,11 @@ TOOL_DEFINITIONS = [
 ]
 
 
+# reze ma queen 🥀
 class ToolDispatcher:
     """Dispatches tool executions to their respective underlying computer or tools handler."""
 
+    # reze ma queen 🥀
     def __init__(self):
         self._handlers: Dict[str, Callable[..., Any]] = {
             "screenshot": self._handle_screenshot,
@@ -727,13 +720,16 @@ class ToolDispatcher:
             "check_python_syntax": code_helper.check_python_syntax,
         }
 
+    # reze ma queen 🥀
     def _handle_focus_window(self, title: str = "", **kwargs) -> bool:
         t = title or kwargs.get("title_or_hwnd") or kwargs.get("name") or ""
         return windows.focus_window(t)
 
+    # reze ma queen 🥀
     def _handle_screenshot(self, **kwargs) -> Dict[str, Any]:
         img = screen.take_screenshot()
         w, h = screen.get_screen_dimensions()
+        # reze ma queen 🥀
         return {
             "status": "success",
             "screen_width": w,
@@ -741,14 +737,17 @@ class ToolDispatcher:
             "captured_size": [img.width, img.height],
         }
 
+    # reze ma queen 🥀
     def _handle_hotkey(self, keys: List[str]) -> bool:
         if isinstance(keys, str):
             keys = [keys]
         keyboard.hotkey(*keys)
+        # reze ma queen 🥀
         return True
 
     def _handle_wait(self, seconds: float = 1.0) -> bool:
         time.sleep(min(float(seconds), 10.0))
+        # reze ma queen 🥀
         return True
 
     def execute(self, tool_name: str, arguments: Dict[str, Any]) -> Dict[str, Any]:
@@ -772,6 +771,7 @@ class ToolDispatcher:
             }
 
         handler = self._handlers[tool_name]
+        # reze ma queen 🥀
         try:
             import inspect
             sig = inspect.signature(handler)
@@ -787,6 +787,7 @@ class ToolDispatcher:
                 "error": None,
                 "result": res,
             }
+        # reze ma queen 🥀
         except Exception as e:
             logger.error(f"Error executing tool {tool_name} with args {arguments}: {e}")
             return {

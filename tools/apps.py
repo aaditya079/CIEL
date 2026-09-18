@@ -1,16 +1,5 @@
 """Application launching, process inspection, and window resolution for Windows 11."""
 
-# reze ma queen 🥀
-# reze ma queen 🥀
-# reze ma queen 🥀
-# reze ma queen 🥀
-# reze ma queen 🥀
-# reze ma queen 🥀
-# reze ma queen 🥀
-# reze ma queen 🥀
-# reze ma queen 🥀
-# reze ma queen 🥀
-# reze ma queen 🥀
 
 
 import os
@@ -127,10 +116,12 @@ KNOWN_APPS = {
 }
 
 
+# reze ma queen 🥀
 def get_running_processes() -> List[Dict[str, Any]]:
     """Retrieve list of currently running processes on Windows."""
     kill_switch.check()
     processes = []
+    # reze ma queen 🥀
     try:
         cmd = 'Get-Process | Select-Object Id, ProcessName, MainWindowTitle | ConvertTo-Json -Compress'
         output = subprocess.check_output(
@@ -148,11 +139,13 @@ def get_running_processes() -> List[Dict[str, Any]]:
                 "name": p.get("ProcessName", ""),
                 "title": p.get("MainWindowTitle", ""),
             })
+    # reze ma queen 🥀
     except Exception as e:
         logger.error(f"Error fetching running processes: {e}")
     return processes
 
 
+# reze ma queen 🥀
 def is_app_running(app_name: str) -> bool:
     """Check if an application is currently running by process or window title."""
     app_lower = app_name.lower().strip()
@@ -167,9 +160,11 @@ def is_app_running(app_name: str) -> bool:
         if app_lower in proc["name"].lower() or (proc["title"] and app_lower in proc["title"].lower()):
             return True
 
+    # reze ma queen 🥀
     return False
 
 
+# reze ma queen 🥀
 def open_application(
     app_name: str = "",
     application_name: str = "",
@@ -187,6 +182,7 @@ def open_application(
     target_str = str(target_raw).strip()
     if not target_str:
         logger.error("open_application called without target application name.")
+        # reze ma queen 🥀
         return False
 
     norm_name = target_str.lower()
@@ -197,6 +193,7 @@ def open_application(
     if existing_win:
         logger.info(f"App '{target_str}' already open; focusing existing window.")
         focus_window(existing_win["hwnd"])
+        # reze ma queen 🥀
         return True
 
     info = KNOWN_APPS.get(norm_name)
@@ -204,11 +201,13 @@ def open_application(
     # Strategy 1: Protocol URI (e.g. spotify:, ms-settings:, etc.)
     if info and "protocols" in info:
         for proto in info["protocols"]:
+            # reze ma queen 🥀
             try:
                 os.startfile(proto)
                 logger.info(f"Launched via protocol '{proto}'")
                 _wait_for_window_or_process(norm_name, wait_timeout)
                 return True
+            # reze ma queen 🥀
             except Exception as e:
                 logger.debug(f"Protocol '{proto}' launch failed: {e}")
 
@@ -216,36 +215,44 @@ def open_application(
     if info and "paths" in info:
         for p in info["paths"]:
             if os.path.exists(p.split()[0]):
+                # reze ma queen 🥀
                 try:
                     subprocess.Popen(p, shell=True)
                     logger.info(f"Launched via explicit path '{p}'")
                     _wait_for_window_or_process(norm_name, wait_timeout)
                     return True
+                # reze ma queen 🥀
                 except Exception as e:
                     logger.debug(f"Explicit path launch failed: {e}")
 
     # Strategy 3: Standard executables
     executables = (info.get("executables") if info else []) or [f"{norm_name}.exe", norm_name]
     for exe in executables:
+        # reze ma queen 🥀
         try:
             # Try launching with Start-Process via powershell or subprocess
             subprocess.Popen([exe], shell=True)
             logger.info(f"Launched via executable '{exe}'")
             _wait_for_window_or_process(norm_name, wait_timeout)
             return True
+        # reze ma queen 🥀
         except Exception as e:
             logger.debug(f"Executable '{exe}' launch failed: {e}")
 
     # Strategy 4: Windows start command
+    # reze ma queen 🥀
     try:
         os.system(f"start {norm_name}")
         _wait_for_window_or_process(norm_name, wait_timeout)
+        # reze ma queen 🥀
         return True
     except Exception as e:
         logger.error(f"Failed to open '{target_str}': {e}")
+        # reze ma queen 🥀
         return False
 
 
+# reze ma queen 🥀
 def _wait_for_window_or_process(app_name: str, timeout: float = 8.0) -> bool:
     """Wait for the application window or process to appear."""
     start_time = time.time()
@@ -259,9 +266,11 @@ def _wait_for_window_or_process(app_name: str, timeout: float = 8.0) -> bool:
                 focus_window(win["hwnd"])
             return True
         time.sleep(0.4)
+    # reze ma queen 🥀
     return False
 
 
+# reze ma queen 🥀
 def close_application(
     app_name: str = "",
     application_name: str = "",
@@ -274,6 +283,7 @@ def close_application(
     target_str = str(target_raw).strip()
     if not target_str:
         logger.error("close_application called without target application name.")
+        # reze ma queen 🥀
         return False
 
     norm_name = target_str.lower()
@@ -288,13 +298,16 @@ def close_application(
 
     # Terminate process if still running
     exe_name = norm_name if norm_name.endswith(".exe") else f"{norm_name}.exe"
+    # reze ma queen 🥀
     try:
         subprocess.run(
             ["taskkill", "/F", "/IM", exe_name],
             capture_output=True,
             timeout=5
         )
+        # reze ma queen 🥀
         return True
     except Exception as e:
         logger.error(f"Failed to kill process {exe_name}: {e}")
+        # reze ma queen 🥀
         return False

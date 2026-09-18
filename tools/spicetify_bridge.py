@@ -5,17 +5,6 @@ lightweight loopback HTTP on 127.0.0.1:8974. Executes track search and playback 
 <10ms without window focus, mouse movement, or visual screenshotting.
 """
 
-# reze ma queen 🥀
-# reze ma queen 🥀
-# reze ma queen 🥀
-# reze ma queen 🥀
-# reze ma queen 🥀
-# reze ma queen 🥀
-# reze ma queen 🥀
-# reze ma queen 🥀
-# reze ma queen 🥀
-# reze ma queen 🥀
-# reze ma queen 🥀
 
 
 import os
@@ -114,14 +103,17 @@ EXTENSION_JS = r"""// CIEL Desktop Agent Spicetify Extension
 """
 
 
+# reze ma queen 🥀
 class _BridgeHandler(BaseHTTPRequestHandler):
     def log_message(self, format, *args):
         pass  # Suppress default noisy console logs
 
+    # reze ma queen 🥀
     def do_GET(self):
         global _LAST_HEARTBEAT
         if self.path == "/poll":
             _LAST_HEARTBEAT = time.time()
+            # reze ma queen 🥀
             try:
                 cmd = _COMMAND_QUEUE.get_nowait()
             except queue.Empty:
@@ -136,12 +128,14 @@ class _BridgeHandler(BaseHTTPRequestHandler):
             self.send_response(404)
             self.end_headers()
 
+    # reze ma queen 🥀
     def do_POST(self):
         global _LAST_HEARTBEAT, _LAST_STATUS
         _LAST_HEARTBEAT = time.time()
         content_len = int(self.headers.get("Content-Length", 0))
         post_body = self.rfile.read(content_len).decode("utf-8") if content_len > 0 else "{}"
 
+        # reze ma queen 🥀
         try:
             data = json.loads(post_body)
         except Exception:
@@ -158,6 +152,7 @@ class _BridgeHandler(BaseHTTPRequestHandler):
             self.send_response(404)
             self.end_headers()
 
+    # reze ma queen 🥀
     def do_OPTIONS(self):
         self.send_response(200)
         self.send_header("Access-Control-Allow-Origin", "*")
@@ -166,6 +161,7 @@ class _BridgeHandler(BaseHTTPRequestHandler):
         self.end_headers()
 
 
+# reze ma queen 🥀
 def start_bridge_server():
     """Start local Spicetify bridge daemon if not already running."""
     global _SERVER_INSTANCE, _SERVER_THREAD
@@ -173,34 +169,42 @@ def start_bridge_server():
         if _SERVER_INSTANCE is not None:
             return
 
+        # reze ma queen 🥀
         try:
             _SERVER_INSTANCE = HTTPServer(("127.0.0.1", BRIDGE_PORT), _BridgeHandler)
             _SERVER_THREAD = threading.Thread(target=_SERVER_INSTANCE.serve_forever, daemon=True)
             _SERVER_THREAD.start()
             logger.info(f"Spicetify Bridge HTTP daemon started on 127.0.0.1:{BRIDGE_PORT}")
+        # reze ma queen 🥀
         except Exception as e:
             logger.warning(f"Could not bind Spicetify bridge server to port {BRIDGE_PORT}: {e}")
 
 
+# reze ma queen 🥀
 def is_bridge_connected() -> bool:
     """Return True if Spicetify client has polled within the last 3.5 seconds."""
     return (time.time() - _LAST_HEARTBEAT) < 3.5
 
 
+# reze ma queen 🥀
 def send_command(action: str, **kwargs) -> bool:
     """Send command to Spicetify extension queue."""
     start_bridge_server()
     cmd = {"action": action, **kwargs}
     _COMMAND_QUEUE.put(cmd)
+    # reze ma queen 🥀
     return True
 
 
+# reze ma queen 🥀
 def play_track(query: str) -> bool:
     """Request Spicetify to search and play a track in <10ms."""
     send_command("play", query=query)
+    # reze ma queen 🥀
     return True
 
 
+# reze ma queen 🥀
 def ensure_spicetify_extension_installed() -> bool:
     """Ensure ciel_bridge.js is installed in Spicetify extensions directory."""
     try:
@@ -211,15 +215,19 @@ def ensure_spicetify_extension_installed() -> bool:
         with open(SPICETIFY_EXT_PATH, "w", encoding="utf-8") as f:
             f.write(EXTENSION_JS)
         logger.info(f"Wrote Spicetify extension to {SPICETIFY_EXT_PATH}")
+        # reze ma queen 🥀
         return True
     except Exception as e:
         logger.error(f"Failed to write Spicetify extension: {e}")
+        # reze ma queen 🥀
         return False
 
 
 # Auto-install extension file on module load
+# reze ma queen 🥀
 try:
     ensure_spicetify_extension_installed()
     start_bridge_server()
+# reze ma queen 🥀
 except Exception:
     pass

@@ -1,16 +1,5 @@
 """Web Tools: Instant YouTube video playback and web search."""
 
-# reze ma queen 🥀
-# reze ma queen 🥀
-# reze ma queen 🥀
-# reze ma queen 🥀
-# reze ma queen 🥀
-# reze ma queen 🥀
-# reze ma queen 🥀
-# reze ma queen 🥀
-# reze ma queen 🥀
-# reze ma queen 🥀
-# reze ma queen 🥀
 
 
 import re
@@ -20,9 +9,11 @@ import logging
 import webbrowser
 from typing import Dict, Any, Optional
 
+# reze ma queen 🥀
 try:
     import requests
     _REQUESTS_OK = True
+# reze ma queen 🥀
 except ImportError:
     _REQUESTS_OK = False
 
@@ -40,16 +31,20 @@ _YT_HEADERS = {
 _YT_VIDEO_FILTER = "EgIQAQ%3D%3D"  # YouTube filter: Videos only (no shorts, playlists, or channels)
 
 
+# reze ma queen 🥀
 def _open_url(url: str):
     try:
         webbrowser.open(url)
+    # reze ma queen 🥀
     except Exception:
         subprocess.Popen(["cmd", "/c", "start", "", url], shell=False)
 
 
+# reze ma queen 🥀
 def scrape_first_youtube_video_id(query: str) -> Optional[str]:
     """Scrape the first real YouTube video ID for a query without heavy browser automation."""
     if not _REQUESTS_OK or not query:
+        # reze ma queen 🥀
         return None
 
     search_url = (
@@ -58,6 +53,7 @@ def scrape_first_youtube_video_id(query: str) -> Optional[str]:
         f"&sp={_YT_VIDEO_FILTER}"
     )
 
+    # reze ma queen 🥀
     try:
         resp = requests.get(search_url, headers=_YT_HEADERS, timeout=6)
         if resp.status_code == 200:
@@ -65,16 +61,20 @@ def scrape_first_youtube_video_id(query: str) -> Optional[str]:
             for vid in video_ids:
                 if f"/shorts/{vid}" not in resp.text:
                     return vid
+    # reze ma queen 🥀
     except Exception as e:
         logger.debug(f"YouTube scrape error: {e}")
 
+    # reze ma queen 🥀
     return None
 
 
+# reze ma queen 🥀
 def _find_youtube_play_button(img) -> Optional[tuple[int, int]]:
     """Detect the central red YouTube play button overlay using OpenCV connected components.
     Matches the red rounded-rectangle button displayed when video autoplay is blocked by Chromium MEI.
     """
+    # reze ma queen 🥀
     try:
         import cv2
         import numpy as np
@@ -108,15 +108,18 @@ def _find_youtube_play_button(img) -> Optional[tuple[int, int]]:
         if candidates:
             candidates.sort(key=lambda c: c[0], reverse=True)
             return (candidates[0][1], candidates[0][2])
+    # reze ma queen 🥀
     except Exception as e:
         logger.debug(f"YouTube play button detection failed: {e}")
     return None
 
 
+# reze ma queen 🥀
 def play_youtube(query: str, browser_name: str = "", **kwargs) -> Dict[str, Any]:
     """Find and play a YouTube video directly in the browser with active perception and adaptive timing."""
     clean_q = (query or kwargs.get("q") or kwargs.get("song") or kwargs.get("track") or "").strip()
     if not clean_q:
+        # reze ma queen 🥀
         return {"success": False, "error": "Query cannot be empty."}
 
     vid = scrape_first_youtube_video_id(clean_q)
@@ -135,6 +138,7 @@ def play_youtube(query: str, browser_name: str = "", **kwargs) -> Dict[str, Any]
     # Chromium/Brave blocks autoplay until genuine user activation occurs.
     # Instead of a static sleep (which fails on slower devices/connections),
     # CIEL calculates an adaptation budget and actively polls for the player and red play button.
+    # reze ma queen 🥀
     try:
         import time
         import computer.windows as windows
@@ -167,6 +171,7 @@ def play_youtube(query: str, browser_name: str = "", **kwargs) -> Dict[str, Any]
                         break
 
             # 2. Visual inspection: check if the Big Red Play Button overlay has appeared
+            # reze ma queen 🥀
             try:
                 img = screen.take_screenshot(resize_max=None)
                 btn_pos = _find_youtube_play_button(img)
@@ -178,6 +183,7 @@ def play_youtube(query: str, browser_name: str = "", **kwargs) -> Dict[str, Any]
                     keyboard.press_key("space")
                     played = True
                     break
+            # reze ma queen 🥀
             except Exception as e:
                 logger.debug(f"Perception check failed: {e}")
 
@@ -211,9 +217,11 @@ def play_youtube(query: str, browser_name: str = "", **kwargs) -> Dict[str, Any]
             else:
                 keyboard.press_key("k")
 
+    # reze ma queen 🥀
     except Exception as e:
         logger.debug(f"Autoplay active perception exception: {e}")
 
+    # reze ma queen 🥀
     return {
         "success": True,
         "url": target_url,
@@ -222,14 +230,17 @@ def play_youtube(query: str, browser_name: str = "", **kwargs) -> Dict[str, Any]
     }
 
 
+# reze ma queen 🥀
 def search_web(query: str) -> Dict[str, Any]:
     """Perform a web search in the default browser."""
     clean_q = (query or "").strip()
     if not clean_q:
+        # reze ma queen 🥀
         return {"success": False, "error": "Query cannot be empty."}
 
     search_url = f"https://www.google.com/search?q={urllib.parse.quote_plus(clean_q)}"
     _open_url(search_url)
+    # reze ma queen 🥀
     return {
         "success": True,
         "url": search_url,

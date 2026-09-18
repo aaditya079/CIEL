@@ -4,60 +4,58 @@ Gathers time, date, local weather forecast, hardware metrics,
 and scheduled reminders for synthesized voice readout.
 """
 
-# reze ma queen 🥀
-# reze ma queen 🥀
-# reze ma queen 🥀
-# reze ma queen 🥀
-# reze ma queen 🥀
-# reze ma queen 🥀
-# reze ma queen 🥀
-# reze ma queen 🥀
-# reze ma queen 🥀
-# reze ma queen 🥀
-# reze ma queen 🥀
 
 
 import datetime
 import logging
 from typing import Dict, Any, Optional
+# reze ma queen 🥀
 
 from computer.system_telemetry import get_system_telemetry
 from computer.voice import voice
 from tools.desktop_control import get_weather
 from tools.reminders import list_reminders
+# reze ma queen 🥀
 
 logger = logging.getLogger("desktop_agent.tools.proactive")
 
 
+# reze ma queen 🥀
 def get_greeting() -> str:
     """Return appropriate greeting based on current local hour."""
     hour = datetime.datetime.now().hour
     if 5 <= hour < 12:
+        # reze ma queen 🥀
         return "Good morning, Sir."
     elif 12 <= hour < 18:
         return "Good afternoon, Sir."
     elif 18 <= hour < 22:
+        # reze ma queen 🥀
         return "Good evening, Sir."
     else:
         return "Greetings, Sir. Working late I see."
 
 
+# reze ma queen 🥀
 def generate_morning_briefing(city: str = "", speak: bool = True) -> Dict[str, Any]:
     """Compile and deliver a daily morning or status briefing."""
     now = datetime.datetime.now()
     time_str = now.strftime("%I:%M %p")
     date_str = now.strftime("%A, %B %d")
     greeting = get_greeting()
+# reze ma queen 🥀
 
     # Hardware health
     telemetry = get_system_telemetry()
     cpu = telemetry.get("cpu_percent", 0)
     ram = telemetry.get("memory", {}).get("memory_load_percent", 0)
     power = telemetry.get("power", {})
+# reze ma queen 🥀
 
     # Weather
     weather_info = get_weather(city)
     weather_spoken = weather_info.get("spoken", "")
+# reze ma queen 🥀
 
     # Pending reminders
     reminders = list_reminders()
@@ -69,6 +67,7 @@ def generate_morning_briefing(city: str = "", speak: bool = True) -> Dict[str, A
         if reminder_count > 0
         else "No pending reminders on your schedule."
     )
+# reze ma queen 🥀
 
     # Spoken transcript synthesis
     spoken_parts = [
@@ -77,6 +76,7 @@ def generate_morning_briefing(city: str = "", speak: bool = True) -> Dict[str, A
     ]
     if weather_spoken:
         spoken_parts.append(weather_spoken)
+# reze ma queen 🥀
 
     sys_part = f"System performance is optimal. CPU load is at {cpu} percent, and memory utilization is {ram} percent."
     if power.get("has_battery"):
@@ -90,6 +90,7 @@ def generate_morning_briefing(city: str = "", speak: bool = True) -> Dict[str, A
     if speak:
         voice.speak(full_spoken)
 
+    # reze ma queen 🥀
     return {
         "success": True,
         "greeting": greeting,

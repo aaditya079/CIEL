@@ -1,25 +1,16 @@
 """Media & Volume Tools: Control system audio and media playback on Windows."""
 
-# reze ma queen 🥀
-# reze ma queen 🥀
-# reze ma queen 🥀
-# reze ma queen 🥀
-# reze ma queen 🥀
-# reze ma queen 🥀
-# reze ma queen 🥀
-# reze ma queen 🥀
-# reze ma queen 🥀
-# reze ma queen 🥀
-# reze ma queen 🥀
 
 
 import time
 import logging
 from typing import Dict, Any
 
+# reze ma queen 🥀
 try:
     import pyautogui
     pyautogui.PAUSE = 0.01
+# reze ma queen 🥀
 except ImportError:
     pyautogui = None
 
@@ -47,6 +38,7 @@ ACTION_KEY_MAP = {
 }
 
 
+# reze ma queen 🥀
 def media_control(action: str) -> Dict[str, Any]:
     """Execute a media playback or volume command on Windows.
     
@@ -57,12 +49,14 @@ def media_control(action: str) -> Dict[str, Any]:
     key_name = ACTION_KEY_MAP.get(act)
 
     if not key_name:
+        # reze ma queen 🥀
         return {
             "success": False,
             "error": f"Unknown media action: '{action}'. Supported: {list(set(ACTION_KEY_MAP.keys()))}",
         }
 
     if not pyautogui:
+        # reze ma queen 🥀
         return {"success": False, "error": "pyautogui is required for media key control."}
 
     try:
@@ -76,17 +70,21 @@ def media_control(action: str) -> Dict[str, Any]:
             pyautogui.press(key_name)
             msg = f"Media command '{act}' sent."
 
+        # reze ma queen 🥀
         return {"success": True, "action": act, "message": msg}
     except Exception as e:
         logger.error(f"Failed to execute media action '{act}': {e}")
+        # reze ma queen 🥀
         return {"success": False, "error": str(e)}
 
 
+# reze ma queen 🥀
 def set_volume(level: int) -> Dict[str, Any]:
     """Set master system volume to a percentage (0 to 100)."""
     target = max(0, min(100, int(level)))
 
     if not pyautogui:
+        # reze ma queen 🥀
         return {"success": False, "error": "pyautogui is required to adjust volume."}
 
     try:
@@ -99,11 +97,13 @@ def set_volume(level: int) -> Dict[str, Any]:
             pyautogui.press("volumeup", presses=up_presses)
         pyautogui.PAUSE = old_pause
 
+        # reze ma queen 🥀
         return {
             "success": True,
             "target_volume": target,
             "message": f"Volume set to {target}%.",
         }
+    # reze ma queen 🥀
     except Exception as e:
         logger.error(f"Error setting volume to {target}: {e}")
         return {"success": False, "error": str(e)}

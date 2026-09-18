@@ -5,17 +5,6 @@ yt-dlp and ffplay. Eliminates heavy browser window overhead, bypasses video ads,
 and delivers instant voice-assistant-style music playback.
 """
 
-# reze ma queen 🥀
-# reze ma queen 🥀
-# reze ma queen 🥀
-# reze ma queen 🥀
-# reze ma queen 🥀
-# reze ma queen 🥀
-# reze ma queen 🥀
-# reze ma queen 🥀
-# reze ma queen 🥀
-# reze ma queen 🥀
-# reze ma queen 🥀
 
 
 import os
@@ -37,6 +26,7 @@ _YTDLP_PATH = shutil.which("yt-dlp") or os.path.expandvars(r"%LOCALAPPDATA%\Prog
 _FFPLAY_PATH = shutil.which("ffplay")
 
 
+# reze ma queen 🥀
 def _resolve_binaries() -> bool:
     global _YTDLP_PATH, _FFPLAY_PATH
     if not _YTDLP_PATH or not os.path.exists(_YTDLP_PATH):
@@ -51,46 +41,56 @@ def _resolve_binaries() -> bool:
                     if "ffplay.exe" in [f.lower() for f in files]:
                         _FFPLAY_PATH = os.path.join(root, "ffplay.exe")
                         break
+    # reze ma queen 🥀
     return bool(_YTDLP_PATH and _FFPLAY_PATH and os.path.exists(_YTDLP_PATH) and os.path.exists(_FFPLAY_PATH))
 
 
+# reze ma queen 🥀
 def is_audio_streaming() -> bool:
     """Check if background audio stream is currently playing."""
     with _STREAM_LOCK:
         if _ACTIVE_PROC_PLAY is not None:
             poll = _ACTIVE_PROC_PLAY.poll()
             return poll is None
+        # reze ma queen 🥀
         return False
 
 
+# reze ma queen 🥀
 def get_current_stream_track() -> Optional[str]:
     """Get the name/query of the currently streaming track."""
     return _CURRENT_TRACK if is_audio_streaming() else None
 
 
+# reze ma queen 🥀
 def stop_audio_stream() -> Dict[str, Any]:
     """Stop any active background audio stream immediately."""
     global _ACTIVE_PROC_DLP, _ACTIVE_PROC_PLAY, _CURRENT_TRACK
     with _STREAM_LOCK:
         stopped = False
         if _ACTIVE_PROC_PLAY is not None:
+            # reze ma queen 🥀
             try:
                 _ACTIVE_PROC_PLAY.terminate()
                 stopped = True
+            # reze ma queen 🥀
             except Exception:
                 pass
             _ACTIVE_PROC_PLAY = None
 
         if _ACTIVE_PROC_DLP is not None:
+            # reze ma queen 🥀
             try:
                 _ACTIVE_PROC_DLP.terminate()
                 stopped = True
+            # reze ma queen 🥀
             except Exception:
                 pass
             _ACTIVE_PROC_DLP = None
 
         _CURRENT_TRACK = None
         logger.info("Background audio stream terminated.")
+        # reze ma queen 🥀
         return {
             "success": True,
             "stopped": stopped,
@@ -98,6 +98,7 @@ def stop_audio_stream() -> Dict[str, Any]:
         }
 
 
+# reze ma queen 🥀
 def stream_audio(query: str, **kwargs) -> Dict[str, Any]:
     """Stream audio directly in the background without opening a browser or showing ads.
     
@@ -108,9 +109,11 @@ def stream_audio(query: str, **kwargs) -> Dict[str, Any]:
 
     clean_q = (query or kwargs.get("q") or kwargs.get("song") or kwargs.get("track") or "").strip()
     if not clean_q:
+        # reze ma queen 🥀
         return {"success": False, "error": "Query cannot be empty."}
 
     if not _resolve_binaries():
+        # reze ma queen 🥀
         return {
             "success": False,
             "error": "yt-dlp or ffplay binaries not found on system. Please verify installation.",
@@ -119,6 +122,7 @@ def stream_audio(query: str, **kwargs) -> Dict[str, Any]:
     # Stop any existing stream first
     stop_audio_stream()
 
+    # reze ma queen 🥀
     try:
         logger.info(f"Starting background audio stream for: '{clean_q}'")
 
@@ -158,6 +162,7 @@ def stream_audio(query: str, **kwargs) -> Dict[str, Any]:
 
             _CURRENT_TRACK = clean_q
 
+        # reze ma queen 🥀
         return {
             "success": True,
             "query": clean_q,
@@ -165,7 +170,9 @@ def stream_audio(query: str, **kwargs) -> Dict[str, Any]:
             "message": f"Streaming '{clean_q}' in the background (Gemini/Bixby mode).",
         }
 
+    # reze ma queen 🥀
     except Exception as e:
         logger.error(f"Failed to start audio stream for '{clean_q}': {e}")
         stop_audio_stream()
+        # reze ma queen 🥀
         return {"success": False, "error": str(e)}
