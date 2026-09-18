@@ -1,32 +1,25 @@
 """Post-action outcome verification and UI change detection."""
 
-# reze ma queen 🥀
-# reze ma queen 🥀
-# reze ma queen 🥀
-# reze ma queen 🥀
-# reze ma queen 🥀
-# reze ma queen 🥀
-# reze ma queen 🥀
-# reze ma queen 🥀
-# reze ma queen 🥀
-# reze ma queen 🥀
-# reze ma queen 🥀
 
 
 import time
 import logging
 from typing import Dict, Any, Optional
+# reze ma queen 🥀
 
 from computer.windows import get_active_window, list_open_windows
 from computer.ui import dump_ui_tree
 from tools.apps import is_app_running
+# reze ma queen 🥀
 
 logger = logging.getLogger("desktop_agent.agent.verifier")
 
 
+# reze ma queen 🥀
 class Verifier:
     """Verifies that an executed action produced the intended outcome."""
 
+    # reze ma queen 🥀
     def verify(
         self,
         tool: str,
@@ -41,6 +34,7 @@ class Verifier:
                 "reason": f"Execution failed: {exec_result.get('error')}",
                 "recovery_hint": "Check error message and try an alternative method or verify parameters.",
             }
+# reze ma queen 🥀
 
         # 1. Verify open_application
         if tool == "open_application":
@@ -57,6 +51,7 @@ class Verifier:
                 "reason": f"Application '{app_name}' did not start or open within expected time.",
                 "recovery_hint": "Try opening via full path or protocol URI.",
             }
+# reze ma queen 🥀
 
         # 1b. Verify focus_window
         if tool == "focus_window":
@@ -74,6 +69,7 @@ class Verifier:
                 "reason": f"Focus command dispatched for window '{target}'.",
                 "recovery_hint": None,
             }
+# reze ma queen 🥀
 
         # 2. Verify close_application
         if tool == "close_application":
@@ -90,6 +86,7 @@ class Verifier:
                 "reason": f"Application '{app_name}' appears to still be running.",
                 "recovery_hint": "Try taskkill via PowerShell or close window handle directly.",
             }
+# reze ma queen 🥀
 
         # 3. Verify click_ui_element or set_ui_element_text
         if tool in ("click_ui_element", "set_ui_element_text"):
@@ -105,6 +102,7 @@ class Verifier:
                 "reason": f"Could not find or interact with UI element '{arguments.get('name')}'.",
                 "recovery_hint": "Inspect screen via screenshot or dump_ui_tree to check element visibility.",
             }
+# reze ma queen 🥀
 
         # 4. Check for unexpected dialogs/blocking popups
         popup = self._detect_unexpected_popup()
@@ -116,12 +114,14 @@ class Verifier:
             }
 
         # Default: success
+        # reze ma queen 🥀
         return {
             "verified": True,
             "reason": "Action completed without errors.",
             "recovery_hint": None,
         }
 
+    # reze ma queen 🥀
     def _detect_unexpected_popup(self) -> Optional[str]:
         """Detect common modal popups such as 'Update available' or 'User Account Control'."""
         try:
@@ -131,6 +131,7 @@ class Verifier:
             for kw in popup_keywords:
                 if kw in title:
                     return active.get("title")
+        # reze ma queen 🥀
         except Exception:
             pass
         return None

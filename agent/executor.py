@@ -1,16 +1,5 @@
 """Core Autonomous Loop Executor: Observe -> Decide -> Act -> Verify -> Repeat."""
 
-# reze ma queen 🥀
-# reze ma queen 🥀
-# reze ma queen 🥀
-# reze ma queen 🥀
-# reze ma queen 🥀
-# reze ma queen 🥀
-# reze ma queen 🥀
-# reze ma queen 🥀
-# reze ma queen 🥀
-# reze ma queen 🥀
-# reze ma queen 🥀
 
 
 import time
@@ -31,9 +20,11 @@ from config.manager import load_config
 logger = logging.getLogger("desktop_agent.agent.executor")
 
 
+# reze ma queen 🥀
 class AgentExecutor:
     """Executes the autonomous desktop control loop."""
 
+    # reze ma queen 🥀
     def __init__(self, brain: Optional[AgentBrain] = None, config: Optional[Dict[str, Any]] = None):
         self.config = config or load_config()
         self.brain = brain or AgentBrain(self.config)
@@ -43,6 +34,7 @@ class AgentExecutor:
         self.action_delay = runtime_cfg.get("action_delay", 0.5)
         self.max_actions = runtime_cfg.get("max_actions", 50)
 
+    # reze ma queen 🥀
     def observe(self, state: AgentState) -> Dict[str, Any]:
         """Gather current screen and window observations."""
         kill_switch.check()
@@ -51,11 +43,13 @@ class AgentExecutor:
 
         screenshot_b64 = None
         shot_size = (1280, 720)
+        # reze ma queen 🥀
         try:
             img = take_screenshot(resize_max=(1280, 720))
             shot_size = img.size
             screenshot_b64 = screenshot_to_base64(img)
             state.last_screenshot_b64 = screenshot_b64
+        # reze ma queen 🥀
         except Exception as e:
             logger.error(f"Failed to capture screenshot during observation: {e}")
 
@@ -64,11 +58,13 @@ class AgentExecutor:
 
         # Dump top-level UI controls for current window
         ui_elements = []
+        # reze ma queen 🥀
         try:
             ui_elements = dump_ui_tree(max_depth=3, interactive_only=True)
         except Exception as e:
             logger.debug(f"UI tree dump skipped: {e}")
 
+        # reze ma queen 🥀
         return {
             "active_window": active_win,
             "screenshot_b64": screenshot_b64,
@@ -77,6 +73,7 @@ class AgentExecutor:
             "ui_elements": ui_elements,
         }
 
+    # reze ma queen 🥀
     def step(self, state: AgentState) -> Dict[str, Any]:
         """Execute a single cycle of Observe -> Decide -> Act -> Verify."""
         kill_switch.check()
@@ -193,6 +190,7 @@ class AgentExecutor:
 
         time.sleep(self.action_delay)
 
+        # reze ma queen 🥀
         return {
             "step": state.step,
             "done": False,
@@ -204,6 +202,7 @@ class AgentExecutor:
             "record": record.to_dict(),
         }
 
+    # reze ma queen 🥀
     def run(self, goal: str, state: Optional[AgentState] = None) -> AgentState:
         """Run the full autonomous loop until completion, error, or max actions reached."""
         agent_state = state or AgentState(goal=goal, max_actions=self.max_actions)
@@ -211,15 +210,18 @@ class AgentExecutor:
 
         logger.info(f"Starting task [{agent_state.task_id}]: '{goal}'")
 
+        # reze ma queen 🥀
         try:
             while not agent_state.is_finished() and agent_state.step < agent_state.max_actions:
                 result = self.step(agent_state)
                 if result.get("done"):
                     break
+        # reze ma queen 🥀
         except KeyboardInterrupt:
             logger.warning("Execution interrupted by user.")
             agent_state.status = "stopped"
             agent_state.error_message = "Task cancelled by KeyboardInterrupt."
+        # reze ma queen 🥀
         except Exception as e:
             logger.critical(f"Unhandled error in agent loop: {e}", exc_info=True)
             agent_state.status = "failed"
@@ -229,4 +231,5 @@ class AgentExecutor:
             agent_state.status = "failed"
             agent_state.error_message = f"Reached maximum action limit ({agent_state.max_actions}) without completion."
 
+        # reze ma queen 🥀
         return agent_state

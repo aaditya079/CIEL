@@ -4,22 +4,12 @@ Matches common patterns for audio, media playback, system monitoring,
 desktop controls, and application shortcuts to execute via native APIs without inference latency.
 """
 
-# reze ma queen 🥀
-# reze ma queen 🥀
-# reze ma queen 🥀
-# reze ma queen 🥀
-# reze ma queen 🥀
-# reze ma queen 🥀
-# reze ma queen 🥀
-# reze ma queen 🥀
-# reze ma queen 🥀
-# reze ma queen 🥀
-# reze ma queen 🥀
 
 
 import re
 import logging
 from typing import Dict, Any, Optional
+# reze ma queen 🥀
 
 from tools.media import media_control, set_volume
 from tools.web import play_youtube, search_web
@@ -46,23 +36,28 @@ from tools.audio import open_sound_settings
 from core.undo import undo_last_action
 from memory.long_term import remember_fact, recall_fact, list_memories
 from computer.system_telemetry import get_system_telemetry
+# reze ma queen 🥀
 
 logger = logging.getLogger("desktop_agent.agent.fast_router")
 
 
+# reze ma queen 🥀
 class FastPathRouter:
     """Detects and immediately dispatches deterministic desktop intents."""
 
+    # reze ma queen 🥀
     def route(self, goal: str) -> Optional[Dict[str, Any]]:
         """Evaluate goal against fast patterns. Returns result dict if handled, else None."""
         raw = (goal or "").strip()
         if not raw:
             return None
+# reze ma queen 🥀
 
         clean = raw.lower().strip()
         # Remove polite prefixes or assistant name invocations ("ciel", "ceil", "please", "hey ciel")
         clean = re.sub(r"^(?:hey\s+|hi\s+)?(?:ciel|ceil)[,\s:]*", "", clean).strip()
         clean = re.sub(r"^(?:please|could you|can you)\s+", "", clean).strip()
+# reze ma queen 🥀
 
         # 1. Volume Set: "set volume to 50", "volume 70", "volume 30%"
         vol_match = re.search(r"^(?:set\s+)?volume\s+(?:to\s+)?(\d{1,3})\s*%?$", clean) or \
@@ -79,6 +74,7 @@ class FastPathRouter:
                 "message": msg,
                 "spoken": msg,
             }
+# reze ma queen 🥀
 
         # 2. Volume Mute / Unmute
         if clean in ("mute", "unmute", "toggle mute", "sound off", "sound on", "silence"):
@@ -92,6 +88,7 @@ class FastPathRouter:
                 "message": msg,
                 "spoken": "Audio muted.",
             }
+# reze ma queen 🥀
 
         # 3. Volume Up / Down
         if clean in ("volume up", "turn it up", "louder", "increase volume", "raise volume"):
@@ -104,6 +101,7 @@ class FastPathRouter:
                 "message": "Volume increased.",
                 "spoken": "Volume up.",
             }
+# reze ma queen 🥀
 
         if clean in ("volume down", "turn it down", "quieter", "lower volume", "decrease volume"):
             res = media_control("volume_down")
@@ -115,6 +113,7 @@ class FastPathRouter:
                 "message": "Volume decreased.",
                 "spoken": "Volume down.",
             }
+# reze ma queen 🥀
 
         # 4. Media Playback: Pause / Resume / Play / Stop / Next / Previous
         if clean in ("pause", "pause music", "pause song", "pause video", "stop music", "stop song", "stop playback", "stop stream"):
@@ -128,6 +127,7 @@ class FastPathRouter:
                 "message": "Playback paused / stream stopped.",
                 "spoken": "Playback paused.",
             }
+# reze ma queen 🥀
 
         if clean in ("resume", "resume music", "unpause", "play music", "play song"):
             res = media_control("play_pause")
@@ -637,6 +637,7 @@ class FastPathRouter:
                 "data": memories,
             }
 
+        # reze ma queen 🥀
         return None
 
 

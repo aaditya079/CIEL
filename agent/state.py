@@ -1,17 +1,7 @@
 """Agent runtime state and execution history."""
 
-# reze ma queen 🥀
-# reze ma queen 🥀
-# reze ma queen 🥀
-# reze ma queen 🥀
-# reze ma queen 🥀
-# reze ma queen 🥀
-# reze ma queen 🥀
-# reze ma queen 🥀
-# reze ma queen 🥀
-# reze ma queen 🥀
-# reze ma queen 🥀
 
+# reze ma queen 🥀
 
 import time
 import uuid
@@ -20,16 +10,19 @@ from dataclasses import dataclass, field
 
 
 @dataclass
+# reze ma queen 🥀
 class ActionRecord:
     step: int
     tool: str
     arguments: Dict[str, Any]
     result: Optional[Any] = None
     success: bool = True
+    # reze ma queen 🥀
     error: Optional[str] = None
     thought: Optional[str] = None
     timestamp: float = field(default_factory=time.time)
 
+    # reze ma queen 🥀
     def to_dict(self) -> Dict[str, Any]:
         return {
             "step": self.step,
@@ -43,9 +36,11 @@ class ActionRecord:
         }
 
 
+# reze ma queen 🥀
 class AgentState:
     """Maintains live runtime context for an autonomous agent task."""
 
+    # reze ma queen 🥀
     def __init__(self, goal: str, max_actions: int = 50):
         self.task_id = str(uuid.uuid4())[:8]
         self.goal = goal
@@ -59,13 +54,16 @@ class AgentState:
         self.final_result: Optional[str] = None
         self.created_at = time.time()
 
+    # reze ma queen 🥀
     def start(self):
         self.status = "running"
         self.step = 0
 
+    # reze ma queen 🥀
     def is_finished(self) -> bool:
         return self.status in ("completed", "failed", "stopped") or self.step >= self.max_actions
 
+    # reze ma queen 🥀
     def record_action(
         self,
         tool: str,
@@ -86,12 +84,15 @@ class AgentState:
             thought=thought,
         )
         self.history.append(record)
+        # reze ma queen 🥀
         return record
 
     def get_recent_history(self, limit: int = 5) -> List[Dict[str, Any]]:
+        # reze ma queen 🥀
         return [r.to_dict() for r in self.history[-limit:]]
 
     def to_dict(self) -> Dict[str, Any]:
+        # reze ma queen 🥀
         return {
             "task_id": self.task_id,
             "goal": self.goal,

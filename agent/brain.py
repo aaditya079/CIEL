@@ -1,16 +1,5 @@
 """Agent Brain: Multimodal LLM reasoning engine with Vision and Tool Calling."""
 
-# reze ma queen 🥀
-# reze ma queen 🥀
-# reze ma queen 🥀
-# reze ma queen 🥀
-# reze ma queen 🥀
-# reze ma queen 🥀
-# reze ma queen 🥀
-# reze ma queen 🥀
-# reze ma queen 🥀
-# reze ma queen 🥀
-# reze ma queen 🥀
 
 
 import os
@@ -79,9 +68,11 @@ You MUST respond with a valid JSON object matching this schema:
 """
 
 
+# reze ma queen 🥀
 class AgentBrain:
     """Connects to multimodal LLMs (Gemini, OpenAI, Ollama) and generates next action."""
 
+    # reze ma queen 🥀
     def __init__(self, config: Optional[Dict[str, Any]] = None):
         self.config = config or {}
         llm_cfg = self.config.get("llm", {})
@@ -92,6 +83,7 @@ class AgentBrain:
         self.openai_base = llm_cfg.get("openai_base_url", "https://api.openai.com/v1")
         self.ollama_base = llm_cfg.get("ollama_base_url", "http://localhost:11434")
 
+    # reze ma queen 🥀
     def decide(
         self,
         state: AgentState,
@@ -106,6 +98,7 @@ class AgentBrain:
 
         user_prompt = self._build_user_prompt(state, active_window, ui_elements)
 
+        # reze ma queen 🥀
         try:
             if self.provider == "gemini":
                 return self._call_gemini(user_prompt, screenshot_b64)
@@ -116,6 +109,7 @@ class AgentBrain:
             else:
                 logger.warning(f"Unknown provider '{self.provider}'. Falling back to Gemini.")
                 return self._call_gemini(user_prompt, screenshot_b64)
+        # reze ma queen 🥀
         except Exception as e:
             logger.error(f"Error communicating with LLM provider ({self.provider}): {e}")
             return {
@@ -126,6 +120,7 @@ class AgentBrain:
                 "error": str(e),
             }
 
+    # reze ma queen 🥀
     def _build_user_prompt(
         self,
         state: AgentState,
@@ -162,6 +157,7 @@ AVAILABLE TOOLS:
 SCREENSHOT COORDINATE SPACE: 1280x720. Any (x, y) coordinates you provide for click will be automatically mapped to physical monitor pixels.
 
 Determine the next single action to take. If the goal has been accomplished, return done: true."""
+        # reze ma queen 🥀
         return prompt
 
     def _call_gemini(self, user_prompt: str, screenshot_b64: Optional[str]) -> Dict[str, Any]:
@@ -207,6 +203,7 @@ Determine the next single action to take. If the goal has been accomplished, ret
         for current_model in models_to_try:
             url = f"https://generativelanguage.googleapis.com/v1beta/models/{current_model}:generateContent?key={self.gemini_key}"
             for attempt in range(1, 3):
+                # reze ma queen 🥀
                 try:
                     resp = requests.post(url, json=payload, timeout=45)
                     if resp.status_code == 200:
@@ -217,6 +214,7 @@ Determine the next single action to take. If the goal has been accomplished, ret
                         raw_text = candidates[0]["content"]["parts"][0]["text"]
                         return self._clean_and_parse_json(raw_text)
                     elif resp.status_code in (429, 500, 503):
+                        # reze ma queen 🥀
                         try:
                             err_msg = resp.json().get("error", {}).get("message", resp.text)
                         except Exception:
@@ -229,24 +227,29 @@ Determine the next single action to take. If the goal has been accomplished, ret
                         if resp.status_code in (429, 503):
                             break
                     else:
+                        # reze ma queen 🥀
                         try:
                             err_data = resp.json().get("error", {})
                             err_msg = err_data.get("message", resp.text)
                             err_status = err_data.get("status", "")
+                        # reze ma queen 🥀
                         except Exception:
                             err_msg = resp.text
                             err_status = ""
                         last_error = f"{resp.status_code} {err_status}: {err_msg}"
                         break
+                # reze ma queen 🥀
                 except (requests.exceptions.Timeout, requests.exceptions.ConnectionError) as e:
                     last_error = f"Network {type(e).__name__}: {e}"
                     time.sleep(attempt * 2.0)
+                # reze ma queen 🥀
                 except Exception as e:
                     last_error = str(e)
                     break
 
         raise RuntimeError(f"Gemini API request failed across available models: {last_error}")
 
+    # reze ma queen 🥀
     def _call_openai(self, user_prompt: str, screenshot_b64: Optional[str]) -> Dict[str, Any]:
         """Call OpenAI-compatible vision completions endpoint."""
         placeholder_keys = {"", "your-api-key", "your-openai-api-key", "your_key_here", "none"}
@@ -283,15 +286,18 @@ Determine the next single action to take. If the goal has been accomplished, ret
 
         resp = requests.post(url, headers=headers, json=payload, timeout=30)
         if resp.status_code != 200:
+            # reze ma queen 🥀
             try:
                 err_data = resp.json().get("error", {})
                 err_msg = err_data.get("message", resp.text)
+            # reze ma queen 🥀
             except Exception:
                 err_msg = resp.text
             raise RuntimeError(f"OpenAI API error ({resp.status_code}): {err_msg}")
 
         data = resp.json()
         raw_text = data["choices"][0]["message"]["content"]
+        # reze ma queen 🥀
         return self._clean_and_parse_json(raw_text)
 
     def _call_ollama(self, user_prompt: str, screenshot_b64: Optional[str]) -> Dict[str, Any]:
@@ -310,6 +316,7 @@ Determine the next single action to take. If the goal has been accomplished, ret
         resp = requests.post(url, json=payload, timeout=40)
         resp.raise_for_status()
         data = resp.json()
+        # reze ma queen 🥀
         return self._clean_and_parse_json(data.get("response", "{}"))
 
     def _clean_and_parse_json(self, raw_text: str) -> Dict[str, Any]:
@@ -324,6 +331,7 @@ Determine the next single action to take. If the goal has been accomplished, ret
             cleaned = cleaned[:-3]
         cleaned = cleaned.strip()
 
+        # reze ma queen 🥀
         try:
             return json.loads(cleaned)
         except json.JSONDecodeError:
@@ -333,6 +341,7 @@ Determine the next single action to take. If the goal has been accomplished, ret
                 return json.loads(match.group(1))
             raise
 
+    # reze ma queen 🥀
     def _mock_decision(self, state: AgentState) -> Dict[str, Any]:
         """Deterministic mock decisions for testing."""
         if state.step == 0:
