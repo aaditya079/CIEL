@@ -1,603 +1,933 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <!-- reze ma queen 🥀 -->
 <head>
-<meta charset="UTF-8">
-  <title>CIEL // WISDOM KING RAPHAEL (智慧之王) — Autonomous HUD</title>
+  <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CIEL // WISDOM KING RAPHAEL (智慧之王) — Autonomous Command Nexus</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700;900&family=IBM+Plex+Mono:wght@400;500;700&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
-
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700;900&family=Fira+Code:wght@400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
 <!-- reze ma queen 🥀 -->
-<style>
+  <style>
     :root {
-      --bg: #06040b;
-      --bg-card: rgba(14, 10, 24, 0.85);
-      --bg-card-border: rgba(255, 23, 68, 0.22);
-      --raphael-crimson: #ff1744;
-      --raphael-ruby: #e11d48;
-      --raphael-dark-crimson: #880e28;
+      --bg-void: #05040a;
+      --bg-surface: #0a0714;
+      --bg-card: rgba(16, 12, 28, 0.78);
+      --bg-card-hover: rgba(24, 18, 42, 0.88);
+      --border-card: rgba(255, 23, 68, 0.16);
+      --border-card-hover: rgba(255, 23, 68, 0.42);
+      --border-glow: rgba(251, 191, 36, 0.35);
+      
+      --crimson-core: #ff1744;
+      --crimson-glow: rgba(255, 23, 68, 0.35);
+      --crimson-dark: #880e28;
+      
       --sacred-gold: #fbbf24;
       --sacred-amber: #f59e0b;
+      --sacred-glow: rgba(251, 191, 36, 0.3);
+      
       --mystic-cyan: #38bdf8;
-      --ethereal-white: #f8fafc;
+      --mystic-glow: rgba(56, 189, 248, 0.25);
+      
+      --astral-emerald: #10b981;
+      --emerald-glow: rgba(16, 185, 129, 0.25);
+      
+      --text-main: #f8fafc;
       --text-muted: #94a3b8;
       --text-dim: #64748b;
+      
       --font-display: 'Cinzel', serif;
-      --font-body: 'Space Grotesk', system-ui, sans-serif;
-      --font-mono: 'IBM Plex Mono', monospace;
+      --font-ui: 'Space Grotesk', -apple-system, BlinkMacSystemFont, sans-serif;
+      --font-mono: 'Fira Code', monospace;
+      
+      --radius-sm: 8px;
+      --radius-md: 14px;
+      --radius-lg: 20px;
+      --radius-full: 9999px;
+      
+      --transition-fast: 150ms cubic-bezier(0.16, 1, 0.3, 1);
+      --transition-smooth: 280ms cubic-bezier(0.16, 1, 0.3, 1);
     }
 
-    * { box-sizing: border-box; margin: 0; padding: 0; }
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
 
     body {
-      background: var(--bg);
-      color: var(--ethereal-white);
-      font-family: var(--font-body);
+      background-color: var(--bg-void);
+      color: var(--text-main);
+      font-family: var(--font-ui);
       min-height: 100vh;
+      overflow-x: hidden;
       display: flex;
       flex-direction: column;
-      overflow-x: hidden;
       background-image: 
-        radial-gradient(circle at 50% 15%, rgba(225, 29, 72, 0.12) 0%, transparent 60%),
-        radial-gradient(circle at 85% 85%, rgba(251, 191, 36, 0.05) 0%, transparent 50%),
-        linear-gradient(to bottom, #07050d 0%, #05040a 100%);
+        radial-gradient(circle at 50% 0%, rgba(225, 29, 72, 0.15) 0%, transparent 60%),
+        radial-gradient(circle at 85% 20%, rgba(251, 191, 36, 0.06) 0%, transparent 45%),
+        radial-gradient(circle at 15% 75%, rgba(56, 189, 248, 0.05) 0%, transparent 50%),
+        linear-gradient(to bottom, #07050e 0%, #05040a 100%);
+      background-attachment: fixed;
     }
 
-    /* Accessibility Focus Rings */
+    /* Ambient Scanline Texture & Subtle Grid */
+    body::before {
+      content: "";
+      position: fixed;
+      inset: 0;
+      background: 
+        linear-gradient(rgba(255, 255, 255, 0.015) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255, 255, 255, 0.015) 1px, transparent 1px);
+      background-size: 40px 40px;
+      pointer-events: none;
+      z-index: 0;
+    }
+
     *:focus-visible {
       outline: 2px solid var(--sacred-gold);
       outline-offset: 3px;
     }
 
+    /* Top Command Header */
     header {
-      border-bottom: 1px solid rgba(255, 23, 68, 0.25);
-      padding: 14px 28px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      background: rgba(10, 7, 18, 0.9);
-      backdrop-filter: blur(16px);
       position: sticky;
       top: 0;
       z-index: 100;
+      background: rgba(10, 7, 18, 0.85);
+      backdrop-filter: blur(24px);
+      -webkit-backdrop-filter: blur(24px);
+      border-bottom: 1px solid var(--border-card);
+      padding: 12px 32px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 20px;
     }
 
-    .brand-wrap {
+    .brand-section {
       display: flex;
       align-items: center;
       gap: 16px;
+    }
+
+    .brand-crest {
+      width: 44px;
+      height: 44px;
+      border-radius: 12px;
+      background: radial-gradient(circle, rgba(255, 23, 68, 0.25) 0%, rgba(10, 7, 18, 0.9) 100%);
+      border: 1px solid rgba(255, 23, 68, 0.4);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 0 20px var(--crimson-glow);
+      position: relative;
+    }
+
+    .brand-crest span {
+      font-size: 20px;
+      color: var(--sacred-gold);
+      filter: drop-shadow(0 0 8px var(--sacred-glow));
+    }
+
+    .brand-info {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
     }
 
     .brand-title {
       font-family: var(--font-display);
       font-size: 20px;
       font-weight: 900;
-      letter-spacing: 2px;
-      color: #fff;
+      letter-spacing: 2.5px;
+      color: #ffffff;
       display: flex;
       align-items: center;
       gap: 10px;
-      text-shadow: 0 0 15px rgba(255, 23, 68, 0.6);
+      text-shadow: 0 0 16px var(--crimson-glow);
     }
 
-    .brand-title span.kanji {
-      font-size: 14px;
-      color: var(--sacred-gold);
-      border: 1px solid rgba(251, 191, 36, 0.3);
-      padding: 2px 8px;
-      border-radius: 4px;
-      background: rgba(251, 191, 36, 0.08);
+    .brand-title .kanji-tag {
+      font-size: 12px;
       font-family: serif;
+      font-weight: normal;
+      color: var(--sacred-gold);
+      padding: 2px 8px;
+      border-radius: var(--radius-sm);
+      background: rgba(251, 191, 36, 0.12);
+      border: 1px solid rgba(251, 191, 36, 0.35);
+      letter-spacing: 1px;
     }
 
-    .brand-sub {
-      font-size: 11px;
+    .brand-subtitle {
+      font-size: 10px;
       font-family: var(--font-mono);
-      color: var(--text-muted);
-      letter-spacing: 1px;
+      color: var(--text-dim);
+      letter-spacing: 1.5px;
       text-transform: uppercase;
+    }
+
+    /* Live Audio Spectrum in Header */
+    .audio-visualizer-dock {
+      display: flex;
+      align-items: center;
+      gap: 3px;
+      height: 24px;
+      padding: 0 16px;
+      background: rgba(255, 255, 255, 0.02);
+      border-radius: var(--radius-full);
+      border: 1px solid rgba(255, 255, 255, 0.05);
+    }
+
+    .spectrum-bar {
+      width: 3px;
+      height: 6px;
+      background: var(--crimson-core);
+      border-radius: 2px;
+      transition: height 120ms ease;
+      opacity: 0.65;
+    }
+
+    .audio-visualizer-dock.active .spectrum-bar {
+      opacity: 1;
+      box-shadow: 0 0 8px var(--crimson-glow);
     }
 
     .header-actions {
       display: flex;
       align-items: center;
-      gap: 12px;
+      gap: 14px;
     }
 
-    .status-pill {
-      display: inline-flex;
+    .status-badge {
+      display: flex;
       align-items: center;
       gap: 10px;
       padding: 6px 14px;
-      border-radius: 20px;
-      font-size: 12px;
+      border-radius: var(--radius-full);
+      background: rgba(16, 185, 129, 0.08);
+      border: 1px solid rgba(16, 185, 129, 0.25);
       font-family: var(--font-mono);
-      background: rgba(255, 23, 68, 0.1);
-      border: 1px solid var(--raphael-crimson);
-      color: var(--ethereal-white);
-      text-transform: uppercase;
-      font-weight: 700;
-      box-shadow: 0 0 16px rgba(255, 23, 68, 0.2);
-    }
-
-    .status-pill.active {
-      border-color: var(--sacred-gold);
-      background: rgba(251, 191, 36, 0.15);
-      color: var(--sacred-gold);
-      box-shadow: 0 0 20px rgba(251, 191, 36, 0.3);
-    }
-
-    .pulse {
-      width: 9px;
-      height: 9px;
-      border-radius: 50%;
-      background: var(--raphael-crimson);
-      box-shadow: 0 0 12px var(--raphael-crimson);
-      animation: pulse-crimson 1.8s infinite;
-    }
-
-    @keyframes pulse-crimson {
-      0% { transform: scale(0.85); opacity: 0.5; }
-      50% { transform: scale(1.2); opacity: 1; box-shadow: 0 0 20px var(--raphael-crimson); }
-      100% { transform: scale(0.85); opacity: 0.5; }
-    }
-
-    .btn-action {
-      padding: 8px 16px;
-      border-radius: 8px;
-      font-weight: 700;
-      font-size: 12px;
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--astral-emerald);
       letter-spacing: 0.5px;
-      cursor: pointer;
-      border: 1px solid transparent;
-      transition: all 0.2s ease;
-      font-family: var(--font-body);
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
     }
 
-    .btn-codex {
-      background: rgba(251, 191, 36, 0.1);
-      border-color: rgba(251, 191, 36, 0.4);
-      color: var(--sacred-gold);
+    .status-badge.running {
+      background: rgba(56, 189, 248, 0.1);
+      border-color: rgba(56, 189, 248, 0.4);
+      color: var(--mystic-cyan);
     }
 
-    .btn-codex:hover {
-      background: rgba(251, 191, 36, 0.25);
-      box-shadow: 0 0 16px rgba(251, 191, 36, 0.3);
-    }
-
-    .btn-stop {
+    .status-badge.stopped {
       background: rgba(255, 23, 68, 0.15);
-      border-color: var(--raphael-crimson);
-      color: #fff;
+      border-color: rgba(255, 23, 68, 0.5);
+      color: var(--crimson-core);
     }
 
-    .btn-stop:hover {
-      background: var(--raphael-crimson);
-      box-shadow: 0 0 20px rgba(255, 23, 68, 0.6);
+    .status-beacon {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: currentColor;
+      box-shadow: 0 0 10px currentColor;
+      animation: beaconPulse 2s infinite ease-in-out;
+    }
+
+    @keyframes beaconPulse {
+      0%, 100% { transform: scale(1); opacity: 0.8; }
+      50% { transform: scale(1.3); opacity: 1; }
+    }
+
+    .btn-header {
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      color: var(--text-main);
+      padding: 8px 16px;
+      border-radius: var(--radius-md);
+      font-family: var(--font-ui);
+      font-size: 12px;
+      font-weight: 600;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      transition: var(--transition-fast);
+    }
+
+    .btn-header:hover {
+      background: rgba(255, 255, 255, 0.1);
+      border-color: rgba(255, 255, 255, 0.25);
       transform: translateY(-1px);
     }
 
+    .btn-kill-switch {
+      background: linear-gradient(135deg, rgba(255, 23, 68, 0.85) 0%, rgba(136, 14, 40, 0.95) 100%);
+      border: 1px solid rgba(255, 23, 68, 0.6);
+      color: #fff;
+      padding: 8px 18px;
+      border-radius: var(--radius-md);
+      font-family: var(--font-display);
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 1.5px;
+      cursor: pointer;
+      box-shadow: 0 0 16px var(--crimson-glow);
+      transition: var(--transition-fast);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .btn-kill-switch:hover {
+      background: linear-gradient(135deg, #ff1744 0%, #a00d2f 100%);
+      box-shadow: 0 0 24px rgba(255, 23, 68, 0.65);
+      transform: translateY(-1px);
+    }
+
+    .btn-kill-switch:active {
+      transform: translateY(1px);
+    }
+
+    /* Main Grid Layout */
     main {
-      padding: 24px;
-      display: grid;
-      grid-template-columns: 1fr 380px;
-      gap: 24px;
       flex: 1;
-      max-width: 1460px;
+      padding: 28px 32px;
+      display: grid;
+      grid-template-columns: 1.25fr 0.75fr;
+      gap: 28px;
+      max-width: 1720px;
       margin: 0 auto;
       width: 100%;
+      position: relative;
+      z-index: 1;
     }
 
-    @media (max-width: 1024px) {
-      main { grid-template-columns: 1fr; }
+    @media (max-width: 1200px) {
+      main {
+        grid-template-columns: 1fr;
+      }
     }
 
+    .column {
+      display: flex;
+      flex-direction: column;
+      gap: 24px;
+    }
+
+    /* Cybernetic Glass Card */
     .card {
       background: var(--bg-card);
-      border: 1px solid var(--bg-card-border);
-      border-radius: 14px;
-      padding: 22px;
-      box-shadow: 0 12px 35px rgba(0, 0, 0, 0.7);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border: 1px solid var(--border-card);
+      border-radius: var(--radius-lg);
+      padding: 24px;
       position: relative;
       overflow: hidden;
-      backdrop-filter: blur(12px);
+      box-shadow: 0 12px 36px rgba(0, 0, 0, 0.45);
+      transition: border-color var(--transition-smooth), box-shadow var(--transition-smooth);
     }
 
+    .card:hover {
+      border-color: var(--border-card-hover);
+      box-shadow: 0 16px 44px rgba(255, 23, 68, 0.08);
+    }
+
+    /* Subtle Inner Ambient Glow */
     .card::before {
-      content: '';
+      content: "";
       position: absolute;
       top: 0;
       left: 0;
       right: 0;
-      height: 2px;
-      background: linear-gradient(90deg, transparent, var(--raphael-crimson), var(--sacred-gold), transparent);
+      height: 1px;
+      background: linear-gradient(90deg, transparent 0%, rgba(255, 23, 68, 0.5) 35%, rgba(251, 191, 36, 0.4) 65%, transparent 100%);
+      pointer-events: none;
     }
 
-    .card-title {
-      font-size: 13px;
-      font-weight: 700;
-      letter-spacing: 1.5px;
-      color: var(--sacred-gold);
-      text-transform: uppercase;
-      margin-bottom: 16px;
+    .card-header {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      font-family: var(--font-display);
-    }
-
-    .card-title span.sub {
-      font-size: 11px;
-      font-family: var(--font-mono);
-      color: var(--text-dim);
-      font-weight: 400;
-    }
-
-    /* Directive Box */
-    .command-box {
-      display: flex;
-      gap: 12px;
       margin-bottom: 20px;
     }
 
-    .input-wrapper {
+    .card-title-wrap {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .card-rune {
+      width: 28px;
+      height: 28px;
+      border-radius: 8px;
+      background: rgba(255, 23, 68, 0.1);
+      border: 1px solid rgba(255, 23, 68, 0.3);
+      color: var(--crimson-core);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 13px;
+    }
+
+    .card-title {
+      font-family: var(--font-display);
+      font-size: 15px;
+      font-weight: 700;
+      letter-spacing: 1.5px;
+      color: #ffffff;
+      text-transform: uppercase;
+    }
+
+    .card-tag {
+      font-family: var(--font-mono);
+      font-size: 10px;
+      color: var(--text-dim);
+      letter-spacing: 1px;
+    }
+
+    /* Directive Command Console */
+    .command-box {
+      display: flex;
+      gap: 12px;
+      position: relative;
+    }
+
+    .input-wrap {
       flex: 1;
       position: relative;
     }
 
-    input[type="text"] {
+    .input-wrap input {
       width: 100%;
-      background: rgba(6, 4, 12, 0.9);
-      border: 1px solid rgba(255, 23, 68, 0.35);
-      padding: 14px 18px;
-      border-radius: 10px;
-      color: #fff;
-      font-size: 15px;
-      outline: none;
-      font-family: var(--font-body);
-      transition: all 0.2s ease;
+      background: rgba(6, 4, 12, 0.85);
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      border-radius: var(--radius-md);
+      padding: 16px 120px 16px 20px;
+      color: var(--text-main);
+      font-family: var(--font-mono);
+      font-size: 13px;
+      transition: var(--transition-fast);
+      box-shadow: inset 0 2px 6px rgba(0, 0, 0, 0.5);
     }
 
-    input[type="text"]:focus {
+    .input-wrap input:focus {
       border-color: var(--sacred-gold);
-      box-shadow: 0 0 20px rgba(251, 191, 36, 0.25);
-      background: rgba(12, 8, 22, 0.95);
+      box-shadow: 0 0 20px var(--sacred-glow), inset 0 2px 6px rgba(0, 0, 0, 0.5);
+      outline: none;
     }
 
-    .btn-exec {
-      padding: 14px 24px;
-      border-radius: 10px;
-      font-weight: 800;
-      cursor: pointer;
-      border: none;
-      transition: 0.2s;
-      font-size: 14px;
-      font-family: var(--font-display);
-      letter-spacing: 1px;
-      background: linear-gradient(135deg, var(--raphael-crimson) 0%, #b91c1c 100%);
+    .input-kbd-shortcut {
+      position: absolute;
+      right: 16px;
+      top: 50%;
+      transform: translateY(-50%);
+      font-family: var(--font-mono);
+      font-size: 10px;
+      color: var(--text-dim);
+      background: rgba(255, 255, 255, 0.06);
+      padding: 3px 8px;
+      border-radius: 4px;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      pointer-events: none;
+    }
+
+    .btn-cast {
+      background: linear-gradient(135deg, var(--crimson-core) 0%, #b30c30 100%);
+      border: 1px solid rgba(255, 255, 255, 0.2);
       color: #fff;
-      box-shadow: 0 4px 20px rgba(255, 23, 68, 0.4);
+      padding: 0 28px;
+      border-radius: var(--radius-md);
+      font-family: var(--font-display);
+      font-size: 12px;
+      font-weight: 900;
+      letter-spacing: 2px;
+      cursor: pointer;
+      box-shadow: 0 0 24px var(--crimson-glow);
+      transition: var(--transition-fast);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      white-space: nowrap;
     }
 
-    .btn-exec:hover {
-      filter: brightness(1.2);
-      box-shadow: 0 0 25px rgba(255, 23, 68, 0.7);
+    .btn-cast:hover {
+      background: linear-gradient(135deg, #ff2d55 0%, #c41038 100%);
+      box-shadow: 0 0 32px rgba(255, 23, 68, 0.7);
       transform: translateY(-1px);
     }
 
-    /* Soundboard Quick-Action Triggers */
-    .audio-dock {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      margin-bottom: 20px;
-      flex-wrap: wrap;
-      background: rgba(255, 255, 255, 0.02);
-      padding: 10px 14px;
-      border-radius: 10px;
-      border: 1px solid rgba(255, 255, 255, 0.05);
+    .btn-cast:active {
+      transform: translateY(1px);
     }
 
-    .dock-label {
-      font-size: 11px;
+    /* Quick Action Chips */
+    .quick-chips-wrap {
+      margin-top: 16px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      align-items: center;
+    }
+
+    .quick-chips-label {
       font-family: var(--font-mono);
-      color: var(--text-muted);
-      text-transform: uppercase;
+      font-size: 10px;
+      color: var(--text-dim);
       letter-spacing: 1px;
+      text-transform: uppercase;
       margin-right: 4px;
     }
 
-    .btn-sound {
+    .chip {
       background: rgba(255, 255, 255, 0.04);
-      border: 1px solid rgba(255, 255, 255, 0.1);
-      color: var(--ethereal-white);
-      padding: 6px 12px;
-      border-radius: 6px;
-      font-size: 12px;
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      padding: 5px 12px;
+      border-radius: var(--radius-full);
+      font-size: 11px;
+      color: var(--text-muted);
       cursor: pointer;
-      font-family: var(--font-mono);
-      transition: all 0.15s ease;
-      display: inline-flex;
+      transition: var(--transition-fast);
+      display: flex;
       align-items: center;
       gap: 6px;
     }
 
-    .btn-sound:hover {
-      background: rgba(251, 191, 36, 0.15);
-      border-color: var(--sacred-gold);
+    .chip:hover {
+      background: rgba(251, 191, 36, 0.08);
+      border-color: rgba(251, 191, 36, 0.35);
       color: var(--sacred-gold);
       transform: translateY(-1px);
     }
 
-    /* Sub-Skills Cards Grid */
+    /* Sub-Skills Grid */
     .subskills-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      grid-template-columns: repeat(5, 1fr);
       gap: 12px;
-      margin-bottom: 22px;
+      margin-top: 18px;
+    }
+
+    @media (max-width: 900px) {
+      .subskills-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
     }
 
     .subskill-card {
-      background: rgba(7, 5, 14, 0.75);
-      border: 1px solid rgba(255, 255, 255, 0.07);
-      border-radius: 10px;
-      padding: 12px 14px;
+      background: rgba(10, 7, 18, 0.65);
+      border: 1px solid rgba(255, 255, 255, 0.06);
+      border-radius: var(--radius-md);
+      padding: 14px 12px;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      transition: var(--transition-smooth);
       position: relative;
-      transition: border-color 0.2s;
+      overflow: hidden;
     }
 
     .subskill-card:hover {
-      border-color: rgba(251, 191, 36, 0.4);
+      border-color: rgba(251, 191, 36, 0.3);
+      background: rgba(16, 12, 28, 0.85);
+      transform: translateY(-2px);
     }
 
     .subskill-kanji {
       font-size: 11px;
       color: var(--sacred-gold);
-      font-family: serif;
-      font-weight: 700;
-      margin-bottom: 2px;
+      font-weight: 600;
+      letter-spacing: 1px;
     }
 
     .subskill-name {
-      font-size: 12px;
+      font-size: 11px;
       font-weight: 700;
       color: #fff;
-      text-transform: uppercase;
-      letter-spacing: 0.5px;
+      line-height: 1.2;
     }
 
     .subskill-status {
-      font-size: 11px;
       font-family: var(--font-mono);
+      font-size: 9px;
       color: var(--mystic-cyan);
-      margin-top: 6px;
+      margin-top: auto;
+      letter-spacing: 0.5px;
+      display: flex;
+      align-items: center;
+      gap: 5px;
     }
 
-    /* System Telemetry Gauges */
-    .gauges {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 12px;
-      margin-bottom: 20px;
+    .subskill-status::before {
+      content: "";
+      width: 5px;
+      height: 5px;
+      border-radius: 50%;
+      background: currentColor;
     }
 
-    .gauge {
-      background: rgba(7, 5, 14, 0.85);
-      padding: 14px;
-      border-radius: 10px;
-      border: 1px solid rgba(255, 255, 255, 0.06);
-      text-align: center;
+    /* Soundboard Strip */
+    .sound-strip {
+      margin-top: 18px;
+      padding-top: 16px;
+      border-top: 1px solid rgba(255, 255, 255, 0.06);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 10px;
     }
 
-    .gauge-val {
-      font-size: 24px;
-      font-weight: 800;
+    .sound-buttons {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .btn-sound {
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      color: var(--text-muted);
+      padding: 6px 14px;
+      border-radius: var(--radius-sm);
       font-family: var(--font-mono);
-      color: var(--sacred-gold);
-      margin-top: 4px;
-      text-shadow: 0 0 10px rgba(251, 191, 36, 0.3);
-    }
-
-    .gauge-lbl {
       font-size: 11px;
-      color: var(--text-dim);
-      text-transform: uppercase;
-      font-family: var(--font-mono);
-      letter-spacing: 1px;
+      cursor: pointer;
+      transition: var(--transition-fast);
+      display: flex;
+      align-items: center;
+      gap: 6px;
     }
 
-    /* Raphael Sacred Magic Circle */
-    .magic-circle-wrap {
+    .btn-sound:hover {
+      background: rgba(255, 23, 68, 0.12);
+      border-color: rgba(255, 23, 68, 0.4);
+      color: #fff;
+    }
+
+    /* Cognitive Reasoning Stream */
+    .stream-controls {
+      display: flex;
+      gap: 8px;
+      align-items: center;
+    }
+
+    .filter-btn {
+      background: transparent;
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      color: var(--text-dim);
+      padding: 4px 10px;
+      border-radius: var(--radius-sm);
+      font-family: var(--font-mono);
+      font-size: 10px;
+      cursor: pointer;
+      transition: var(--transition-fast);
+    }
+
+    .filter-btn.active, .filter-btn:hover {
+      background: rgba(255, 255, 255, 0.08);
+      color: #fff;
+      border-color: rgba(255, 255, 255, 0.2);
+    }
+
+    .log-stream {
+      background: rgba(5, 3, 10, 0.9);
+      border: 1px solid rgba(255, 255, 255, 0.06);
+      border-radius: var(--radius-md);
+      height: 340px;
+      overflow-y: auto;
+      padding: 16px;
+      font-family: var(--font-mono);
+      font-size: 11.5px;
       display: flex;
       flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      padding: 24px 10px;
-      position: relative;
+      gap: 8px;
+      scroll-behavior: smooth;
     }
 
-    .magic-circle-box {
-      width: 220px;
-      height: 220px;
-      position: relative;
+    .log-stream::-webkit-scrollbar {
+      width: 6px;
+    }
+
+    .log-stream::-webkit-scrollbar-thumb {
+      background: rgba(255, 255, 255, 0.12);
+      border-radius: 3px;
+    }
+
+    .log-entry {
       display: flex;
-      align-items: center;
-      justify-content: center;
+      align-items: flex-start;
+      gap: 10px;
+      line-height: 1.5;
+      padding: 4px 6px;
+      border-radius: 4px;
+      transition: background 150ms ease;
     }
 
-    .circle-outer {
-      position: absolute;
-      width: 210px;
-      height: 210px;
-      border-radius: 50%;
-      border: 2px dashed rgba(251, 191, 36, 0.4);
-      animation: rotate-outer 36s linear infinite;
-      box-shadow: 0 0 25px rgba(251, 191, 36, 0.15);
-    }
-
-    .circle-middle {
-      position: absolute;
-      width: 160px;
-      height: 160px;
-      border-radius: 50%;
-      border: 2px solid rgba(255, 23, 68, 0.45);
-      animation: rotate-inner 20s linear infinite reverse;
-      box-shadow: 0 0 20px rgba(255, 23, 68, 0.2);
-    }
-
-    .circle-hexagram {
-      position: absolute;
-      width: 120px;
-      height: 120px;
-      border: 1px solid rgba(251, 191, 36, 0.3);
-      animation: rotate-outer 14s linear infinite;
-    }
-
-    .circle-hexagram::after {
-      content: '';
-      position: absolute;
-      inset: 0;
-      border: 1px solid rgba(251, 191, 36, 0.3);
-      transform: rotate(45deg);
-    }
-
-    .circle-core {
-      width: 70px;
-      height: 70px;
-      border-radius: 50%;
-      background: radial-gradient(circle, #fff 0%, var(--raphael-crimson) 45%, #7f1d1d 85%, transparent 100%);
-      box-shadow: 0 0 35px var(--raphael-crimson), 0 0 70px rgba(255, 23, 68, 0.4);
-      animation: core-flare 2.2s infinite ease-in-out;
-      z-index: 2;
-      position: relative;
-    }
-
-    @keyframes rotate-outer { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
-    @keyframes rotate-inner { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
-    @keyframes core-flare {
-      0%, 100% { transform: scale(0.92); opacity: 0.85; filter: brightness(1); }
-      50% { transform: scale(1.08); opacity: 1; filter: brightness(1.3); box-shadow: 0 0 50px var(--raphael-crimson), 0 0 90px rgba(255, 23, 68, 0.7); }
-    }
-
-    .circle-caption {
-      margin-top: 18px;
-      text-align: center;
-      font-size: 12px;
-      font-family: var(--font-mono);
-      color: var(--sacred-gold);
-      letter-spacing: 1px;
-    }
-
-    /* Reasoning Stream */
-    .log-stream {
-      background: rgba(5, 3, 10, 0.95);
-      border-radius: 10px;
-      border: 1px solid rgba(255, 255, 255, 0.06);
-      padding: 14px;
-      height: 280px;
-      overflow-y: auto;
-      font-family: var(--font-mono);
-      font-size: 13px;
-      line-height: 1.7;
-    }
-
-    .log-item {
-      margin-bottom: 8px;
-      border-bottom: 1px solid rgba(255, 255, 255, 0.04);
-      padding-bottom: 6px;
+    .log-entry:hover {
+      background: rgba(255, 255, 255, 0.02);
     }
 
     .log-time {
       color: var(--text-dim);
-      font-size: 11px;
-      margin-right: 6px;
+      font-size: 10px;
+      flex-shrink: 0;
+      padding-top: 1px;
     }
 
-    .tag-notice {
+    .log-badge {
+      font-size: 10px;
+      font-weight: 600;
+      padding: 1px 6px;
+      border-radius: 3px;
+      flex-shrink: 0;
+    }
+
+    .badge-notice {
+      background: rgba(251, 191, 36, 0.12);
       color: var(--sacred-gold);
-      font-weight: 700;
-      background: rgba(251, 191, 36, 0.1);
-      padding: 1px 6px;
-      border-radius: 4px;
-      font-size: 11px;
+      border: 1px solid rgba(251, 191, 36, 0.3);
     }
 
-    .tag-report {
+    .badge-action {
+      background: rgba(56, 189, 248, 0.12);
       color: var(--mystic-cyan);
-      font-weight: 700;
-      background: rgba(56, 189, 248, 0.1);
-      padding: 1px 6px;
-      border-radius: 4px;
-      font-size: 11px;
+      border: 1px solid rgba(56, 189, 248, 0.3);
     }
 
-    .tag-alert {
-      color: var(--raphael-crimson);
-      font-weight: 700;
+    .badge-report {
+      background: rgba(16, 185, 129, 0.12);
+      color: var(--astral-emerald);
+      border: 1px solid rgba(16, 185, 129, 0.3);
+    }
+
+    .badge-alert {
       background: rgba(255, 23, 68, 0.15);
-      padding: 1px 6px;
-      border-radius: 4px;
-      font-size: 11px;
+      color: var(--crimson-core);
+      border: 1px solid rgba(255, 23, 68, 0.4);
     }
 
-    /* Desktop Observation Viewport */
-    .screen-preview-box {
+    .log-msg {
+      color: var(--text-main);
+      word-break: break-word;
+    }
+
+    /* Right Column: Sacred Geometry Canvas & Telemetry */
+    .magic-circle-container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
       position: relative;
-      border-radius: 10px;
+      padding: 10px 0;
+    }
+
+    #magicCircleCanvas {
+      width: 280px;
+      height: 280px;
+      border-radius: 50%;
+      cursor: crosshair;
+      filter: drop-shadow(0 0 24px var(--crimson-glow));
+    }
+
+    .circle-target-info {
+      margin-top: 14px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 4px;
+      text-align: center;
+    }
+
+    .circle-target-label {
+      font-family: var(--font-mono);
+      font-size: 9px;
+      color: var(--text-dim);
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+    }
+
+    .circle-target-window {
+      font-family: var(--font-mono);
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--sacred-gold);
+      max-width: 320px;
       overflow: hidden;
-      border: 1px solid rgba(255, 255, 255, 0.1);
-      background: #000;
-      margin-top: 10px;
+      text-overflow: ellipsis;
+      white-space: nowrap;
     }
 
-    .screen-preview {
-      width: 100%;
-      height: 210px;
-      object-fit: cover;
-      display: block;
-      transition: opacity 0.3s;
+    /* Circular SVG Radial Telemetry */
+    .telemetry-gauges-row {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 16px;
+      margin-top: 8px;
     }
 
-    .screen-reticle {
+    .gauge-widget {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 8px;
+      background: rgba(10, 7, 18, 0.5);
+      border: 1px solid rgba(255, 255, 255, 0.05);
+      border-radius: var(--radius-md);
+      padding: 14px 10px;
+    }
+
+    .svg-ring-wrap {
+      position: relative;
+      width: 72px;
+      height: 72px;
+    }
+
+    .svg-ring-wrap svg {
+      transform: rotate(-90deg);
+    }
+
+    .ring-bg {
+      fill: none;
+      stroke: rgba(255, 255, 255, 0.08);
+      stroke-width: 5;
+    }
+
+    .ring-val {
+      fill: none;
+      stroke-width: 5;
+      stroke-linecap: round;
+      stroke-dasharray: 188.4;
+      stroke-dashoffset: 188.4;
+      transition: stroke-dashoffset 400ms cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    .ring-cpu { stroke: var(--crimson-core); }
+    .ring-ram { stroke: var(--mystic-cyan); }
+    .ring-pwr { stroke: var(--sacred-gold); }
+
+    .gauge-center-text {
       position: absolute;
-      inset: 8px;
-      border: 1px dashed rgba(255, 23, 68, 0.4);
+      inset: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: var(--font-mono);
+      font-size: 12px;
+      font-weight: 700;
+      color: #fff;
+    }
+
+    .gauge-meta-title {
+      font-family: var(--font-mono);
+      font-size: 9px;
+      color: var(--text-dim);
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+
+    /* Reconnaissance Observation Viewport */
+    .viewport-box {
+      position: relative;
+      border-radius: var(--radius-md);
+      overflow: hidden;
+      background: #000;
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      aspect-ratio: 16 / 9;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .viewport-img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+      display: block;
+      transition: opacity 200ms ease;
+    }
+
+    .viewport-hud-overlay {
+      position: absolute;
+      inset: 0;
       pointer-events: none;
       display: flex;
       flex-direction: column;
       justify-content: space-between;
-      padding: 6px;
+      padding: 12px;
     }
 
-    .reticle-top {
+    .corner-brackets {
+      position: absolute;
+      inset: 8px;
+      border: 1px solid transparent;
+      pointer-events: none;
+    }
+
+    .corner-brackets::before {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 12px;
+      height: 12px;
+      border-top: 2px solid var(--crimson-core);
+      border-left: 2px solid var(--crimson-core);
+    }
+
+    .corner-brackets::after {
+      content: "";
+      position: absolute;
+      top: 0;
+      right: 0;
+      width: 12px;
+      height: 12px;
+      border-top: 2px solid var(--crimson-core);
+      border-right: 2px solid var(--crimson-core);
+    }
+
+    .hud-tag-top {
       display: flex;
       justify-content: space-between;
-      font-size: 10px;
       font-family: var(--font-mono);
-      color: var(--sacred-gold);
-      text-transform: uppercase;
+      font-size: 9px;
+      color: #fff;
       background: rgba(0, 0, 0, 0.6);
-      padding: 2px 6px;
+      padding: 2px 8px;
       border-radius: 4px;
+      backdrop-filter: blur(8px);
+      width: fit-content;
+      gap: 12px;
     }
 
-    /* Modal / Drawer */
+    .hud-tag-bottom {
+      display: flex;
+      justify-content: space-between;
+      font-family: var(--font-mono);
+      font-size: 9px;
+      color: var(--text-dim);
+      background: rgba(0, 0, 0, 0.6);
+      padding: 2px 8px;
+      border-radius: 4px;
+      backdrop-filter: blur(8px);
+      width: 100%;
+    }
+
+    /* Modal Styling */
     .modal-overlay {
       position: fixed;
       inset: 0;
-      background: rgba(0, 0, 0, 0.75);
-      backdrop-filter: blur(8px);
-      z-index: 1000;
+      background: rgba(4, 2, 8, 0.85);
+      backdrop-filter: blur(20px);
+      z-index: 200;
       display: none;
       align-items: center;
       justify-content: center;
-      padding: 20px;
+      padding: 24px;
     }
 
     .modal-overlay.open {
@@ -605,13 +935,13 @@
     }
 
     .modal-card {
-      background: #0d0918;
-      border: 1px solid var(--sacred-gold);
-      border-radius: 14px;
+      background: var(--bg-surface);
+      border: 1px solid rgba(251, 191, 36, 0.3);
+      box-shadow: 0 0 50px rgba(0, 0, 0, 0.8), 0 0 30px var(--sacred-glow);
+      border-radius: var(--radius-lg);
       max-width: 680px;
       width: 100%;
       padding: 28px;
-      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.9), 0 0 30px rgba(251, 191, 36, 0.2);
       max-height: 85vh;
       overflow-y: auto;
     }
@@ -620,84 +950,108 @@
       display: flex;
       justify-content: space-between;
       align-items: center;
-      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-      padding-bottom: 14px;
       margin-bottom: 20px;
     }
 
     .modal-title {
       font-family: var(--font-display);
-      font-size: 20px;
+      font-size: 18px;
       color: var(--sacred-gold);
+      letter-spacing: 1.5px;
     }
 
     .modal-close {
-      background: none;
+      background: transparent;
       border: none;
-      color: var(--text-muted);
+      color: var(--text-dim);
       font-size: 24px;
       cursor: pointer;
+      line-height: 1;
     }
 
-    .modal-close:hover { color: #fff; }
+    .modal-close:hover {
+      color: #fff;
+    }
 
-    .modal-body p {
+    .modal-body {
       font-size: 13px;
       line-height: 1.7;
-      color: #cbd5e1;
-      margin-bottom: 14px;
+      color: var(--text-muted);
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
     }
 
-    .modal-body ul {
-      margin: 10px 0 16px 20px;
-      color: #cbd5e1;
-      font-size: 13px;
-      line-height: 1.6;
+    .modal-body h4 {
+      color: #fff;
+      font-size: 14px;
+      margin-top: 6px;
     }
 
-    .modal-highlight {
-      border-left: 3px solid var(--raphael-crimson);
-      background: rgba(255, 23, 68, 0.08);
-      padding: 10px 14px;
-      border-radius: 0 6px 6px 0;
-      margin: 12px 0;
+    .modal-body kbd {
+      background: rgba(255, 255, 255, 0.08);
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      padding: 2px 6px;
+      border-radius: 4px;
+      font-family: var(--font-mono);
+      font-size: 11px;
+      color: var(--sacred-gold);
     }
 
-    footer.site-footer {
-      border-top: 1px solid rgba(255, 255, 255, 0.06);
-      padding: 14px 28px;
-      font-size: 12px;
-      color: var(--text-dim);
+    /* Footer */
+    footer {
+      border-top: 1px solid var(--border-card);
+      padding: 16px 32px;
+      background: rgba(6, 4, 12, 0.95);
       display: flex;
       justify-content: space-between;
       align-items: center;
-      background: rgba(6, 4, 12, 0.95);
+      font-family: var(--font-mono);
+      font-size: 11px;
+      color: var(--text-dim);
       flex-wrap: wrap;
-      gap: 10px;
+      gap: 12px;
     }
-</style>
-
-<!-- reze ma queen 🥀 -->
+  </style>
 </head>
+<!-- reze ma queen 🥀 -->
 <body>
 
-<!-- reze ma queen 🥀 -->
+<!-- Tactical Command Header -->
 <header>
-  <div class="brand-wrap">
-    <div class="brand-title">
-      CIEL // RAPHAEL <span class="kanji">智慧之王</span>
+  <div class="brand-section">
+    <div class="brand-crest" aria-hidden="true">
+      <span>✦</span>
     </div>
-    <div class="brand-sub">Ultimate Autonomous Windows 11 Nexus</div>
+    <div class="brand-info">
+      <div class="brand-title">
+        CIEL // RAPHAEL <span class="kanji-tag">智慧之王</span>
+      </div>
+      <div class="brand-subtitle">Autonomous Windows 11 Nexus // Tensura Architecture</div>
+    </div>
   </div>
+
+  <!-- Audio Spectrum Visualizer -->
+  <div class="audio-visualizer-dock" id="audioDock" title="Raphael Neural Audio Spectrum">
+    <div class="spectrum-bar" style="height: 8px;"></div>
+    <div class="spectrum-bar" style="height: 14px;"></div>
+    <div class="spectrum-bar" style="height: 19px;"></div>
+    <div class="spectrum-bar" style="height: 11px;"></div>
+    <div class="spectrum-bar" style="height: 16px;"></div>
+    <div class="spectrum-bar" style="height: 22px;"></div>
+    <div class="spectrum-bar" style="height: 9px;"></div>
+    <div class="spectrum-bar" style="height: 15px;"></div>
+  </div>
+
   <div class="header-actions">
-    <button class="btn-action btn-codex" onclick="openCodexModal()" aria-label="Open Codex &amp; Privacy Disclosures">
-      📜 SACRED CODEX &amp; PRIVACY
+    <button class="btn-header" onclick="openCodexModal()" aria-label="Open Sacred Codex">
+      📜 Sacred Codex
     </button>
-    <div id="phase-pill" class="status-pill">
-      <div class="pulse"></div>
-      <span id="phase-text">ONLINE // DORMANT</span>
+    <div class="status-badge" id="statusBadge">
+      <div class="status-beacon"></div>
+      <span id="statusText">ONLINE // DORMANT</span>
     </div>
-    <button class="btn-action btn-stop" onclick="stopAgent()" aria-label="Trigger Emergency Kill Switch">
+    <button class="btn-kill-switch" onclick="triggerKillSwitch()" aria-label="Abort Seal Emergency Kill Switch">
       ABORT SEAL (KILL SWITCH)
     </button>
   </div>
@@ -705,269 +1059,362 @@
 
 <!-- reze ma queen 🥀 -->
 <main>
-  <!-- Left Column: Command, Subskills, and Reasoning -->
-  <div>
-
-<!-- reze ma queen 🥀 -->
-<div class="card" style="margin-bottom: 24px;">
-      <div class="card-title">
-        <span>Directive Authority 《指揮命令》</span>
-        <span class="sub">Voice &amp; Vision Autonomous Execution</span>
+  <!-- Left Column: Directive Console, Sub-Skills Matrix, Cognitive Stream -->
+  <div class="column">
+    
+    <!-- Directive Authority Console -->
+    <div class="card">
+      <div class="card-header">
+        <div class="card-title-wrap">
+          <div class="card-rune">✦</div>
+          <div class="card-title">Directive Authority 《指揮命令》</div>
+        </div>
+        <div class="card-tag">FAST-PATH INSTANT ROUTING &bull; VISION ZERO-TOKEN</div>
       </div>
 
       <div class="command-box">
-        <div class="input-wrapper">
-          <input type="text" id="goal-input" placeholder="Command Wisdom King Raphael (e.g. open spotify and play harvey, system telemetry, volume 50)..." onkeydown="if(event.key==='Enter') executeTask()" aria-label="Agent Directive Input">
+        <div class="input-wrap">
+          <input 
+            type="text" 
+            id="goalInput" 
+            placeholder="Cast directive to Wisdom King Raphael (e.g. open spotify, play harvey on youtube, system telemetry)..." 
+            onkeydown="if(event.key==='Enter') castDirective()" 
+            aria-label="Direct Command Input"
+          >
+          <div class="input-kbd-shortcut">Ctrl+K</div>
         </div>
-        <button class="btn-exec" onclick="executeTask()" aria-label="Execute Directive">CAST DIRECTIVE</button>
+        <button class="btn-cast" onclick="castDirective()" aria-label="Execute Directive">
+          CAST DIRECTIVE
+        </button>
       </div>
 
-      <!-- Quick Soundboard Triggers -->
-      <div class="audio-dock">
-        <span class="dock-label">Voice &amp; SFX:</span>
-        <button class="btn-sound" onclick="triggerSound('notice')" title="Play Great Sage / Raphael Notice chime">🔔 《告》 Notice</button>
-        <button class="btn-sound" onclick="triggerSound('magic_circle')" title="Play Arcane Magic Circle sound">🔮 Magic Circle</button>
+      <!-- Quick Action Chips -->
+      <div class="quick-chips-wrap">
+        <span class="quick-chips-label">Quick Cast:</span>
+        <button class="chip" onclick="quickFill('play harvey on youtube')">▶ Play Harvey on YouTube</button>
+        <button class="chip" onclick="quickFill('open spotify and play harvey')">🎵 Spotify Play</button>
+        <button class="chip" onclick="quickFill('stream lofi beats')">📻 Stream Lofi Beats</button>
+        <button class="chip" onclick="quickFill('system telemetry')">📊 System Briefing</button>
+        <button class="chip" onclick="quickFill('find flights to tokyo')">✈ Find Flights</button>
+        <button class="chip" onclick="quickFill('undo')">↩ Undo Action</button>
       </div>
 
       <!-- Raphael's 5 Ultimate Sub-Skills -->
-
-<!-- reze ma queen 🥀 -->
-<div class="subskills-grid" id="subskills-container">
+      <div class="subskills-grid">
         <div class="subskill-card">
           <div class="subskill-kanji">《思考加速》</div>
           <div class="subskill-name">Thought Acceleration</div>
-          <div class="subskill-status" id="skill-thought">ACTIVE // 1,000,000x</div>
+          <div class="subskill-status" id="skillThought">1,000,000x ACTIVE</div>
         </div>
         <div class="subskill-card">
           <div class="subskill-kanji">《解析鑑定》</div>
           <div class="subskill-name">Analytical Appraisal</div>
-          <div class="subskill-status" id="skill-analysis">TARGETING // VIEWPORT</div>
+          <div class="subskill-status" id="skillAnalysis">VIEWPORT SYNC</div>
         </div>
         <div class="subskill-card">
           <div class="subskill-kanji">《並列演算》</div>
           <div class="subskill-name">Parallel Operation</div>
-          <div class="subskill-status" id="skill-parallel">SYNCHRONIZED</div>
+          <div class="subskill-status" id="skillParallel">THREADS: AUTO</div>
         </div>
         <div class="subskill-card">
           <div class="subskill-kanji">《詠唱破棄》</div>
           <div class="subskill-name">Chant Annulment</div>
-          <div class="subskill-status" id="skill-chant">SUB-50ms FAST-PATH</div>
+          <div class="subskill-status" id="skillChant">SUB-50ms PRIMED</div>
         </div>
         <div class="subskill-card">
           <div class="subskill-kanji">《森羅万象》</div>
           <div class="subskill-name">All of Creation</div>
-          <div class="subskill-status" id="skill-creation">WIN11 HOOKED</div>
+          <div class="subskill-status" id="skillCreation">WIN11 HOOKED</div>
         </div>
       </div>
 
-      <!-- Hardware Telemetry -->
-
-<!-- reze ma queen 🥀 -->
-<div class="gauges">
-        <div class="gauge">
-          <div class="gauge-lbl">CPU Calculation</div>
-          <div id="gauge-cpu" class="gauge-val">0%</div>
-        </div>
-        <div class="gauge">
-          <div class="gauge-lbl">Memory Matrix</div>
-          <div id="gauge-ram" class="gauge-val">0%</div>
-        </div>
-        <div class="gauge">
-          <div class="gauge-lbl">Power Nexus</div>
-          <div id="gauge-pwr" class="gauge-val">100%</div>
+      <!-- Voice & Soundboard Dock -->
+      <div class="sound-strip">
+        <span class="quick-chips-label">Raphael Arcane Voice:</span>
+        <div class="sound-buttons">
+          <button class="btn-sound" onclick="playSound('notice')">🔔 Notice Chime 《告》</button>
+          <button class="btn-sound" onclick="playSound('magic_circle')">🔮 Magic Circle</button>
+          <button class="btn-sound" onclick="playSound('power_up')">⚡ Power Up</button>
+          <button class="btn-sound" onclick="playSound('imagination')">✨ Imagination</button>
+          <button class="btn-sound" onclick="playSound('greeting')">🎙 Voice Greeting</button>
         </div>
       </div>
     </div>
 
-    <!-- Reasoning & Stream Card -->
-
-<!-- reze ma queen 🥀 -->
-<div class="card">
-      <div class="card-title">
-        <span>Reasoning &amp; Analytical Stream 《思考推論》</span>
-        <span class="sub">Tensura Analytical Appraisal Feed</span>
+    <!-- Cognitive Reasoning & Analytical Stream -->
+    <div class="card">
+      <div class="card-header">
+        <div class="card-title-wrap">
+          <div class="card-rune">📜</div>
+          <div class="card-title">Analytical Appraisal Feed 《思考推論》</div>
+        </div>
+        <div class="stream-controls">
+          <button class="filter-btn active" onclick="filterLogs('ALL')">ALL</button>
+          <button class="filter-btn" onclick="filterLogs('NOTICES')">NOTICES</button>
+          <button class="filter-btn" onclick="filterLogs('ACTIONS')">ACTIONS</button>
+          <button class="filter-btn" onclick="clearStream()">CLEAR</button>
+        </div>
       </div>
-      <div id="log-stream" class="log-stream" role="log" aria-live="polite">
-        <div class="log-item">
-          <span class="log-time">[INITIALIZE]</span>
-          <span class="tag-notice">《告》 NOTICE</span>
-          Wisdom King Raphael autonomous nexus online. All 5 sub-skills synchronized. Ready for directive.
+
+      <div class="log-stream" id="logStream" role="log" aria-live="polite">
+        <div class="log-entry" data-cat="NOTICES">
+          <span class="log-time">[BOOT]</span>
+          <span class="log-badge badge-notice">《告》 NOTICE</span>
+          <span class="log-msg">Wisdom King Raphael autonomous nexus online. All 5 sub-skills synchronized with Windows 11.</span>
         </div>
       </div>
     </div>
+
   </div>
 
-  <!-- Right Column: Magic Circle & Screen Viewport -->
-  <div>
-    <div class="card" style="margin-bottom: 24px;">
-      <div class="card-title">
-        <span>Sacred Magic Circle 《魔法陣》</span>
-        <span class="sub">Wisdom Nexus Core</span>
-      </div>
-      <div class="magic-circle-wrap">
-        <div class="magic-circle-box">
-          <div class="circle-outer"></div>
-          <div class="circle-middle"></div>
-          <div class="circle-hexagram"></div>
-          <div class="circle-core"></div>
+<!-- reze ma queen 🥀 -->
+  <!-- Right Column: Magic Circle Canvas, Hardware Telemetry, Recon Viewport -->
+  <div class="column">
+    
+    <!-- Sacred Geometry Magic Circle Card -->
+    <div class="card">
+      <div class="card-header">
+        <div class="card-title-wrap">
+          <div class="card-rune">✦</div>
+          <div class="card-title">Sacred Arcana Nexus 《魔法陣》</div>
         </div>
-        <div class="circle-caption" id="active-win-lbl">TARGET: DESKTOP VIEWPORT</div>
+        <div class="card-tag">CANVAS 2D &bull; REAL-TIME REACTION</div>
+      </div>
+
+      <div class="magic-circle-container">
+        <canvas id="magicCircleCanvas" width="280" height="280"></canvas>
+        <div class="circle-target-info">
+          <span class="circle-target-label">ACTIVE VIEWPORT FOCUS</span>
+          <span class="circle-target-window" id="activeWindowLabel">CIEL // RAPHAEL COMMAND NEXUS</span>
+        </div>
       </div>
     </div>
 
-<!-- reze ma queen 🥀 -->
-<div class="card">
-      <div class="card-title">
-        <span>Observation Viewport 《鑑定視野》</span>
-        <span class="sub">Real-Time Windows 11 Feed</span>
+    <!-- Quantum & Hardware Telemetry -->
+    <div class="card">
+      <div class="card-header">
+        <div class="card-title-wrap">
+          <div class="card-rune">⚡</div>
+          <div class="card-title">Quantum Telemetry 《遠隔測定》</div>
+        </div>
+        <div class="card-tag">WIN32 DIRECT TELEMETRY</div>
       </div>
-      <div class="screen-preview-box">
-        <img id="screen-img" class="screen-preview" src="/api/screenshot" alt="Desktop Observation Feed" onerror="this.style.opacity=0.3">
-        <div class="screen-reticle">
-          <div class="reticle-top">
-            <span>ANALYSIS: ACTIVE</span>
-            <span id="reticle-fps">LIVE // 1280x720</span>
+
+      <div class="telemetry-gauges-row">
+        <!-- CPU Gauge -->
+        <div class="gauge-widget">
+          <div class="svg-ring-wrap">
+            <svg width="72" height="72">
+              <circle class="ring-bg" cx="36" cy="36" r="30"></circle>
+              <circle class="ring-val ring-cpu" id="cpuRing" cx="36" cy="36" r="30"></circle>
+            </svg>
+            <div class="gauge-center-text" id="cpuVal">0%</div>
           </div>
-          <div style="font-size: 9px; font-family: var(--font-mono); color: var(--text-dim); text-align: right;">
-            RAPHAEL SIGHT // 01
+          <span class="gauge-meta-title">CPU Calculation</span>
+        </div>
+
+        <!-- RAM Gauge -->
+        <div class="gauge-widget">
+          <div class="svg-ring-wrap">
+            <svg width="72" height="72">
+              <circle class="ring-bg" cx="36" cy="36" r="30"></circle>
+              <circle class="ring-val ring-ram" id="ramRing" cx="36" cy="36" r="30"></circle>
+            </svg>
+            <div class="gauge-center-text" id="ramVal">0%</div>
+          </div>
+          <span class="gauge-meta-title">Memory Matrix</span>
+        </div>
+
+        <!-- Power Gauge -->
+        <div class="gauge-widget">
+          <div class="svg-ring-wrap">
+            <svg width="72" height="72">
+              <circle class="ring-bg" cx="36" cy="36" r="30"></circle>
+              <circle class="ring-val ring-pwr" id="pwrRing" cx="36" cy="36" r="30"></circle>
+            </svg>
+            <div class="gauge-center-text" id="pwrVal">100%</div>
+          </div>
+          <span class="gauge-meta-title">Power Nexus</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Observation Viewport (Real-time Vision) -->
+    <div class="card">
+      <div class="card-header">
+        <div class="card-title-wrap">
+          <div class="card-rune">👁</div>
+          <div class="card-title">Observation Viewport 《鑑定視野》</div>
+        </div>
+        <div class="card-tag">LIVE SCREEN RECONNAISSANCE</div>
+      </div>
+
+      <div class="viewport-box">
+        <img id="viewportImg" class="viewport-img" src="/api/screenshot" alt="Live Windows 11 Desktop Observation Feed">
+        <div class="corner-brackets"></div>
+        <div class="viewport-hud-overlay">
+          <div class="hud-tag-top">
+            <span>RAPHAEL SIGHT</span>
+            <span id="reconFps">LIVE // 1280x720</span>
+          </div>
+          <div class="hud-tag-bottom">
+            <span>RECONNAISSANCE SENSOR: ACTIVE</span>
+            <span id="hudTarget">DESKTOP</span>
           </div>
         </div>
       </div>
     </div>
+
   </div>
 </main>
 
-<!-- Sacred Codex / Compliance & Privacy Modal -->
-
 <!-- reze ma queen 🥀 -->
-<div class="modal-overlay" id="codex-modal" onclick="if(event.target===this) closeCodexModal()">
-  <div class="modal-card" role="dialog" aria-modal="true" aria-labelledby="codex-title">
+<!-- Sacred Codex Modal -->
+<div class="modal-overlay" id="codexModal" onclick="if(event.target===this) closeCodexModal()">
+  <div class="modal-card" role="dialog" aria-modal="true" aria-labelledby="codexHeading">
     <div class="modal-header">
-      <h2 class="modal-title" id="codex-title">Sacred Codex &amp; Compliance Safeguards</h2>
+      <h3 class="modal-title" id="codexHeading">📜 Sacred Codex & Compliance Safeguards</h3>
       <button class="modal-close" onclick="closeCodexModal()" aria-label="Close dialog">&times;</button>
     </div>
     <div class="modal-body">
-      <div class="modal-highlight">
-        <strong>Local-First Offline Privacy Guarantee:</strong> CIEL operates 100% locally on your machine. Screen observations, telemetry metrics, and local SAPI voice synthesis are executed in-memory. Zero telemetry or user screenshots are transmitted to external servers.
+      <div>
+        <strong>Local-First Offline Privacy Guarantee:</strong>
+        <p>CIEL operates 100% locally on your machine. Screen observations, telemetry metrics, and local SAPI voice synthesis are executed in-memory. Zero telemetry or user screenshots are transmitted to external servers.</p>
       </div>
 
-      <h3 style="color: var(--sacred-gold); margin: 16px 0 8px; font-size: 15px;">Fair Use &amp; Intellectual Property Attribution</h3>
-      <p>
-        <strong>Character &amp; Universe Lore:</strong> <em>Wisdom King Raphael</em> (智慧之王) and <em>Manas: Ciel</em> (神智核) originate from <em>That Time I Got Reincarnated as a Slime</em> (<em>Tensei Shitara Slime Datta Ken</em>).
-      </p>
-      <p>
-        Copyright and registered trademarks belong to <strong>Fuse / Mitz Vah / Kodansha / 8bit Project</strong>. This desktop assistant GUI is a non-commercial academic fan tribute created under fair use doctrine (Section 52 of the Indian Copyright Act 1957 and US 17 U.S.C. § 107).
-      </p>
+      <div>
+        <h4>Fair Use & Intellectual Property Attribution</h4>
+        <p><em>Wisdom King Raphael</em> (智慧之王) and <em>Manas: Ciel</em> (神智核) originate from <em>That Time I Got Reincarnated as a Slime</em> (<em>Tensei Shitara Slime Datta Ken</em>).</p>
+        <p>Copyright and registered trademarks belong to <strong>Fuse / Mitz Vah / Kodansha / 8bit Project</strong>. This desktop assistant GUI is a non-commercial educational project and anime fan tribute created under fair use doctrine.</p>
+      </div>
 
-      <h3 style="color: var(--sacred-gold); margin: 16px 0 8px; font-size: 15px;">Safety Controls &amp; Emergency Protocols</h3>
-      <ul>
-        <li><strong>Emergency Kill Switch:</strong> Press <kbd>Ctrl + Alt + X</kbd> at any time or slam your cursor to the top-left coordinate (0,0) to instantly abort execution.</li>
-        <li><strong>Deterministic Safety:</strong> High-risk operations (file deletion, format, credentials) trigger safety confirmation gates.</li>
-        <li><strong>Accessibility:</strong> Full keyboard navigability (<kbd>Enter</kbd> to dispatch, <kbd>Tab</kbd> order, high-contrast ratios).</li>
-      </ul>
+      <div>
+        <h4>Safety Controls & Emergency Protocols</h4>
+        <p><kbd>Ctrl + Alt + X</kbd> or slam cursor to top-left coordinate (0,0) to immediately trigger Emergency Kill Switch.</p>
+        <p><kbd>Ctrl + K</kbd> to jump focus to directive input. <kbd>Enter</kbd> to cast.</p>
+      </div>
 
-      <p style="font-size: 12px; color: var(--text-dim); margin-top: 18px; border-top: 1px solid rgba(255,255,255,0.08); padding-top: 10px;">
-        Architect: <strong>Aaditya Srinivasan</strong> (B.Tech AI &amp; Data Science, Madurai, Tamil Nadu, India).
-      </p>
+      <div style="border-top: 1px solid rgba(255,255,255,0.08); padding-top: 10px; font-size: 11px; color: var(--text-dim);">
+        Architect: <strong>Aaditya Srinivasan</strong> (B.Tech AI & Data Science, Madurai, Tamil Nadu, India).
+      </div>
     </div>
   </div>
 </div>
 
 <!-- reze ma queen 🥀 -->
-<footer class="site-footer">
+<footer>
   <div>
-    <span>CIEL: Autonomous Windows 11 Desktop Agent // Inspired by Wisdom King Raphael (Tensura).</span>
+    <span>CIEL: Autonomous Windows 11 Desktop Agent // Wisdom King Raphael Architecture</span>
   </div>
   <div>
-    <span>Emergency Halt: <kbd>Ctrl + Alt + X</kbd> &nbsp;|&nbsp; Author: Aaditya Srinivasan</span>
+    <span>Emergency Halt: <kbd style="background: rgba(255,23,68,0.2); padding: 2px 6px; border-radius: 4px; color: var(--crimson-core);">Ctrl + Alt + X</kbd> &bull; Author: Aaditya Srinivasan</span>
   </div>
 </footer>
 
 <!-- reze ma queen 🥀 -->
 <script>
+  // UI and State Management
+  const CIRCLE_CIRCUMFERENCE = 188.4; // 2 * pi * 30
+
+  // reze ma queen 🥀
+  function setGauge(ringId, valId, percent) {
+    const ring = document.getElementById(ringId);
+    const label = document.getElementById(valId);
+    if (!ring || !label) return;
+    const clamped = Math.max(0, Math.min(100, percent));
+    const offset = CIRCLE_CIRCUMFERENCE - (clamped / 100) * CIRCLE_CIRCUMFERENCE;
+    ring.style.strokeDashoffset = offset;
+    label.textContent = Math.round(clamped) + '%';
+  }
+
+  // reze ma queen 🥀
   function openCodexModal() {
-    document.getElementById('codex-modal').classList.add('open');
+    document.getElementById('codexModal').classList.add('open');
   }
 
+  // reze ma queen 🥀
   function closeCodexModal() {
-    document.getElementById('codex-modal').classList.remove('open');
+    document.getElementById('codexModal').classList.remove('open');
   }
 
+  // Keyboard Shortcuts
   document.addEventListener('keydown', (e) => {
     if (e.key === 'Escape') closeCodexModal();
+    if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'k') {
+      e.preventDefault();
+      const input = document.getElementById('goalInput');
+      if (input) {
+        input.focus();
+        input.select();
+      }
+    }
   });
-  
+
   // reze ma queen 🥀
-  async function triggerSound(name) {
-    try {
-      appendLog('《発声》 Invoking sound: ' + name, 'tag-notice');
-      await fetch('/api/audio/play/' + encodeURIComponent(name), { method: 'POST' });
-    } catch (e) {
-      appendLog('[SFX ERROR] ' + e.message, 'tag-alert');
+  function quickFill(commandText) {
+    const input = document.getElementById('goalInput');
+    if (!input) return;
+    input.value = commandText;
+    input.focus();
+  }
+
+  // reze ma queen 🥀
+  function appendLog(text, tag = '《報告》 REPORT', type = 'badge-report', category = 'ACTIONS') {
+    const stream = document.getElementById('logStream');
+    if (!stream) return;
+    const d = new Date();
+    const timeStr = d.toTimeString().split(' ')[0];
+
+    const entry = document.createElement('div');
+    entry.className = 'log-entry';
+    entry.setAttribute('data-cat', category);
+    entry.innerHTML = `
+      <span class="log-time">[${timeStr}]</span>
+      <span class="log-badge ${type}">${tag}</span>
+      <span class="log-msg">${text}</span>
+    `;
+
+    stream.appendChild(entry);
+    stream.scrollTop = stream.scrollHeight;
+  }
+
+  // reze ma queen 🥀
+  function clearStream() {
+    const stream = document.getElementById('logStream');
+    if (stream) {
+      stream.innerHTML = '';
+      appendLog('Log feed cleared.', '《情報》 INFO', 'badge-notice', 'NOTICES');
     }
   }
-  
+
   // reze ma queen 🥀
-  async function pollStatus() {
-    try {
-      const res = await fetch('/api/status');
-      const data = await res.json();
-      
-      const phasePill = document.getElementById('phase-text');
-      const pillBox = document.getElementById('phase-pill');
+  function filterLogs(category) {
+    const buttons = document.querySelectorAll('.filter-btn');
+    buttons.forEach(b => b.classList.remove('active'));
+    event.target.classList.add('active');
 
-      if (data.status === 'running') {
-        phasePill.textContent = 'RAPHAEL // EXECUTING: ' + (data.goal || 'STEP ' + data.step);
-        pillBox.classList.add('active');
-      } else if (data.status === 'stopped') {
-        phasePill.textContent = 'ABORTED // KILL SWITCH TRIGGERED';
-        pillBox.classList.remove('active');
-        phasePill.style.color = 'var(--raphael-crimson)';
+    const entries = document.querySelectorAll('.log-entry');
+    entries.forEach(e => {
+      if (category === 'ALL') {
+        e.style.display = 'flex';
       } else {
-        phasePill.textContent = 'ONLINE // DORMANT';
-        pillBox.classList.remove('active');
-        phasePill.style.color = 'var(--ethereal-white)';
+        const cat = e.getAttribute('data-cat');
+        e.style.display = (cat === category) ? 'flex' : 'none';
       }
-
-      if (data.active_window) {
-        document.getElementById('active-win-lbl').textContent = 'TARGET: ' + data.active_window.toUpperCase();
-      }
-
-      if (data.raphael_subskills) {
-        const s = data.raphael_subskills;
-        if (s.thought_acceleration) document.getElementById('skill-thought').textContent = s.thought_acceleration.status;
-        if (s.analytical_appraisal) document.getElementById('skill-analysis').textContent = (s.analytical_appraisal.target || 'VIEWPORT').substring(0, 20);
-        if (s.parallel_operation) document.getElementById('skill-parallel').textContent = 'THREADS: ' + (s.parallel_operation.threads || '2');
-      }
-    } catch (e) {}
-
-    try {
-      const tRes = await fetch('/api/telemetry');
-      const tData = await tRes.json();
-      document.getElementById('gauge-cpu').textContent = tData.cpu_percent + '%';
-      document.getElementById('gauge-ram').textContent = tData.memory.memory_load_percent + '%';
-      if (tData.power.has_battery) {
-        document.getElementById('gauge-pwr').textContent = tData.power.battery_percent + '%';
-      } else {
-        document.getElementById('gauge-pwr').textContent = 'AC LINE';
-      }
-    } catch (e) {}
-
-    // Refresh screenshot preview
-    const screenImg = document.getElementById('screen-img');
-    if (screenImg) {
-      screenImg.src = '/api/screenshot?t=' + Date.now();
-    }
+    });
   }
-  
+
   // reze ma queen 🥀
-  async function executeTask() {
-    const input = document.getElementById('goal-input');
+  async function castDirective() {
+    const input = document.getElementById('goalInput');
     const goal = input.value.trim();
     if (!goal) return;
 
-    appendLog('《告》 Directive received: ' + goal, 'tag-notice');
+    appendLog('Directive dispatched: ' + goal, '《詠唱》 CAST', 'badge-action', 'ACTIONS');
     input.value = '';
+
+    // Animate audio spectrum
+    triggerVisualizerPulse(2500);
 
     try {
       const res = await fetch('/api/task', {
@@ -976,36 +1423,223 @@
         body: JSON.stringify({ goal })
       });
       const data = await res.json();
-      appendLog('《報告》 Thought Acceleration engaged: ' + (data.message || 'Task commenced.'), 'tag-report');
+      appendLog(data.message || 'Cognitive task commenced.', '《思考》 TASK', 'badge-report', 'ACTIONS');
     } catch (e) {
-      appendLog('《警告》 Execution anomaly: ' + e.message, 'tag-alert');
+      appendLog('Directive error: ' + e.message, '《警告》 ERROR', 'badge-alert', 'NOTICES');
     }
   }
-  
+
   // reze ma queen 🥀
-  async function stopAgent() {
+  async function triggerKillSwitch() {
     try {
       await fetch('/api/stop', { method: 'POST' });
-      appendLog('《警告》 EMERGENCY KILL SWITCH ENGAGED. All operations suspended.', 'tag-alert');
-    } catch (e) {}
+      appendLog('EMERGENCY KILL SWITCH TRIGGERED. Operations aborted.', '《警告》 ABORT', 'badge-alert', 'NOTICES');
+      const badge = document.getElementById('statusBadge');
+      const text = document.getElementById('statusText');
+      if (badge && text) {
+        badge.className = 'status-badge stopped';
+        text.textContent = 'ABORTED // KILL SWITCH';
+      }
+    } catch (e) {
+      appendLog('Kill switch communication failed: ' + e.message, '《警告》 ERROR', 'badge-alert', 'NOTICES');
+    }
   }
-  
+
   // reze ma queen 🥀
-  function appendLog(text, tagClass = 'tag-report') {
-    const stream = document.getElementById('log-stream');
-    const d = new Date();
-    const timeStr = d.toLocaleTimeString();
-    const div = document.createElement('div');
-    div.className = 'log-item';
-    div.innerHTML = `<span class="log-time">[${timeStr}]</span> ${text}`;
-    stream.appendChild(div);
-    stream.scrollTop = stream.scrollHeight;
+  async function playSound(name) {
+    try {
+      appendLog('Playing voice arcane sound: ' + name, '《発声》 SOUND', 'badge-notice', 'NOTICES');
+      triggerVisualizerPulse(1800);
+      await fetch('/api/audio/play/' + encodeURIComponent(name), { method: 'POST' });
+    } catch (e) {
+      appendLog('Audio playback anomaly: ' + e.message, '《警告》 SFX', 'badge-alert', 'NOTICES');
+    }
   }
 
-  setInterval(pollStatus, 1800);
-  pollStatus();
-</script>
+  function triggerVisualizerPulse(durationMs = 2000) {
+    const dock = document.getElementById('audioDock');
+    if (!dock) return;
+    dock.classList.add('active');
+    setTimeout(() => {
+      dock.classList.remove('active');
+    }, durationMs);
+  }
 
+  // reze ma queen 🥀
+  async function pollStatus() {
+    try {
+      const res = await fetch('/api/status');
+      const data = await res.json();
+
+      const badge = document.getElementById('statusBadge');
+      const text = document.getElementById('statusText');
+      const winLabel = document.getElementById('activeWindowLabel');
+      const hudTarget = document.getElementById('hudTarget');
+
+      if (data.status === 'running') {
+        badge.className = 'status-badge running';
+        text.textContent = 'EXECUTING // ' + (data.goal ? data.goal.substring(0, 22).toUpperCase() : 'STEP ' + data.step);
+      } else if (data.status === 'stopped' || data.is_stopped) {
+        badge.className = 'status-badge stopped';
+        text.textContent = 'HALTED // KILL SWITCH';
+      } else {
+        badge.className = 'status-badge';
+        text.textContent = 'ONLINE // DORMANT';
+      }
+
+      if (data.active_window) {
+        const title = data.active_window.toUpperCase();
+        if (winLabel) winLabel.textContent = title;
+        if (hudTarget) hudTarget.textContent = title.substring(0, 24);
+      }
+
+      if (data.raphael_subskills) {
+        const s = data.raphael_subskills;
+        if (s.thought_acceleration) document.getElementById('skillThought').textContent = s.thought_acceleration.status;
+        if (s.analytical_appraisal) document.getElementById('skillAnalysis').textContent = (s.analytical_appraisal.target || 'VIEWPORT').substring(0, 16);
+        if (s.parallel_operation) document.getElementById('skillParallel').textContent = 'THREADS: ' + (s.parallel_operation.threads || '4');
+      }
+    } catch (e) {}
+
+    try {
+      const tRes = await fetch('/api/telemetry');
+      const t = await tRes.json();
+      setGauge('cpuRing', 'cpuVal', t.cpu_percent || 0);
+      setGauge('ramRing', 'ramVal', t.memory ? t.memory.memory_load_percent : 0);
+      if (t.power && t.power.has_battery) {
+        setGauge('pwrRing', 'pwrVal', t.power.battery_percent || 100);
+      } else {
+        setGauge('pwrRing', 'pwrVal', 100);
+        document.getElementById('pwrVal').textContent = 'AC';
+      }
+    } catch (e) {}
+
+    // Refresh screenshot preview
+    const screenImg = document.getElementById('viewportImg');
+    if (screenImg) {
+      screenImg.src = '/api/screenshot?t=' + Date.now();
+    }
+  }
+
+  // reze ma queen 🥀
+  // Animated Sacred Geometry Magic Circle on HTML5 Canvas
+  function initMagicCircle() {
+    const canvas = document.getElementById('magicCircleCanvas');
+    if (!canvas) return;
+    const ctx = canvas.getContext('2d');
+    let angle = 0;
+
+    function draw() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      const cx = canvas.width / 2;
+      const cy = canvas.height / 2;
+
+      ctx.save();
+      ctx.translate(cx, cy);
+
+      // Outer Runic Ring (Clockwise)
+      ctx.save();
+      ctx.rotate(angle * 0.4);
+      ctx.beginPath();
+      ctx.arc(0, 0, 118, 0, Math.PI * 2);
+      ctx.strokeStyle = 'rgba(255, 23, 68, 0.45)';
+      ctx.lineWidth = 1.5;
+      ctx.stroke();
+
+      // Outer Glyphs / Ticks
+      for (let i = 0; i < 24; i++) {
+        const rad = (i * Math.PI * 2) / 24;
+        const x1 = Math.cos(rad) * 114;
+        const y1 = Math.sin(rad) * 114;
+        const x2 = Math.cos(rad) * (i % 2 === 0 ? 122 : 118);
+        const y2 = Math.sin(rad) * (i % 2 === 0 ? 122 : 118);
+        ctx.beginPath();
+        ctx.moveTo(x1, y1);
+        ctx.lineTo(x2, y2);
+        ctx.strokeStyle = (i % 2 === 0) ? '#fbbf24' : 'rgba(255, 23, 68, 0.6)';
+        ctx.lineWidth = 1.2;
+        ctx.stroke();
+      }
+      ctx.restore();
+
+      // Middle Sacred Heptagram / Nonagram (Counter-Clockwise)
+      ctx.save();
+      ctx.rotate(-angle * 0.6);
+      ctx.beginPath();
+      ctx.arc(0, 0, 88, 0, Math.PI * 2);
+      ctx.strokeStyle = 'rgba(251, 191, 36, 0.4)';
+      ctx.lineWidth = 1.2;
+      ctx.stroke();
+
+      // Intersecting Triangles
+      const points = 7;
+      ctx.beginPath();
+      for (let i = 0; i < points * 2; i++) {
+        const r = (i % 2 === 0) ? 88 : 42;
+        const theta = (i * Math.PI) / points;
+        const x = Math.cos(theta) * r;
+        const y = Math.sin(theta) * r;
+        if (i === 0) ctx.moveTo(x, y);
+        else ctx.lineTo(x, y);
+      }
+      ctx.closePath();
+      ctx.strokeStyle = 'rgba(255, 23, 68, 0.65)';
+      ctx.lineWidth = 1.2;
+      ctx.stroke();
+      ctx.restore();
+
+      // Inner Core Ring
+      ctx.save();
+      ctx.rotate(angle * 1.1);
+      ctx.beginPath();
+      ctx.arc(0, 0, 52, 0, Math.PI * 2);
+      ctx.strokeStyle = 'rgba(56, 189, 248, 0.5)';
+      ctx.lineWidth = 1;
+      ctx.stroke();
+      ctx.restore();
+
+      // Pulsating Sacred Core Glowing Orb
+      const pulse = Math.sin(angle * 3) * 4;
+      const radGrad = ctx.createRadialGradient(0, 0, 4, 0, 0, 24 + pulse);
+      radGrad.addColorStop(0, '#ffffff');
+      radGrad.addColorStop(0.25, '#ff1744');
+      radGrad.addColorStop(0.7, 'rgba(225, 29, 72, 0.4)');
+      radGrad.addColorStop(1, 'transparent');
+
+      ctx.beginPath();
+      ctx.arc(0, 0, 24 + pulse, 0, Math.PI * 2);
+      ctx.fillStyle = radGrad;
+      ctx.fill();
+
+      ctx.restore();
+
+      angle += 0.008;
+      requestAnimationFrame(draw);
+    }
+
+    draw();
+  }
+
+  // Audio spectrum idle animation
+  function initSpectrum() {
+    const bars = document.querySelectorAll('.spectrum-bar');
+    setInterval(() => {
+      const active = document.getElementById('audioDock').classList.contains('active');
+      bars.forEach(bar => {
+        const baseH = active ? Math.floor(Math.random() * 18 + 6) : Math.floor(Math.random() * 8 + 4);
+        bar.style.height = baseH + 'px';
+      });
+    }, 140);
+  }
+
+  // Initialize on load
+  window.addEventListener('DOMContentLoaded', () => {
+    initMagicCircle();
+    initSpectrum();
+    setInterval(pollStatus, 1800);
+    pollStatus();
+  });
+</script>
 <!-- reze ma queen 🥀 -->
 </body>
 </html>
