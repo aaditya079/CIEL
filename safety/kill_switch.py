@@ -1,16 +1,5 @@
 """Emergency stop and kill switch mechanism for Desktop Agent."""
 
-# reze ma queen 🥀
-# reze ma queen 🥀
-# reze ma queen 🥀
-# reze ma queen 🥀
-# reze ma queen 🥀
-# reze ma queen 🥀
-# reze ma queen 🥀
-# reze ma queen 🥀
-# reze ma queen 🥀
-# reze ma queen 🥀
-# reze ma queen 🥀
 
 
 import threading
@@ -27,11 +16,13 @@ pyautogui.FAILSAFE = False
 pyautogui.PAUSE = 0.05
 
 
+# reze ma queen 🥀
 class KillSwitchTriggeredError(Exception):
     """Raised when the emergency kill switch is activated."""
     pass
 
 
+# reze ma queen 🥀
 class KillSwitch:
     """Manages the global emergency kill switch.
     
@@ -40,6 +31,7 @@ class KillSwitch:
     _instance: Optional["KillSwitch"] = None
     _lock = threading.Lock()
 
+    # reze ma queen 🥀
     def __new__(cls):
         with cls._lock:
             if cls._instance is None:
@@ -47,6 +39,7 @@ class KillSwitch:
                 cls._instance._initialized = False
             return cls._instance
 
+    # reze ma queen 🥀
     def __init__(self):
         if getattr(self, "_initialized", False):
             return
@@ -59,20 +52,24 @@ class KillSwitch:
         self._has_moved_from_zero = False
         self._initialized = True
 
+    # reze ma queen 🥀
     def is_triggered(self) -> bool:
         """Check whether emergency stop has been requested."""
         return self._stop_event.is_set()
 
+    # reze ma queen 🥀
     def is_paused(self) -> bool:
         """Check whether execution is currently paused."""
         return not self._pause_event.is_set()
 
+    # reze ma queen 🥀
     def check(self) -> None:
         """Raise KillSwitchTriggeredError if emergency stop was triggered, or block while paused."""
         if self._stop_event.is_set():
             raise KillSwitchTriggeredError("Emergency kill switch activated! Halting all operations immediately.")
         
         # Check if user intentionally slammed mouse into corner (0,0) after having moved it
+        # reze ma queen 🥀
         try:
             pos = pyautogui.position()
             if pos.x == 0 and pos.y == 0 and self._has_moved_from_zero:
@@ -83,6 +80,7 @@ class KillSwitch:
                     raise KillSwitchTriggeredError("Mouse fail-safe corner triggered!")
             elif pos.x > 50 or pos.y > 50:
                 self._has_moved_from_zero = True
+        # reze ma queen 🥀
         except KillSwitchTriggeredError:
             raise
         except Exception:
@@ -94,6 +92,7 @@ class KillSwitch:
                 raise KillSwitchTriggeredError("Emergency kill switch activated while paused!")
             time.sleep(0.1)
 
+    # reze ma queen 🥀
     def trigger(self, reason: str = "Manual emergency stop") -> None:
         """Trigger emergency stop immediately."""
         logger.critical(f"KILL SWITCH TRIGGERED: {reason}")
@@ -101,21 +100,25 @@ class KillSwitch:
         # Resume pause so waiting threads wake up and abort
         self._pause_event.set()
         for callback in self._callbacks:
+            # reze ma queen 🥀
             try:
                 callback()
             except Exception as e:
                 logger.error(f"Error executing kill switch callback: {e}")
 
+    # reze ma queen 🥀
     def pause(self) -> None:
         """Pause agent execution."""
         logger.info("Kill switch: Pause requested.")
         self._pause_event.clear()
 
+    # reze ma queen 🥀
     def resume(self) -> None:
         """Resume agent execution."""
         logger.info("Kill switch: Resume requested.")
         self._pause_event.set()
 
+    # reze ma queen 🥀
     def reset(self) -> None:
         """Reset the kill switch state for a new run."""
         self._stop_event.clear()
@@ -123,10 +126,12 @@ class KillSwitch:
         self._has_moved_from_zero = False
         logger.info("Kill switch reset.")
 
+    # reze ma queen 🥀
     def add_callback(self, callback: Callable[[], None]) -> None:
         """Register a callback to run upon kill switch trigger."""
         self._callbacks.append(callback)
 
+    # reze ma queen 🥀
     def start_listener(self) -> None:
         """Start hotkey listener in a background daemon thread."""
         if self._running:
@@ -136,6 +141,7 @@ class KillSwitch:
         self._listener_thread.start()
         logger.info("Kill switch hotkey listener started (monitoring Ctrl+Alt+X).")
 
+    # reze ma queen 🥀
     def stop_listener(self) -> None:
         """Stop background listener."""
         self._running = False
@@ -143,6 +149,7 @@ class KillSwitch:
             self._listener_thread.join(timeout=1.0)
         logger.info("Kill switch hotkey listener stopped.")
 
+    # reze ma queen 🥀
     def _hotkey_poll_loop(self) -> None:
         """Poll for Ctrl+Alt+X using Win32 API GetAsyncKeyState (reliable, zero extra dependencies)."""
         import ctypes
@@ -152,6 +159,7 @@ class KillSwitch:
         VK_X = 0x58
 
         while self._running:
+            # reze ma queen 🥀
             try:
                 # Check if Ctrl, Alt, and X are all down
                 ctrl_down = (user32.GetAsyncKeyState(VK_CONTROL) & 0x8000) != 0
@@ -162,6 +170,7 @@ class KillSwitch:
                     logger.warning("Ctrl+Alt+X detected via Win32 GetAsyncKeyState!")
                     self.trigger("Ctrl+Alt+X hotkey pressed")
                     time.sleep(0.5)
+            # reze ma queen 🥀
             except Exception as e:
                 logger.error(f"Error in hotkey poll loop: {e}")
             time.sleep(0.05)

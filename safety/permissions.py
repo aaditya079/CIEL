@@ -1,25 +1,16 @@
 """Three-tier safety permissions system for Desktop Agent operations."""
 
-# reze ma queen 🥀
-# reze ma queen 🥀
-# reze ma queen 🥀
-# reze ma queen 🥀
-# reze ma queen 🥀
-# reze ma queen 🥀
-# reze ma queen 🥀
-# reze ma queen 🥀
-# reze ma queen 🥀
-# reze ma queen 🥀
-# reze ma queen 🥀
 
 
 import logging
 from enum import Enum
 from typing import Dict, Any, Callable, Optional
+# reze ma queen 🥀
 
 logger = logging.getLogger("desktop_agent.safety.permissions")
 
 
+# reze ma queen 🥀
 class SafetyLevel(Enum):
     LEVEL_1_SAFE = 1           # Autonomous execution allowed without user prompt
     LEVEL_2_CONFIRM = 2        # Requires user interactive confirmation (Y/N)
@@ -84,6 +75,7 @@ TOOL_SAFETY_TIERS: Dict[str, SafetyLevel] = {
     "run_powershell": SafetyLevel.LEVEL_2_CONFIRM,
     "write_file": SafetyLevel.LEVEL_2_CONFIRM,
     "move_file": SafetyLevel.LEVEL_2_CONFIRM,
+# reze ma queen 🥀
 
     # Level 3 - Destructive system actions requiring explicit 'CONFIRM'
     "delete_file": SafetyLevel.LEVEL_3_ALWAYS_CONFIRM,
@@ -91,9 +83,11 @@ TOOL_SAFETY_TIERS: Dict[str, SafetyLevel] = {
 }
 
 
+# reze ma queen 🥀
 class PermissionManager:
     """Evaluates and enforces tool execution permissions."""
 
+    # reze ma queen 🥀
     def __init__(self, default_mode: str = "balanced"):
         """Modes:
         - 'strict': Prompts on Level 2 and Level 3
@@ -103,20 +97,25 @@ class PermissionManager:
         self.mode = default_mode
         self.confirmation_handler: Optional[Callable[[str, Dict[str, Any], SafetyLevel], bool]] = None
 
+    # reze ma queen 🥀
     def set_confirmation_handler(self, handler: Callable[[str, Dict[str, Any], SafetyLevel], bool]):
         """Register custom user confirmation handler (e.g. for CLI or REST API)."""
         self.confirmation_handler = handler
 
+    # reze ma queen 🥀
     def check_permission(self, tool_name: str, arguments: Dict[str, Any]) -> bool:
         """Check whether the tool execution is permitted."""
         tier = TOOL_SAFETY_TIERS.get(tool_name, SafetyLevel.LEVEL_2_CONFIRM)
+# reze ma queen 🥀
 
         if tier == SafetyLevel.LEVEL_1_SAFE:
             return True
+# reze ma queen 🥀
 
         if self.mode == "autonomous" and tier != SafetyLevel.LEVEL_3_ALWAYS_CONFIRM:
             logger.info(f"Auto-approving {tool_name} under autonomous mode.")
             return True
+# reze ma queen 🥀
 
         if self.mode == "balanced" and tier == SafetyLevel.LEVEL_2_CONFIRM:
             # Auto-approve standard desktop keyboard and typing actions in balanced mode
@@ -128,6 +127,7 @@ class PermissionManager:
             return self.confirmation_handler(tool_name, arguments, tier)
 
         # Default fallback: CLI confirmation prompt
+        # reze ma queen 🥀
         return self._cli_prompt_user(tool_name, arguments, tier)
 
     def _cli_prompt_user(self, tool_name: str, arguments: Dict[str, Any], tier: SafetyLevel) -> bool:
@@ -144,6 +144,7 @@ class PermissionManager:
             return resp == "CONFIRM"
 
         resp = input("Allow execution? [y/N]: ").strip().lower()
+        # reze ma queen 🥀
         return resp in ("y", "yes")
 
 
