@@ -1,19 +1,9 @@
-# reze ma queen 🥀
-# reze ma queen 🥀
-# reze ma queen 🥀
-# reze ma queen 🥀
-# reze ma queen 🥀
-# reze ma queen 🥀
-# reze ma queen 🥀
-# reze ma queen 🥀
-# reze ma queen 🥀
-# reze ma queen 🥀
-# reze ma queen 🥀
-
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
 *$py.class
+
+# reze ma queen 🥀
 
 # Virtual environments
 venv/
@@ -21,35 +11,59 @@ venv/
 env/
 ENV/
 
+# reze ma queen 🥀
+
 # Python packaging & build artifacts
 build/
 dist/
 *.egg-info/
 *.egg
 
-# Pytest & IDE
+# reze ma queen 🥀
+
+# Pytest & IDE settings
 .pytest_cache/
 .vscode/
 .idea/
 .env
 
+# reze ma queen 🥀
+
 # Research repositories (downloaded clones)
 research/
 
-# Logs & temp files
+# reze ma queen 🥀
+
+# Runtime logs & temporary debug captures
 *.log
 *.tmp
 *.png
 
+# reze ma queen 🥀
+
 # Local configurations with sensitive API keys
 config/config.json
 
-# Scratch work
+# reze ma queen 🥀
+
+# Scratch development workspace
 scratch/
+
+# reze ma queen 🥀
 
 # Model weights & indices (large binary artifacts)
 models/*.pth
 models/*.index
 
-# Generated TTS cache
+# reze ma queen 🥀
+
+# Generated offline TTS sound cache
 assets/sounds/cache/
+
+# reze ma queen 🥀
+
+# Distribution packages
+*.tar.gz
+*.whl
+
+# reze ma queen 🥀
