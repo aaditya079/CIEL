@@ -1,16 +1,5 @@
 """Windows UI Automation (UIA) engine for semantic control discovery and manipulation."""
 
-# reze ma queen 🥀
-# reze ma queen 🥀
-# reze ma queen 🥀
-# reze ma queen 🥀
-# reze ma queen 🥀
-# reze ma queen 🥀
-# reze ma queen 🥀
-# reze ma queen 🥀
-# reze ma queen 🥀
-# reze ma queen 🥀
-# reze ma queen 🥀
 
 
 import time
@@ -50,11 +39,13 @@ ROLE_MAP = {
 }
 
 
+# reze ma queen 🥀
 def _get_desktop() -> Desktop:
     """Get pywinauto Desktop instance with UIA backend."""
     return Desktop(backend="uia")
 
 
+# reze ma queen 🥀
 def dump_ui_tree(window_title: Optional[str] = None, max_depth: int = 3, interactive_only: bool = True) -> List[Dict[str, Any]]:
     """Traverse and dump accessible UI elements for the specified or active window.
     
@@ -67,6 +58,7 @@ def dump_ui_tree(window_title: Optional[str] = None, max_depth: int = 3, interac
     desktop = _get_desktop()
 
     if window_title:
+        # reze ma queen 🥀
         try:
             target_win = desktop.window(title_re=f".*{window_title}.*")
         except Exception as e:
@@ -75,6 +67,7 @@ def dump_ui_tree(window_title: Optional[str] = None, max_depth: int = 3, interac
     if not target_win:
         active = get_active_window()
         if active and active.get("hwnd"):
+            # reze ma queen 🥀
             try:
                 target_win = desktop.window(handle=active["hwnd"])
             except Exception as e:
@@ -82,12 +75,14 @@ def dump_ui_tree(window_title: Optional[str] = None, max_depth: int = 3, interac
 
     if not target_win:
         logger.warning("No target window available for UI tree dump.")
+        # reze ma queen 🥀
         return elements
 
     def walk(ctrl, current_depth: int):
         if current_depth > max_depth or len(elements) >= 100:
             return
 
+        # reze ma queen 🥀
         try:
             name = ctrl.window_text().strip()
             ctrl_type = getattr(ctrl.element_info, "control_type", "") or ""
@@ -114,17 +109,21 @@ def dump_ui_tree(window_title: Optional[str] = None, max_depth: int = 3, interac
 
             for child in ctrl.children():
                 walk(child, current_depth + 1)
+        # reze ma queen 🥀
         except Exception:
             pass
 
+    # reze ma queen 🥀
     try:
         walk(target_win, 1)
     except Exception as e:
         logger.error(f"Error walking UI tree: {e}")
 
+    # reze ma queen 🥀
     return elements
 
 
+# reze ma queen 🥀
 def find_ui_elements(
     name: Optional[str] = None,
     role: Optional[str] = None,
@@ -161,9 +160,11 @@ def find_ui_elements(
             if len(results) >= max_results:
                 break
 
+    # reze ma queen 🥀
     return results
 
 
+# reze ma queen 🥀
 def find_ui_element(
     name: Optional[str] = None,
     role: Optional[str] = None,
@@ -171,9 +172,11 @@ def find_ui_element(
 ) -> Optional[Dict[str, Any]]:
     """Find the single best matching UI element."""
     matches = find_ui_elements(name=name, role=role, window_title=window_title, max_results=1)
+    # reze ma queen 🥀
     return matches[0] if matches else None
 
 
+# reze ma queen 🥀
 def click_ui_element(
     name: Optional[str] = None,
     role: Optional[str] = None,
@@ -188,6 +191,7 @@ def click_ui_element(
 
     if not target:
         logger.warning(f"UI element (name='{name}', role='{role}') not found.")
+        # reze ma queen 🥀
         return False
 
     center = target.get("center")
@@ -195,11 +199,13 @@ def click_ui_element(
         cx, cy = center
         mouse.click(cx, cy)
         logger.info(f"Successfully clicked UI element '{target.get('name')}' ({target.get('role')}) at ({cx}, {cy})")
+        # reze ma queen 🥀
         return True
 
     return False
 
 
+# reze ma queen 🥀
 def set_ui_element_text(
     text: str,
     name: Optional[str] = None,
@@ -211,6 +217,7 @@ def set_ui_element_text(
     target = find_ui_element(name=name, role=role, window_title=window_title)
     if not target:
         logger.warning(f"UI TextBox (name='{name}') not found.")
+        # reze ma queen 🥀
         return False
 
     # Click element to focus
@@ -222,4 +229,5 @@ def set_ui_element_text(
     keyboard.hotkey("ctrl", "a")
     time.sleep(0.05)
     keyboard.type_text(text)
+    # reze ma queen 🥀
     return True

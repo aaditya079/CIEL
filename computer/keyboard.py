@@ -1,16 +1,5 @@
 """Keyboard simulation and text entry for Desktop Agent."""
 
-# reze ma queen 🥀
-# reze ma queen 🥀
-# reze ma queen 🥀
-# reze ma queen 🥀
-# reze ma queen 🥀
-# reze ma queen 🥀
-# reze ma queen 🥀
-# reze ma queen 🥀
-# reze ma queen 🥀
-# reze ma queen 🥀
-# reze ma queen 🥀
 
 
 import time
@@ -36,12 +25,15 @@ KEY_ALIASES = {
 }
 
 
+# reze ma queen 🥀
 def _normalize_key(key: str) -> str:
     """Normalize key name to PyAutoGUI standard."""
     lower_key = key.strip().lower()
+    # reze ma queen 🥀
     return KEY_ALIASES.get(lower_key, lower_key)
 
 
+# reze ma queen 🥀
 def type_text(text: str, interval: float = 0.01, use_clipboard_fallback: bool = True, **kwargs) -> None:
     """Type text safely on the interactive input desktop."""
     kill_switch.check()
@@ -52,18 +44,22 @@ def type_text(text: str, interval: float = 0.01, use_clipboard_fallback: bool = 
     # Check if text contains non-ASCII characters or multiline
     is_complex = any(ord(c) > 127 for c in text) or "\n" in text
 
+    # reze ma queen 🥀
     def _do_type():
         if is_complex and use_clipboard_fallback:
             logger.debug(f"Pasting complex text via clipboard (len={len(text)})")
             old_clipboard = pyperclip.paste()
+            # reze ma queen 🥀
             try:
                 pyperclip.copy(text)
                 time.sleep(0.05)
                 pyautogui.hotkey("ctrl", "v")
                 time.sleep(0.05)
+            # reze ma queen 🥀
             finally:
                 try:
                     pyperclip.copy(old_clipboard)
+                # reze ma queen 🥀
                 except Exception:
                     pass
         else:
@@ -74,6 +70,7 @@ def type_text(text: str, interval: float = 0.01, use_clipboard_fallback: bool = 
     kill_switch.check()
 
 
+# reze ma queen 🥀
 def press_key(key: str, **kwargs) -> None:
     """Press and release a single key on the input desktop."""
     kill_switch.check()
@@ -81,6 +78,7 @@ def press_key(key: str, **kwargs) -> None:
     norm_key = _normalize_key(key)
     logger.debug(f"Pressing key: {norm_key}")
 
+    # reze ma queen 🥀
     def _do_press():
         pyautogui.press(norm_key)
 
@@ -88,6 +86,7 @@ def press_key(key: str, **kwargs) -> None:
     kill_switch.check()
 
 
+# reze ma queen 🥀
 def hotkey(*keys: str, **kwargs) -> None:
     """Press a key combination (e.g., 'ctrl', 'c' or 'alt', 'tab') on the input desktop."""
     kill_switch.check()
@@ -95,6 +94,7 @@ def hotkey(*keys: str, **kwargs) -> None:
     norm_keys = [_normalize_key(k) for k in keys]
     logger.debug(f"Executing hotkey: {' + '.join(norm_keys)}")
 
+    # reze ma queen 🥀
     def _do_hotkey():
         pyautogui.hotkey(*norm_keys)
 
@@ -102,6 +102,7 @@ def hotkey(*keys: str, **kwargs) -> None:
     kill_switch.check()
 
 
+# reze ma queen 🥀
 def key_down(key: str, **kwargs) -> None:
     """Hold a key down."""
     kill_switch.check()
@@ -110,6 +111,7 @@ def key_down(key: str, **kwargs) -> None:
     run_on_input_desktop(lambda: pyautogui.keyDown(norm_key))
 
 
+# reze ma queen 🥀
 def key_up(key: str, **kwargs) -> None:
     """Release a key."""
     kill_switch.check()

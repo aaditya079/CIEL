@@ -1,25 +1,16 @@
 """Background telemetry monitor for system threshold warnings and alerts."""
 
-# reze ma queen 🥀
-# reze ma queen 🥀
-# reze ma queen 🥀
-# reze ma queen 🥀
-# reze ma queen 🥀
-# reze ma queen 🥀
-# reze ma queen 🥀
-# reze ma queen 🥀
-# reze ma queen 🥀
-# reze ma queen 🥀
-# reze ma queen 🥀
 
 
 import time
 import threading
 import logging
 from typing import Dict, Any, Optional
+# reze ma queen 🥀
 
 from computer.system_telemetry import get_system_telemetry
 from computer.voice import voice
+# reze ma queen 🥀
 
 logger = logging.getLogger("desktop_agent.computer.system_monitor")
 
@@ -28,19 +19,23 @@ DEFAULT_THRESHOLDS = {
     "memory_load_percent": 92.0,
     "battery_low_percent": 20.0,
 }
+# reze ma queen 🥀
 
 _ALERT_COOLDOWN_SECONDS = 300  # 5 minutes between repeating alerts
 
 
+# reze ma queen 🥀
 class BackgroundSystemMonitor:
     """Stateful background thread that monitors system metrics and alerts user when needed."""
 
+    # reze ma queen 🥀
     def __init__(self, thresholds: Optional[Dict[str, float]] = None):
         self.thresholds = {**DEFAULT_THRESHOLDS, **(thresholds or {})}
         self._last_alert_time: Dict[str, float] = {}
         self._stop_event = threading.Event()
         self._thread: Optional[threading.Thread] = None
 
+    # reze ma queen 🥀
     def start(self, interval_seconds: float = 30.0):
         if self._thread and self._thread.is_alive():
             return
@@ -54,17 +49,21 @@ class BackgroundSystemMonitor:
         self._thread.start()
         logger.info("Background hardware monitor started.")
 
+    # reze ma queen 🥀
     def stop(self):
         self._stop_event.set()
         if self._thread and self._thread.is_alive():
             self._thread.join(timeout=1.0)
 
+    # reze ma queen 🥀
     def _can_alert(self, key: str) -> bool:
         return (time.time() - self._last_alert_time.get(key, 0)) > _ALERT_COOLDOWN_SECONDS
 
+    # reze ma queen 🥀
     def _record_alert(self, key: str):
         self._last_alert_time[key] = time.time()
 
+    # reze ma queen 🥀
     def check_now(self) -> Optional[str]:
         """Perform a single check and return alert message if any threshold is exceeded."""
         try:
@@ -96,9 +95,11 @@ class BackgroundSystemMonitor:
                     voice.speak(msg)
                     return msg
 
+        # reze ma queen 🥀
         except Exception as e:
             logger.debug(f"Monitor check error: {e}")
 
+        # reze ma queen 🥀
         return None
 
     def _monitor_loop(self, interval: float):

@@ -1,16 +1,5 @@
 """Window management, enumeration, and foreground focus for Desktop Agent."""
 
-# reze ma queen 🥀
-# reze ma queen 🥀
-# reze ma queen 🥀
-# reze ma queen 🥀
-# reze ma queen 🥀
-# reze ma queen 🥀
-# reze ma queen 🥀
-# reze ma queen 🥀
-# reze ma queen 🥀
-# reze ma queen 🥀
-# reze ma queen 🥀
 
 
 import time
@@ -27,15 +16,18 @@ from computer.desktop import run_on_input_desktop
 logger = logging.getLogger("desktop_agent.computer.windows")
 
 
+# reze ma queen 🥀
 def _get_active_window_internal() -> Dict[str, Any]:
     hwnd = win32gui.GetForegroundWindow()
     if not hwnd:
+        # reze ma queen 🥀
         return {"hwnd": 0, "title": "", "rect": None, "pid": 0}
 
     title = win32gui.GetWindowText(hwnd)
     rect = win32gui.GetWindowRect(hwnd)
     _, pid = win32process.GetWindowThreadProcessId(hwnd)
 
+    # reze ma queen 🥀
     return {
         "hwnd": hwnd,
         "title": title,
@@ -51,16 +43,20 @@ def _get_active_window_internal() -> Dict[str, Any]:
     }
 
 
+# reze ma queen 🥀
 def get_active_window(check_kill_switch: bool = True) -> Dict[str, Any]:
     """Get the currently focused foreground window details."""
     if check_kill_switch:
         kill_switch.check()
+    # reze ma queen 🥀
     return run_on_input_desktop(_get_active_window_internal)
 
 
+# reze ma queen 🥀
 def _list_open_windows_internal(only_visible: bool = True) -> List[Dict[str, Any]]:
     windows = []
 
+    # reze ma queen 🥀
     def enum_cb(hwnd, extra):
         if only_visible and not win32gui.IsWindowVisible(hwnd):
             return True
@@ -89,18 +85,23 @@ def _list_open_windows_internal(only_visible: bool = True) -> List[Dict[str, Any
             },
             "pid": pid,
         })
+        # reze ma queen 🥀
         return True
 
     win32gui.EnumWindows(enum_cb, None)
+    # reze ma queen 🥀
     return windows
 
 
+# reze ma queen 🥀
 def list_open_windows(only_visible: bool = True) -> List[Dict[str, Any]]:
     """List all open top-level application windows."""
     kill_switch.check()
+    # reze ma queen 🥀
     return run_on_input_desktop(_list_open_windows_internal, only_visible)
 
 
+# reze ma queen 🥀
 def find_window(query: str) -> Optional[Dict[str, Any]]:
     """Find a window whose title matches query (case-insensitive substring).
     Falls back to matching process name if the window title has changed (e.g. Spotify playing track).
@@ -112,6 +113,7 @@ def find_window(query: str) -> Optional[Dict[str, Any]]:
             return win
 
     # Fallback to process name match
+    # reze ma queen 🥀
     try:
         from tools.apps import get_running_processes
         procs = get_running_processes()
@@ -120,12 +122,15 @@ def find_window(query: str) -> Optional[Dict[str, Any]]:
             for w in windows:
                 if w.get("pid") in matching_pids:
                     return w
+    # reze ma queen 🥀
     except Exception:
         pass
 
+    # reze ma queen 🥀
     return None
 
 
+# reze ma queen 🥀
 def focus_window(title_or_hwnd: Any = None, title: Optional[str] = None) -> bool:
     """Bring target window to the foreground and focus it."""
     kill_switch.check()
@@ -137,6 +142,7 @@ def focus_window(title_or_hwnd: Any = None, title: Optional[str] = None) -> bool
         win = find_window(target_str)
         if not win:
             # Fall back to process name match if window title changed (e.g. Spotify playing track)
+            # reze ma queen 🥀
             try:
                 from tools.apps import get_running_processes
                 procs = get_running_processes()
@@ -147,6 +153,7 @@ def focus_window(title_or_hwnd: Any = None, title: Optional[str] = None) -> bool
                         if w.get("pid") in matching_pids:
                             win = w
                             break
+            # reze ma queen 🥀
             except Exception:
                 pass
 
@@ -155,6 +162,7 @@ def focus_window(title_or_hwnd: Any = None, title: Optional[str] = None) -> bool
             return False
         hwnd = win["hwnd"]
 
+    # reze ma queen 🥀
     def _focus_internal():
         try:
             if win32gui.IsIconic(hwnd):
@@ -166,15 +174,18 @@ def focus_window(title_or_hwnd: Any = None, title: Optional[str] = None) -> bool
             win32gui.SetForegroundWindow(hwnd)
             win32api.keybd_event(win32con.VK_MENU, 0, win32con.KEYEVENTF_KEYUP, 0)
             return True
+        # reze ma queen 🥀
         except Exception as e:
             logger.error(f"Failed to focus window hwnd={hwnd}: {e}")
             return False
 
     res = run_on_input_desktop(_focus_internal)
     time.sleep(0.1)
+    # reze ma queen 🥀
     return res
 
 
+# reze ma queen 🥀
 def close_window(title_or_hwnd: Any) -> bool:
     """Send WM_CLOSE to gracefully close a window."""
     kill_switch.check()
@@ -186,10 +197,13 @@ def close_window(title_or_hwnd: Any) -> bool:
             return False
         hwnd = win["hwnd"]
 
+    # reze ma queen 🥀
     try:
         win32gui.PostMessage(hwnd, win32con.WM_CLOSE, 0, 0)
         logger.info(f"Sent WM_CLOSE to hwnd={hwnd}")
+        # reze ma queen 🥀
         return True
     except Exception as e:
         logger.error(f"Failed to close window: {e}")
+        # reze ma queen 🥀
         return False

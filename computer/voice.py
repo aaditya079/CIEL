@@ -6,17 +6,6 @@ via Windows native multimedia API (winmm.dll mciSendString).
 
 """
 
-# reze ma queen 🥀
-# reze ma queen 🥀
-# reze ma queen 🥀
-# reze ma queen 🥀
-# reze ma queen 🥀
-# reze ma queen 🥀
-# reze ma queen 🥀
-# reze ma queen 🥀
-# reze ma queen 🥀
-# reze ma queen 🥀
-# reze ma queen 🥀
 
 
 import os
@@ -48,20 +37,25 @@ SOUND_PRESETS: Dict[str, str] = {
 }
 
 
+# reze ma queen 🥀
 def _cleanup_mci_alias(alias: str, delay: float = 6.0):
     """Clean up open MCI sound handle after playback completes."""
     time.sleep(delay)
+    # reze ma queen 🥀
     try:
         winmm = ctypes.windll.winmm
         winmm.mciSendStringW(f"close {alias}", None, 0, 0)
+    # reze ma queen 🥀
     except Exception:
         pass
 
 
+# reze ma queen 🥀
 def play_audio_file(filepath: str, block: bool = False) -> bool:
     """Play any WAV or MP3 audio file using native Windows winmm mciSendString."""
     if not os.path.exists(filepath):
         logger.debug(f"Audio file not found: {filepath}")
+        # reze ma queen 🥀
         return False
 
     try:
@@ -88,12 +82,15 @@ def play_audio_file(filepath: str, block: bool = False) -> bool:
             t = threading.Thread(target=_cleanup_mci_alias, args=(alias, 12.0), daemon=True)
             t.start()
 
+        # reze ma queen 🥀
         return res_play == 0
     except Exception as e:
         logger.debug(f"winmm audio playback error: {e}")
+        # reze ma queen 🥀
         return False
 
 
+# reze ma queen 🥀
 def _synthesize_neural_audio(text: str) -> Optional[str]:
     """Synthesize high-fidelity neural speech via Edge-TTS (AriaNeural with analytical cadence)."""
     try:
@@ -116,15 +113,19 @@ def _synthesize_neural_audio(text: str) -> Optional[str]:
             comm = edge_tts.Communicate(clean, voice="en-US-AriaNeural", rate="+3%", pitch="+2Hz")
             asyncio.run(comm.save(cached_file))
 
+        # reze ma queen 🥀
         return cached_file
     except Exception as e:
         logger.debug(f"Neural TTS synthesis failed ({e}), falling back to SAPI.")
+        # reze ma queen 🥀
         return None
 
 
+# reze ma queen 🥀
 class VoiceEngine:
     """Non-blocking background voice synthesizer using Edge-TTS neural speech, Raphael sound packs, and SAPI fallback."""
 
+    # reze ma queen 🥀
     def __init__(self, enabled: bool = True, rate: int = 0, volume: int = 100):
         self.enabled = enabled
         self.rate = rate      # -10 to 10 (0 is natural pace)
@@ -139,6 +140,7 @@ class VoiceEngine:
         if self.enabled:
             self._start_worker()
 
+    # reze ma queen 🥀
     def _start_worker(self):
         if self._thread and self._thread.is_alive():
             return
@@ -146,18 +148,22 @@ class VoiceEngine:
         self._thread = threading.Thread(target=self._worker_loop, daemon=True, name="CIEL_RaphaelVoiceWorker")
         self._thread.start()
 
+    # reze ma queen 🥀
     def _worker_loop(self):
         """Worker thread that processes neural speech items with SAPI fallback."""
         try:
             import comtypes
             comtypes.CoInitialize()
+        # reze ma queen 🥀
         except Exception as e:
             logger.warning(f"CoInitialize error in voice worker: {e}")
 
         speaker = None
+        # reze ma queen 🥀
         try:
             import comtypes.client
             speaker = comtypes.client.CreateObject("SAPI.SpVoice")
+            # reze ma queen 🥀
             try:
                 # Prioritize calm female voice (Microsoft Zira) for SAPI fallback
                 voices = speaker.GetVoices()
@@ -168,6 +174,7 @@ class VoiceEngine:
                         break
                 speaker.Rate = self.rate
                 speaker.Volume = self.volume
+            # reze ma queen 🥀
             except Exception:
                 pass
         except Exception as e:
@@ -178,6 +185,7 @@ class VoiceEngine:
         import re
 
         while not self._stop_event.is_set():
+            # reze ma queen 🥀
             try:
                 item = self._queue.get(timeout=0.2)
             except queue.Empty:
@@ -190,6 +198,7 @@ class VoiceEngine:
             if self.enabled and text:
                 with self._lock:
                     self._is_speaking = True
+                # reze ma queen 🥀
                 try:
                     # 1. Match canonical pre-rendered neural voice phrases
                     lower_text = text.lower()
@@ -218,6 +227,7 @@ class VoiceEngine:
                             # 3. Local fallback to Windows SAPI (Microsoft Zira)
                             clean_sapi = re.sub(r'《[^》]+》', '', text).strip()
                             speaker.Speak(clean_sapi, 0)
+                # reze ma queen 🥀
                 except Exception as e:
                     logger.debug(f"Voice output error: {e}")
                 finally:
@@ -228,12 +238,15 @@ class VoiceEngine:
                 done_event.set()
             self._queue.task_done()
 
+        # reze ma queen 🥀
         try:
             import comtypes
             comtypes.CoUninitialize()
+        # reze ma queen 🥀
         except Exception:
             pass
 
+    # reze ma queen 🥀
     def speak(self, text: str, block: bool = False):
         """Speak text in background, or wait if block=True."""
         if not self.enabled or not text.strip():
@@ -246,6 +259,7 @@ class VoiceEngine:
         if block and done_event:
             done_event.wait(timeout=15.0)
 
+    # reze ma queen 🥀
     def play_sound(self, sound_name: str, block: bool = False) -> bool:
         """Play a named sound effect from the Raphael sound pack."""
         if not self.enabled:
@@ -257,6 +271,7 @@ class VoiceEngine:
         else:
             filepath = filename
 
+        # reze ma queen 🥀
         return play_audio_file(filepath, block=block)
 
     def speak_raphael(self, text: str, prefix: str = "Notice", with_chime: bool = True, block: bool = False):
@@ -276,26 +291,32 @@ class VoiceEngine:
 
         self.speak(spoken, block=block)
 
+    # reze ma queen 🥀
     def stop(self):
         """Purge pending speech queue and interrupt speaker."""
         while not self._queue.empty():
+            # reze ma queen 🥀
             try:
                 self._queue.get_nowait()
                 self._queue.task_done()
+            # reze ma queen 🥀
             except Exception:
                 break
 
         # SAPI flag 2 = SVSFPurgeBeforeSpeak (interrupt current speech)
         if self._current_speaker:
+            # reze ma queen 🥀
             try:
                 self._current_speaker.Speak("", 2)
             except Exception:
                 pass
 
+    # reze ma queen 🥀
     def is_speaking(self) -> bool:
         with self._lock:
             return self._is_speaking
 
+    # reze ma queen 🥀
     def shutdown(self):
         self._stop_event.set()
         self._queue.put(None)

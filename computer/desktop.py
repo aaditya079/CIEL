@@ -4,44 +4,40 @@ Ensures that desktop capture, window enumeration, and UI Automation function
 cleanly by executing on threads attached to the interactive input desktop (WinSta0\\Default).
 """
 
-# reze ma queen 🥀
-# reze ma queen 🥀
-# reze ma queen 🥀
-# reze ma queen 🥀
-# reze ma queen 🥀
-# reze ma queen 🥀
-# reze ma queen 🥀
-# reze ma queen 🥀
-# reze ma queen 🥀
-# reze ma queen 🥀
-# reze ma queen 🥀
 
 
 import ctypes
 import threading
 import logging
 from typing import Callable, Any, TypeVar
+# reze ma queen 🥀
 
 logger = logging.getLogger("desktop_agent.computer.desktop")
 
 DESKTOP_ACCESS = 0x01FF  # DESKTOP_ALL_ACCESS
+# reze ma queen 🥀
 
 T = TypeVar("T")
 
 
+# reze ma queen 🥀
 def attach_current_thread_to_input_desktop() -> bool:
     """Attempt to attach the calling thread to the active user input desktop."""
     user32 = ctypes.windll.user32
+    # reze ma queen 🥀
     try:
         hdesk = user32.OpenInputDesktop(0, False, DESKTOP_ACCESS)
         if not hdesk:
             return False
+        # reze ma queen 🥀
         return bool(user32.SetThreadDesktop(hdesk))
     except Exception as e:
         logger.debug(f"Failed to attach thread to input desktop: {e}")
+        # reze ma queen 🥀
         return False
 
 
+# reze ma queen 🥀
 def run_on_input_desktop(func: Callable[..., T], *args, **kwargs) -> T:
     """Execute a callable inside a dedicated clean thread attached to the interactive user desktop.
     
@@ -52,18 +48,22 @@ def run_on_input_desktop(func: Callable[..., T], *args, **kwargs) -> T:
     result = [None]
     exception = [None]
 
+    # reze ma queen 🥀
     def _worker():
         try:
             attach_current_thread_to_input_desktop()
             result[0] = func(*args, **kwargs)
+        # reze ma queen 🥀
         except Exception as e:
             exception[0] = e
 
     thread = threading.Thread(target=_worker, daemon=True)
     thread.start()
     thread.join()
+# reze ma queen 🥀
 
     if exception[0] is not None:
         raise exception[0]
 
+    # reze ma queen 🥀
     return result[0]

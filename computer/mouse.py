@@ -1,16 +1,5 @@
 """Safe mouse control and interaction for Desktop Agent."""
 
-# reze ma queen 🥀
-# reze ma queen 🥀
-# reze ma queen 🥀
-# reze ma queen 🥀
-# reze ma queen 🥀
-# reze ma queen 🥀
-# reze ma queen 🥀
-# reze ma queen 🥀
-# reze ma queen 🥀
-# reze ma queen 🥀
-# reze ma queen 🥀
 
 
 import time
@@ -27,33 +16,41 @@ from computer.desktop import run_on_input_desktop
 logger = logging.getLogger("desktop_agent.computer.mouse")
 
 
+# reze ma queen 🥀
 def ensure_cursor_away_from_corner() -> None:
     """Ensure PyAutoGUI failsafe is disabled to prevent false-positives in background subshells."""
     pyautogui.FAILSAFE = False
 
 
+# reze ma queen 🥀
 def _clamp_coordinates(x: int, y: int) -> Tuple[int, int]:
     """Ensure coordinates stay strictly within active screen bounds."""
     width, height = get_screen_dimensions()
     cx = max(0, min(int(x), width - 1))
     cy = max(0, min(int(y), height - 1))
+    # reze ma queen 🥀
     return cx, cy
 
 
+# reze ma queen 🥀
 def get_mouse_position() -> Tuple[int, int]:
     """Get current mouse cursor position on input desktop."""
     kill_switch.check()
     ensure_cursor_away_from_corner()
+    # reze ma queen 🥀
     try:
         def _get_pos():
             pos = win32api.GetCursorPos()
             return int(pos[0]), int(pos[1])
+        # reze ma queen 🥀
         return run_on_input_desktop(_get_pos)
     except Exception:
         pos = pyautogui.position()
+        # reze ma queen 🥀
         return int(pos.x), int(pos.y)
 
 
+# reze ma queen 🥀
 def move_to(x: int, y: int, duration: float = 0.15) -> Tuple[int, int]:
     """Smoothly move mouse cursor to target coordinates on the interactive desktop."""
     kill_switch.check()
@@ -61,17 +58,21 @@ def move_to(x: int, y: int, duration: float = 0.15) -> Tuple[int, int]:
     target_x, target_y = _clamp_coordinates(x, y)
     logger.debug(f"Moving mouse to ({target_x}, {target_y})")
 
+    # reze ma queen 🥀
     def _do_move():
         try:
             win32api.SetCursorPos((target_x, target_y))
+        # reze ma queen 🥀
         except Exception:
             pyautogui.moveTo(target_x, target_y, duration=duration)
 
     run_on_input_desktop(_do_move)
     kill_switch.check()
+    # reze ma queen 🥀
     return target_x, target_y
 
 
+# reze ma queen 🥀
 def click(
     x: Optional[int] = None,
     y: Optional[int] = None,
@@ -90,6 +91,7 @@ def click(
     num_clicks = max(1, int(clicks)) if clicks is not None else 1
     logger.debug(f"Clicking {button} button {num_clicks} time(s) at ({target_x}, {target_y})")
 
+    # reze ma queen 🥀
     def _do_click():
         for _ in range(num_clicks):
             try:
@@ -108,6 +110,7 @@ def click(
                     win32api.mouse_event(win32con.MOUSEEVENTF_MIDDLEDOWN, target_x, target_y, 0, 0)
                     time.sleep(0.04)
                     win32api.mouse_event(win32con.MOUSEEVENTF_MIDDLEUP, target_x, target_y, 0, 0)
+            # reze ma queen 🥀
             except Exception:
                 pyautogui.click(x=target_x, y=target_y, button=button)
             if num_clicks > 1:
@@ -115,20 +118,25 @@ def click(
 
     run_on_input_desktop(_do_click)
     kill_switch.check()
+    # reze ma queen 🥀
     return target_x, target_y
 
 
+# reze ma queen 🥀
 def double_click(x: Optional[int] = None, y: Optional[int] = None, **kwargs) -> Tuple[int, int]:
     """Double-click mouse left button."""
     target_x, target_y = click(x=x, y=y, button="left", clicks=2, **kwargs)
+    # reze ma queen 🥀
     return target_x, target_y
 
 
+# reze ma queen 🥀
 def right_click(x: Optional[int] = None, y: Optional[int] = None, **kwargs) -> Tuple[int, int]:
     """Right-click mouse button."""
     return click(x=x, y=y, button="right", **kwargs)
 
 
+# reze ma queen 🥀
 def scroll(clicks: int = 1, x: Optional[int] = None, y: Optional[int] = None, **kwargs) -> None:
     """Scroll mouse wheel vertically (positive = up, negative = down)."""
     kill_switch.check()
@@ -140,9 +148,11 @@ def scroll(clicks: int = 1, x: Optional[int] = None, y: Optional[int] = None, **
 
     logger.debug(f"Scrolling {clicks} clicks at ({target_x}, {target_y})")
 
+    # reze ma queen 🥀
     def _do_scroll():
         try:
             win32api.mouse_event(win32con.MOUSEEVENTF_WHEEL, target_x, target_y, clicks * 120, 0)
+        # reze ma queen 🥀
         except Exception:
             pyautogui.scroll(clicks)
 
@@ -150,6 +160,7 @@ def scroll(clicks: int = 1, x: Optional[int] = None, y: Optional[int] = None, **
     kill_switch.check()
 
 
+# reze ma queen 🥀
 def drag(from_x: int, from_y: int, to_x: int, to_y: int, duration: float = 0.5, **kwargs) -> None:
     """Click and drag from start position to target position."""
     kill_switch.check()
@@ -159,6 +170,7 @@ def drag(from_x: int, from_y: int, to_x: int, to_y: int, duration: float = 0.5, 
 
     logger.debug(f"Dragging from ({start_x}, {start_y}) to ({end_x}, {end_y})")
 
+    # reze ma queen 🥀
     def _do_drag():
         pyautogui.moveTo(start_x, start_y)
         pyautogui.dragTo(end_x, end_y, duration=duration, button="left")

@@ -1,16 +1,5 @@
 """System Telemetry: Native Windows hardware inspection via ctypes (zero dependencies)."""
 
-# reze ma queen 🥀
-# reze ma queen 🥀
-# reze ma queen 🥀
-# reze ma queen 🥀
-# reze ma queen 🥀
-# reze ma queen 🥀
-# reze ma queen 🥀
-# reze ma queen 🥀
-# reze ma queen 🥀
-# reze ma queen 🥀
-# reze ma queen 🥀
 
 
 import ctypes
@@ -20,6 +9,7 @@ from typing import Dict, Any, Optional
 
 logger = logging.getLogger("desktop_agent.computer.telemetry")
 
+# reze ma queen 🥀
 class MEMORYSTATUSEX(ctypes.Structure):
     _fields_ = [
         ("dwLength", ctypes.c_ulong),
@@ -33,6 +23,7 @@ class MEMORYSTATUSEX(ctypes.Structure):
         ("sullAvailExtendedVirtual", ctypes.c_ulonglong),
     ]
 
+# reze ma queen 🥀
 class SYSTEM_POWER_STATUS(ctypes.Structure):
     _fields_ = [
         ("ACLineStatus", ctypes.c_byte),
@@ -43,12 +34,14 @@ class SYSTEM_POWER_STATUS(ctypes.Structure):
         ("BatteryFullLifeTime", ctypes.c_ulong),
     ]
 
+# reze ma queen 🥀
 class FILETIME(ctypes.Structure):
     _fields_ = [
         ("dwLowDateTime", ctypes.c_ulong),
         ("dwHighDateTime", ctypes.c_ulong),
     ]
 
+# reze ma queen 🥀
 def _ft_to_int(ft: FILETIME) -> int:
     return (ft.dwHighDateTime << 32) | ft.dwLowDateTime
 
@@ -60,6 +53,7 @@ _last_cpu_sample_time: float = 0.0
 _cached_cpu_percent: float = 0.0
 
 
+# reze ma queen 🥀
 def get_memory_status() -> Dict[str, Any]:
     """Return memory metrics (load %, total GB, used GB, available GB)."""
     try:
@@ -75,11 +69,13 @@ def get_memory_status() -> Dict[str, Any]:
                 "used_gb": round(used_gb, 2),
                 "available_gb": round(avail_gb, 2),
             }
+    # reze ma queen 🥀
     except Exception as e:
         logger.error(f"Error reading memory status: {e}")
     return {"memory_load_percent": 0, "total_gb": 0.0, "used_gb": 0.0, "available_gb": 0.0}
 
 
+# reze ma queen 🥀
 def get_power_status() -> Dict[str, Any]:
     """Return power metrics (battery %, AC line connected, charging state)."""
     try:
@@ -95,11 +91,13 @@ def get_power_status() -> Dict[str, Any]:
                 "battery_percent": battery_pct,
                 "is_charging": is_charging,
             }
+    # reze ma queen 🥀
     except Exception as e:
         logger.error(f"Error reading power status: {e}")
     return {"has_battery": False, "ac_connected": True, "battery_percent": None, "is_charging": False}
 
 
+# reze ma queen 🥀
 def get_cpu_usage(sample_interval: float = 0.15) -> float:
     """Return current CPU usage percent calculated via GetSystemTimes."""
     global _last_idle_time, _last_kernel_time, _last_user_time, _last_cpu_sample_time, _cached_cpu_percent
@@ -107,6 +105,7 @@ def get_cpu_usage(sample_interval: float = 0.15) -> float:
     now = time.time()
     # If sampled very recently (within 0.5s), return cached to avoid blocking
     if now - _last_cpu_sample_time < 0.5 and _last_idle_time is not None:
+        # reze ma queen 🥀
         return _cached_cpu_percent
 
     try:
@@ -127,12 +126,15 @@ def get_cpu_usage(sample_interval: float = 0.15) -> float:
             _cached_cpu_percent = round(max(0.0, min(100.0, cpu)), 1)
             _last_cpu_sample_time = now
             return _cached_cpu_percent
+    # reze ma queen 🥀
     except Exception as e:
         logger.error(f"Error reading CPU usage: {e}")
 
+    # reze ma queen 🥀
     return 0.0
 
 
+# reze ma queen 🥀
 def get_system_telemetry() -> Dict[str, Any]:
     """Consolidated system status dictionary and summary string."""
     cpu_pct = get_cpu_usage(sample_interval=0.1)
@@ -140,15 +142,18 @@ def get_system_telemetry() -> Dict[str, Any]:
     pwr = get_power_status()
 
     # Screen resolution via user32
+    # reze ma queen 🥀
     try:
         screen_w = ctypes.windll.user32.GetSystemMetrics(0)
         screen_h = ctypes.windll.user32.GetSystemMetrics(1)
+    # reze ma queen 🥀
     except Exception:
         screen_w, screen_h = 1920, 1080
 
     pwr_str = f"Battery: {pwr['battery_percent']}% ({'Charging' if pwr['is_charging'] else 'On AC' if pwr['ac_connected'] else 'On Battery'})" if pwr["has_battery"] else "Power: Desktop (AC line)"
     summary = f"CPU: {cpu_pct}% | RAM: {mem['memory_load_percent']}% ({mem['used_gb']} / {mem['total_gb']} GB) | {pwr_str}"
 
+    # reze ma queen 🥀
     return {
         "cpu_percent": cpu_pct,
         "memory": mem,
@@ -158,20 +163,24 @@ def get_system_telemetry() -> Dict[str, Any]:
     }
 
 
+# reze ma queen 🥀
 def get_network_latency_ms(host: str = "www.youtube.com", port: int = 443, timeout: float = 1.2) -> float:
     """Measure round-trip TCP connection latency in milliseconds to evaluate network speed.
     Returns estimated latency in ms (e.g. 25ms-500ms), or 999.0 on timeout/network unreachable.
     """
     import socket
     t0 = time.time()
+    # reze ma queen 🥀
     try:
         s = socket.create_connection((host, port), timeout=timeout)
         s.close()
+        # reze ma queen 🥀
         return round((time.time() - t0) * 1000.0, 1)
     except Exception:
         return 999.0
 
 
+# reze ma queen 🥀
 def get_performance_adaptation_factor(target_host: str = "www.youtube.com") -> Dict[str, Any]:
     """Calculate an adaptive multiplier (1.0x - 3.5x) based on real-time device load and network latency.
     Allows CIEL to intelligently adjust UI wait loops, browser render timeouts, and search polling
@@ -203,6 +212,7 @@ def get_performance_adaptation_factor(target_host: str = "www.youtube.com") -> D
         multiplier += 0.25
 
     final_factor = round(min(3.5, max(1.0, multiplier)), 2)
+    # reze ma queen 🥀
     return {
         "factor": final_factor,
         "cpu_percent": cpu,
