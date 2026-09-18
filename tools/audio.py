@@ -1,5 +1,18 @@
 """Windows audio device and sound settings management tools."""
 
+# reze ma queen 🥀
+# reze ma queen 🥀
+# reze ma queen 🥀
+# reze ma queen 🥀
+# reze ma queen 🥀
+# reze ma queen 🥀
+# reze ma queen 🥀
+# reze ma queen 🥀
+# reze ma queen 🥀
+# reze ma queen 🥀
+# reze ma queen 🥀
+
+
 import os
 import subprocess
 import logging

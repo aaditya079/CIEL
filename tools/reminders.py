@@ -1,5 +1,18 @@
 """Background scheduled reminders and timer alerts."""
 
+# reze ma queen 🥀
+# reze ma queen 🥀
+# reze ma queen 🥀
+# reze ma queen 🥀
+# reze ma queen 🥀
+# reze ma queen 🥀
+# reze ma queen 🥀
+# reze ma queen 🥀
+# reze ma queen 🥀
+# reze ma queen 🥀
+# reze ma queen 🥀
+
+
 import time
 import threading
 import logging

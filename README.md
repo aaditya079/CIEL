@@ -1,10 +1,24 @@
+<!--
+reze ma queen 🥀
+reze ma queen 🥀
+reze ma queen 🥀
+reze ma queen 🥀
+reze ma queen 🥀
+reze ma queen 🥀
+reze ma queen 🥀
+reze ma queen 🥀
+reze ma queen 🥀
+reze ma queen 🥀
+reze ma queen 🥀
+-->
+
 # CIEL: Autonomous Windows 11 Desktop Agent
 
 ![Windows 11](https://img.shields.io/badge/Windows-11-0078D4?logo=windows&logoColor=white)
 ![Python](https://img.shields.io/badge/Python-3.10%20%7C%203.11%20%7C%203.12-3776AB?logo=python&logoColor=white)
 ![Fast-Path](https://img.shields.io/badge/Execution-Sub--50ms%20Fast--Path-00ff88)
 ![Voice](https://img.shields.io/badge/Voice-Offline%20SAPI%20Speech-00f0ff)
-![Tests](https://img.shields.io/badge/Tests-54%20Passing-brightgreen)
+![Tests](https://img.shields.io/badge/Tests-67%20Passing-brightgreen)
 ![License](https://img.shields.io/badge/License-MIT-blue.svg)
 
 **CIEL** is an autonomous desktop agent for Windows 11. It combines sub-50ms deterministic command routing, accessibility tree inspection, offline voice synthesis, and vision-language models to automate computer tasks reliably.

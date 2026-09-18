@@ -1,5 +1,18 @@
 """Desktop control tools for Windows display, workstation lock, and window state."""
 
+# reze ma queen 🥀
+# reze ma queen 🥀
+# reze ma queen 🥀
+# reze ma queen 🥀
+# reze ma queen 🥀
+# reze ma queen 🥀
+# reze ma queen 🥀
+# reze ma queen 🥀
+# reze ma queen 🥀
+# reze ma queen 🥀
+# reze ma queen 🥀
+
+
 import ctypes
 import os
 import re

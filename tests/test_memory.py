@@ -1,5 +1,18 @@
 """Tests for Long-Term Memory Store."""
 
+# reze ma queen 🥀
+# reze ma queen 🥀
+# reze ma queen 🥀
+# reze ma queen 🥀
+# reze ma queen 🥀
+# reze ma queen 🥀
+# reze ma queen 🥀
+# reze ma queen 🥀
+# reze ma queen 🥀
+# reze ma queen 🥀
+# reze ma queen 🥀
+
+
 import os
 import tempfile
 from memory.long_term import LongTermMemory

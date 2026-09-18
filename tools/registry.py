@@ -1,5 +1,18 @@
 """Central Tool Registry: definitions, JSON schema, validation, and dispatch."""
 
+# reze ma queen 🥀
+# reze ma queen 🥀
+# reze ma queen 🥀
+# reze ma queen 🥀
+# reze ma queen 🥀
+# reze ma queen 🥀
+# reze ma queen 🥀
+# reze ma queen 🥀
+# reze ma queen 🥀
+# reze ma queen 🥀
+# reze ma queen 🥀
+
+
 import time
 import logging
 from typing import Dict, Any, List, Callable
@@ -18,6 +31,7 @@ import tools.files as files
 import tools.media as media
 import tools.web as web
 import tools.spotify as spotify
+import tools.streamer as streamer
 import tools.desktop_control as desktop
 import tools.browser as browser
 import tools.reminders as reminders
@@ -319,12 +333,33 @@ TOOL_DEFINITIONS = [
         },
     },
     {
+        "name": "stream_audio",
+        "description": "Stream audio directly in the background (Gemini / Bixby mode) using yt-dlp & ffplay without opening browser windows or showing ads.",
+        "parameters": {
+            "type": "object",
+            "properties": {
+                "query": {"type": "string", "description": "Track, artist, or music title to stream in background"},
+            },
+            "required": ["query"],
+        },
+    },
+    {
+        "name": "stop_audio_stream",
+        "description": "Stop any active background audio stream immediately.",
+        "parameters": {
+            "type": "object",
+            "properties": {},
+            "required": [],
+        },
+    },
+    {
         "name": "play_youtube",
-        "description": "Search for and immediately play a YouTube video in the default browser without manual clicking.",
+        "description": "Search for and immediately play a YouTube video in the browser with autoplay blocker bypass.",
         "parameters": {
             "type": "object",
             "properties": {
                 "query": {"type": "string", "description": "Search title, artist, or video name to play"},
+                "browser_name": {"type": "string", "description": "Optional browser: 'brave', 'chrome', 'firefox'"},
             },
             "required": ["query"],
         },
@@ -342,7 +377,7 @@ TOOL_DEFINITIONS = [
     },
     {
         "name": "play_spotify",
-        "description": "Launch Spotify and play a song, artist, album, or playlist directly.",
+        "description": "Launch Spotify and play a song, artist, album, or playlist directly via Spicetify API or instant hotkeys.",
         "parameters": {
             "type": "object",
             "properties": {
@@ -659,6 +694,8 @@ class ToolDispatcher:
             "media_control": media.media_control,
             "set_volume": media.set_volume,
             "get_system_stats": get_system_telemetry,
+            "stream_audio": streamer.stream_audio,
+            "stop_audio_stream": streamer.stop_audio_stream,
             "play_youtube": web.play_youtube,
             "search_web": web.search_web,
             "play_spotify": spotify.play_spotify,

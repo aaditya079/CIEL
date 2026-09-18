@@ -1,5 +1,18 @@
 """Spotify Tool: Direct protocol launch and playback controller for Spotify on Windows."""
 
+# reze ma queen 🥀
+# reze ma queen 🥀
+# reze ma queen 🥀
+# reze ma queen 🥀
+# reze ma queen 🥀
+# reze ma queen 🥀
+# reze ma queen 🥀
+# reze ma queen 🥀
+# reze ma queen 🥀
+# reze ma queen 🥀
+# reze ma queen 🥀
+
+
 import time
 import urllib.parse
 import subprocess
@@ -74,42 +87,69 @@ def _find_and_click_spotify_play_button(timeout: float = 3.5) -> bool:
 def play_spotify(query: str = "", **kwargs) -> Dict[str, Any]:
     """Launch Spotify and play requested track, artist, or resume playback.
     
-    Uses Windows spotify: URI scheme to jump straight to search results,
-    then locates the green Play button or top result card to start playback.
+    Multi-Tier Chant Annulment Architecture:
+    1. Spicetify Native Bridge (<10ms direct API) if active.
+    2. Instant Search Hotkey Sequence (Ctrl+L -> type -> Enter -> hover & play) to eliminate stale race conditions.
+    3. Title verification and media key playback assurance.
     """
     clean_q = (query or kwargs.get("track") or kwargs.get("song") or kwargs.get("q") or "").strip()
 
     try:
         if clean_q:
-            # Use Windows Spotify URI protocol to immediately open search in Spotify
-            spotify_uri = f"spotify:search:{urllib.parse.quote(clean_q)}"
-            subprocess.Popen(["cmd", "/c", "start", "", spotify_uri], shell=False)
+            # Tier 1: Spicetify Native Bridge (Instant Direct API)
+            try:
+                import tools.spicetify_bridge as spicetify_bridge
+                if spicetify_bridge.is_bridge_connected():
+                    logger.info(f"Spicetify Bridge active. Dispatching direct API playback for '{clean_q}'...")
+                    spicetify_bridge.play_track(clean_q)
+                    time.sleep(0.3)
+                    return {
+                        "success": True,
+                        "query": clean_q,
+                        "mode": "spicetify_bridge",
+                        "message": f"Playing '{clean_q}' on Spotify via Native Spicetify Bridge.",
+                    }
+            except Exception as e:
+                logger.debug(f"Spicetify bridge check failed: {e}")
 
-            # Allow Spotify window to focus and render search results
-            time.sleep(1.2)
+            # Tier 2: Instant Search Hotkey Pipeline
+            # Focus Spotify window
             windows.focus_window("Spotify")
+            time.sleep(0.15)
+
+            # Ctrl+L focuses search bar and clears any old query, preventing stale click race condition
+            keyboard.hotkey("ctrl", "l")
+            time.sleep(0.08)
+            keyboard.type_text(clean_q)
+            time.sleep(0.05)
+            keyboard.press_key("enter")
+
+            # Allow Spotify results to populate
             time.sleep(0.4)
 
-            # 1. Try to click the green circular Play button on the Top Result card
-            clicked = _find_and_click_spotify_play_button(timeout=3.0)
+            # Hover over the Top Result card to reveal the circular green play button
+            spot_win = windows.find_window("spotify")
+            if spot_win and spot_win.get("width", 0) > 200:
+                card_x = spot_win["left"] + int(spot_win["width"] * 0.36)
+                card_y = spot_win["top"] + int(spot_win["height"] * 0.25)
+                import computer.mouse as mouse
+                mouse.move_to(card_x, card_y, duration=0.08)
+                time.sleep(0.15)
 
-            # 2. Fallback: Double click top result card area or send keyboard enter
+            # Click the green play button on the Top Result card
+            clicked = _find_and_click_spotify_play_button(timeout=1.5)
+
+            # Fallback: Double-click top result card area or send Enter
             if not clicked:
-                open_wins = windows.list_open_windows()
-                spot_win = next((w for w in open_wins if "spotify" in w.get("title", "").lower() and w.get("width", 0) > 200), None)
                 if spot_win:
-                    card_x = spot_win["left"] + int(spot_win["width"] * 0.45)
-                    card_y = spot_win["top"] + int(spot_win["height"] * 0.23)
-                    import computer.mouse as mouse
                     mouse.double_click(card_x, card_y)
                 else:
                     keyboard.press_key("tab")
                     keyboard.press_key("enter")
 
-            # Pause briefly to allow playback state to register
-            time.sleep(0.6)
+            time.sleep(0.5)
 
-            # 3. Verification: check if playback started (Spotify window title changes from 'Spotify Free' to artist/track)
+            # Tier 3: Verification - Check if window title changed to artist/track
             active_win = windows.get_active_window()
             open_wins = windows.list_open_windows()
             is_playing = any(
@@ -124,12 +164,13 @@ def play_spotify(query: str = "", **kwargs) -> Dict[str, Any]:
             return {
                 "success": True,
                 "query": clean_q,
+                "mode": "instant_hotkey",
                 "message": f"Playing '{clean_q}' on Spotify.",
             }
         else:
             # No song specified: launch or focus Spotify and press play/pause
             apps.open_application("Spotify")
-            time.sleep(1.0)
+            time.sleep(0.5)
             keyboard.press_key("playpause")
             return {
                 "success": True,

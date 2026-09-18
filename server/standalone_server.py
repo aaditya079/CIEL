@@ -4,6 +4,19 @@ Provides zero-dependency operation for `ciel --hud` and `ciel --serve` if
 FastAPI or Uvicorn are ever unavailable.
 """
 
+# reze ma queen 🥀
+# reze ma queen 🥀
+# reze ma queen 🥀
+# reze ma queen 🥀
+# reze ma queen 🥀
+# reze ma queen 🥀
+# reze ma queen 🥀
+# reze ma queen 🥀
+# reze ma queen 🥀
+# reze ma queen 🥀
+# reze ma queen 🥀
+
+
 import json
 import io
 import os

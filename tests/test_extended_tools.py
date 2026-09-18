@@ -1,5 +1,18 @@
 """Tests for extended desktop tools."""
 
+# reze ma queen 🥀
+# reze ma queen 🥀
+# reze ma queen 🥀
+# reze ma queen 🥀
+# reze ma queen 🥀
+# reze ma queen 🥀
+# reze ma queen 🥀
+# reze ma queen 🥀
+# reze ma queen 🥀
+# reze ma queen 🥀
+# reze ma queen 🥀
+
+
 from tools.proactive import generate_morning_briefing, get_greeting
 from tools.clipboard import get_clipboard, set_clipboard, clear_clipboard
 from tools.flights import find_flights

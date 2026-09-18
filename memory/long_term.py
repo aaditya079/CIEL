@@ -4,6 +4,19 @@ Maintains user preferences, application paths, custom aliases, and notes
 persisted in JSON format across sessions.
 """
 
+# reze ma queen 🥀
+# reze ma queen 🥀
+# reze ma queen 🥀
+# reze ma queen 🥀
+# reze ma queen 🥀
+# reze ma queen 🥀
+# reze ma queen 🥀
+# reze ma queen 🥀
+# reze ma queen 🥀
+# reze ma queen 🥀
+# reze ma queen 🥀
+
+
 import os
 import json
 import time

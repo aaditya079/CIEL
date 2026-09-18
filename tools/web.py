@@ -1,5 +1,18 @@
 """Web Tools: Instant YouTube video playback and web search."""
 
+# reze ma queen 🥀
+# reze ma queen 🥀
+# reze ma queen 🥀
+# reze ma queen 🥀
+# reze ma queen 🥀
+# reze ma queen 🥀
+# reze ma queen 🥀
+# reze ma queen 🥀
+# reze ma queen 🥀
+# reze ma queen 🥀
+# reze ma queen 🥀
+
+
 import re
 import urllib.parse
 import subprocess
@@ -58,42 +71,66 @@ def scrape_first_youtube_video_id(query: str) -> Optional[str]:
     return None
 
 
-def play_youtube(query: str) -> Dict[str, Any]:
-    """Find and play a YouTube video directly in the browser."""
-    clean_q = (query or "").strip()
+def play_youtube(query: str, browser_name: str = "", **kwargs) -> Dict[str, Any]:
+    """Find and play a YouTube video directly in the browser with autoplay blocker bypass."""
+    clean_q = (query or kwargs.get("q") or kwargs.get("song") or kwargs.get("track") or "").strip()
     if not clean_q:
         return {"success": False, "error": "Query cannot be empty."}
 
     vid = scrape_first_youtube_video_id(clean_q)
-    if vid:
-        target_url = f"https://www.youtube.com/watch?v={vid}&autoplay=1"
-        _open_url(target_url)
+    target_url = f"https://www.youtube.com/watch?v={vid}&autoplay=1" if vid else f"https://www.youtube.com/results?search_query={urllib.parse.quote_plus(clean_q)}"
 
-        # Allow browser to load and trigger play key ('k' is YouTube universal play/pause shortcut)
-        try:
-            import time
-            time.sleep(1.8)
-            import pyautogui
-            pyautogui.press("k")
-        except Exception:
-            pass
+    target_browser = (browser_name or kwargs.get("browser") or "").strip().lower()
+    if target_browser:
+        import tools.apps as apps
+        apps.open_application(target_browser)
+        import time
+        time.sleep(0.5)
 
-        return {
-            "success": True,
-            "url": target_url,
-            "video_id": vid,
-            "message": f"Playing '{clean_q}' on YouTube.",
-        }
-    else:
-        # Fallback to search results page
-        fallback_url = f"https://www.youtube.com/results?search_query={urllib.parse.quote_plus(clean_q)}"
-        _open_url(fallback_url)
-        return {
-            "success": True,
-            "url": fallback_url,
-            "video_id": None,
-            "message": f"Opened YouTube search for '{clean_q}'.",
-        }
+    _open_url(target_url)
+
+    # Autoplay Blocker Bypass:
+    # Chromium (Chrome/Brave) requires document user interaction before allowing video autoplay.
+    # We focus the browser window, then click directly on the video canvas center.
+    try:
+        import time
+        import computer.windows as windows
+        import computer.mouse as mouse
+        import computer.keyboard as keyboard
+
+        # Allow browser tab to mount
+        time.sleep(1.2)
+
+        # Locate and focus the browser window
+        browser_win = None
+        for candidate in ("youtube", target_browser, "brave", "chrome", "firefox", "edge"):
+            if candidate:
+                browser_win = windows.find_window(candidate)
+                if browser_win:
+                    windows.focus_window(browser_win["hwnd"])
+                    break
+
+        if browser_win and browser_win.get("width", 0) > 300:
+            win_rect = browser_win["rect"]
+            cx = win_rect["left"] + int(win_rect["width"] * 0.45)
+            cy = win_rect["top"] + int(win_rect["height"] * 0.45)
+            # Click video canvas center to punch through autoplay barrier
+            mouse.click(cx, cy)
+            time.sleep(0.15)
+            keyboard.press_key("space")
+        else:
+            time.sleep(0.5)
+            keyboard.press_key("k")
+
+    except Exception as e:
+        logger.debug(f"Autoplay bypass exception: {e}")
+
+    return {
+        "success": True,
+        "url": target_url,
+        "video_id": vid,
+        "message": f"Playing '{clean_q}' on YouTube.",
+    }
 
 
 def search_web(query: str) -> Dict[str, Any]:

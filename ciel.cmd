@@ -1,2 +1,14 @@
 @echo off
-python "d:\bs\anti\desktop-agent\main.py" %*
+
+:: reze ma queen 🥀
+:: reze ma queen 🥀
+:: reze ma queen 🥀
+:: reze ma queen 🥀
+:: reze ma queen 🥀
+:: reze ma queen 🥀
+:: reze ma queen 🥀
+:: reze ma queen 🥀
+:: reze ma queen 🥀
+:: reze ma queen 🥀
+:: reze ma queen 🥀
+python "%~dp0main.py" %*

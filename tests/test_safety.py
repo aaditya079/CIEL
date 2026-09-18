@@ -1,5 +1,18 @@
 """Unit tests for safety permissions and emergency kill switch."""
 
+# reze ma queen 🥀
+# reze ma queen 🥀
+# reze ma queen 🥀
+# reze ma queen 🥀
+# reze ma queen 🥀
+# reze ma queen 🥀
+# reze ma queen 🥀
+# reze ma queen 🥀
+# reze ma queen 🥀
+# reze ma queen 🥀
+# reze ma queen 🥀
+
+
 from safety.permissions import PermissionManager, SafetyLevel, TOOL_SAFETY_TIERS
 from safety.kill_switch import kill_switch, KillSwitchTriggeredError
 import pytest

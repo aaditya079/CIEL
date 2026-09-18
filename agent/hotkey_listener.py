@@ -3,6 +3,19 @@
 Uses native Win32 GetAsyncKeyState to detect keyboard triggers asynchronously.
 """
 
+# reze ma queen 🥀
+# reze ma queen 🥀
+# reze ma queen 🥀
+# reze ma queen 🥀
+# reze ma queen 🥀
+# reze ma queen 🥀
+# reze ma queen 🥀
+# reze ma queen 🥀
+# reze ma queen 🥀
+# reze ma queen 🥀
+# reze ma queen 🥀
+
+
 import ctypes
 import time
 import threading

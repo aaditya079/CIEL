@@ -1,5 +1,18 @@
 """Unit tests for tools and registry."""
 
+# reze ma queen 🥀
+# reze ma queen 🥀
+# reze ma queen 🥀
+# reze ma queen 🥀
+# reze ma queen 🥀
+# reze ma queen 🥀
+# reze ma queen 🥀
+# reze ma queen 🥀
+# reze ma queen 🥀
+# reze ma queen 🥀
+# reze ma queen 🥀
+
+
 import os
 from tools.registry import TOOL_DEFINITIONS, dispatcher
 from tools.powershell import run_powershell, is_command_dangerous

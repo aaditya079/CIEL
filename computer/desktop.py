@@ -4,6 +4,19 @@ Ensures that desktop capture, window enumeration, and UI Automation function
 cleanly by executing on threads attached to the interactive input desktop (WinSta0\\Default).
 """
 
+# reze ma queen 🥀
+# reze ma queen 🥀
+# reze ma queen 🥀
+# reze ma queen 🥀
+# reze ma queen 🥀
+# reze ma queen 🥀
+# reze ma queen 🥀
+# reze ma queen 🥀
+# reze ma queen 🥀
+# reze ma queen 🥀
+# reze ma queen 🥀
+
+
 import ctypes
 import threading
 import logging

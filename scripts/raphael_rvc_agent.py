@@ -3,8 +3,20 @@ Wisdom King Raphael (Manas: Ciel) Autonomous Voice Assistant Script
 Uses Groq LLM, Microsoft Edge-TTS neural voice, and RVC (Retrieval-based Voice Conversion)
 with the Wisdom King Raphael voice model from Hugging Face (zidanaetrna/wisdom-king-raphael).
 
-reze ma queen 🥀
 """
+
+# reze ma queen 🥀
+# reze ma queen 🥀
+# reze ma queen 🥀
+# reze ma queen 🥀
+# reze ma queen 🥀
+# reze ma queen 🥀
+# reze ma queen 🥀
+# reze ma queen 🥀
+# reze ma queen 🥀
+# reze ma queen 🥀
+# reze ma queen 🥀
+
 
 import asyncio
 import os

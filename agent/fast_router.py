@@ -4,6 +4,19 @@ Matches common patterns for audio, media playback, system monitoring,
 desktop controls, and application shortcuts to execute via native APIs without inference latency.
 """
 
+# reze ma queen 🥀
+# reze ma queen 🥀
+# reze ma queen 🥀
+# reze ma queen 🥀
+# reze ma queen 🥀
+# reze ma queen 🥀
+# reze ma queen 🥀
+# reze ma queen 🥀
+# reze ma queen 🥀
+# reze ma queen 🥀
+# reze ma queen 🥀
+
+
 import re
 import logging
 from typing import Dict, Any, Optional
@@ -11,6 +24,8 @@ from typing import Dict, Any, Optional
 from tools.media import media_control, set_volume
 from tools.web import play_youtube, search_web
 from tools.spotify import play_spotify
+from tools.streamer import stream_audio, stop_audio_stream, is_audio_streaming
+from tools.apps import is_app_running
 from tools.desktop_control import (
     lock_screen,
     show_desktop,
@@ -102,15 +117,16 @@ class FastPathRouter:
             }
 
         # 4. Media Playback: Pause / Resume / Play / Stop / Next / Previous
-        if clean in ("pause", "pause music", "pause song", "pause video", "stop music"):
+        if clean in ("pause", "pause music", "pause song", "pause video", "stop music", "stop song", "stop playback", "stop stream"):
+            stop_audio_stream()
             res = media_control("play_pause")
             return {
                 "handled": True,
                 "success": res.get("success", True),
                 "tool": "media_control",
                 "arguments": {"action": "play_pause"},
-                "message": "Playback paused.",
-                "spoken": "Paused.",
+                "message": "Playback paused / stream stopped.",
+                "spoken": "Playback paused.",
             }
 
         if clean in ("resume", "resume music", "unpause", "play music", "play song"):
@@ -164,22 +180,33 @@ class FastPathRouter:
                 "data": telemetry,
             }
 
-        # 6. YouTube Playback: "play harvey on youtube", "watch queen on youtube"
-        yt_match = re.search(r"^(?:play|watch)\s+(.+?)\s+on\s+youtube$", clean) or \
+        # 6. YouTube Browser Playback: "open youtube on brave and play harvey", "watch harvey on youtube", "play harvey on youtube"
+        yt_match = re.search(r"^open\s+youtube(?:\s+on\s+(\w+))?\s+and\s+play\s+(.+)$", clean) or \
+                   re.search(r"^(?:open\s+(\w+)\s+and\s+)?(?:play|watch)\s+(.+?)\s+on\s+youtube$", clean) or \
+                   re.search(r"^watch\s+(.+?)(?:\s+on\s+(?:youtube|brave))?$", clean) or \
                    re.search(r"^youtube\s+(?:play\s+)?(.+)$", clean)
         if yt_match:
-            query = yt_match.group(1).strip()
-            res = play_youtube(query)
+            groups = [g for g in yt_match.groups() if g]
+            target_browser = ""
+            if len(groups) >= 2 and groups[0].lower() in ("brave", "chrome", "firefox", "edge"):
+                target_browser = groups[0].lower()
+                query = groups[1].strip()
+            elif len(groups) == 1:
+                query = groups[0].strip()
+            else:
+                query = groups[-1].strip()
+
+            res = play_youtube(query, browser_name=target_browser)
             return {
                 "handled": True,
                 "success": res.get("success", True),
                 "tool": "play_youtube",
-                "arguments": {"query": query},
+                "arguments": {"query": query, "browser_name": target_browser},
                 "message": res.get("message", f"Playing {query} on YouTube."),
                 "spoken": f"Playing {query} on YouTube.",
             }
 
-        # 7. Spotify Search & Play: "open spotify and play harvey", "play harvey on spotify"
+        # 7. Spotify Search & Play: "open spotify and play stress relief", "play harvey on spotify"
         sp_match = re.search(r"^(?:open\s+spotify\s+and\s+)?play\s+(.+?)\s+on\s+spotify$", clean) or \
                    re.search(r"^open\s+spotify\s+and\s+play\s+(.+)$", clean) or \
                    re.search(r"^spotify\s+(?:play\s+)?(.+)$", clean)
@@ -195,7 +222,46 @@ class FastPathRouter:
                 "spoken": f"Playing {query} on Spotify.",
             }
 
-        # 8. Weather: "weather", "weather in london", "what's the weather"
+        # 8. Headless Instant Stream (Gemini / Bixby Mode): "stream lofi", "stream stress relief"
+        stream_match = re.search(r"^stream\s+(.+)$", clean)
+        if stream_match:
+            query = stream_match.group(1).strip()
+            res = stream_audio(query)
+            return {
+                "handled": True,
+                "success": res.get("success", True),
+                "tool": "stream_audio",
+                "arguments": {"query": query},
+                "message": res.get("message", f"Streaming {query} in the background."),
+                "spoken": f"Streaming {query}.",
+            }
+
+        # 9. Smart Instant Play: "play stress relief", "play harvey" (Spotify if open, else Headless Gemini stream)
+        play_match = re.search(r"^(?:play|listen\s+to)\s+(.+)$", clean)
+        if play_match:
+            query = play_match.group(1).strip()
+            if is_app_running("spotify"):
+                res = play_spotify(query)
+                return {
+                    "handled": True,
+                    "success": res.get("success", True),
+                    "tool": "play_spotify",
+                    "arguments": {"query": query},
+                    "message": res.get("message", f"Playing {query} on Spotify."),
+                    "spoken": f"Playing {query} on Spotify.",
+                }
+            else:
+                res = stream_audio(query)
+                return {
+                    "handled": True,
+                    "success": res.get("success", True),
+                    "tool": "stream_audio",
+                    "arguments": {"query": query},
+                    "message": res.get("message", f"Streaming {query} in the background (Gemini/Bixby mode)."),
+                    "spoken": f"Streaming {query}.",
+                }
+
+        # 10. Weather: "weather", "weather in london", "what's the weather"
         weather_match = re.search(r"^(?:what(?:'s| is) the\s+)?weather(?:\s+(?:like\s+)?in\s+(.+))?$", clean)
         if weather_match:
             city = (weather_match.group(1) or "").strip()
@@ -209,7 +275,7 @@ class FastPathRouter:
                 "spoken": res.get("spoken", res.get("message")),
             }
 
-        # 9. Desktop & Window Management
+        # 11. Desktop & Window Management
         if clean in ("lock", "lock pc", "lock screen", "lock computer", "lock workstation"):
             res = lock_screen()
             return {
@@ -309,7 +375,7 @@ class FastPathRouter:
                 "spoken": "Fullscreen.",
             }
 
-        # 10. Reminders: "remind me in 5 minutes to check oven"
+        # 12. Reminders: "remind me in 5 minutes to check oven"
         remind_match = re.search(r"^remind(?:\s+me)?\s+(?:in\s+)?(\d+(?:\.\d+)?)\s*(?:m|min|mins|minutes?)?\s+(?:to\s+)?(.+)$", clean)
         if remind_match:
             mins = float(remind_match.group(1))
@@ -324,7 +390,7 @@ class FastPathRouter:
                 "spoken": res.get("spoken"),
             }
 
-        # 11. Browser Navigation & Tabs
+        # 13. Browser Navigation & Tabs
         browser_alias_map = {
             "new tab": "new_tab",
             "open new tab": "new_tab",
@@ -360,7 +426,7 @@ class FastPathRouter:
                 "spoken": f"{clean}.",
             }
 
-        # 12. Web Search: "search for quantum computing", "google weather today"
+        # 14. Web Search: "search for quantum computing", "google weather today"
         search_match = re.search(r"^(?:search(?:\s+the\s+web)?\s+(?:for\s+)?|google\s+)(.+)$", clean)
         if search_match:
             query = search_match.group(1).strip()
@@ -374,7 +440,7 @@ class FastPathRouter:
                 "spoken": f"Searching for {query}.",
             }
 
-        # 13. Undo: "undo", "undo that", "revert", "undo last action"
+        # 15. Undo: "undo", "undo that", "revert", "undo last action"
         if clean in ("undo", "undo that", "revert", "undo last action", "undo action", "cancel that"):
             res = undo_last_action()
             return {
@@ -386,7 +452,7 @@ class FastPathRouter:
                 "spoken": res.get("spoken"),
             }
 
-        # 14. Proactive Morning Briefing: "morning briefing", "daily briefing", "status report", "good morning"
+        # 16. Proactive Morning Briefing: "morning briefing", "daily briefing", "status report", "good morning"
         if clean in ("morning briefing", "daily briefing", "status report", "daily status",
                      "good morning", "briefing", "morning report", "sitrep"):
             res = generate_morning_briefing(speak=True)
@@ -399,7 +465,7 @@ class FastPathRouter:
                 "spoken": res.get("spoken"),
             }
 
-        # 15. Clipboard Intelligence
+        # 17. Clipboard Intelligence
         if clean in ("what's on my clipboard", "whats on my clipboard", "read clipboard",
                      "show clipboard", "clipboard", "inspect clipboard"):
             res = get_clipboard()
@@ -436,7 +502,7 @@ class FastPathRouter:
                 "spoken": "Copied to clipboard.",
             }
 
-        # 16. Flight Search: "flights from NYC to London", "find flights to Tokyo"
+        # 18. Flight Search: "flights from NYC to London", "find flights to Tokyo"
         flight_from_to = re.search(r"^(?:find\s+)?flights?(?:\s+search)?\s+from\s+(.+?)\s+to\s+(.+?)(?:\s+(?:on|for)\s+(.+))?$", clean)
         if flight_from_to:
             orig = flight_from_to.group(1).strip()
@@ -466,7 +532,7 @@ class FastPathRouter:
                 "spoken": res.get("spoken"),
             }
 
-        # 17. Steam & Games Control
+        # 19. Steam & Games Control
         if clean in ("update steam games", "update steam", "update games",
                      "open steam downloads", "steam downloads", "check game updates"):
             res = open_steam_action("downloads")
@@ -504,7 +570,7 @@ class FastPathRouter:
                     "spoken": res.get("spoken"),
                 }
 
-        # 18. Sound & Audio Settings
+        # 20. Sound & Audio Settings
         if clean in ("sound settings", "audio settings", "sound devices", "audio output"):
             res = open_sound_settings("sound")
             return {
@@ -527,7 +593,7 @@ class FastPathRouter:
                 "spoken": res.get("spoken"),
             }
 
-        # 19. Persistent Long-Term Memory
+        # 21. Persistent Long-Term Memory
         remember_match = re.search(r"^remember\s+(?:that\s+)?(.+?)\s+is\s+(.+)$", clean)
         if remember_match:
             k = remember_match.group(1).strip()

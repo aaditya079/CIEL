@@ -1,3 +1,17 @@
+<!--
+reze ma queen 🥀
+reze ma queen 🥀
+reze ma queen 🥀
+reze ma queen 🥀
+reze ma queen 🥀
+reze ma queen 🥀
+reze ma queen 🥀
+reze ma queen 🥀
+reze ma queen 🥀
+reze ma queen 🥀
+reze ma queen 🥀
+-->
+
 # Raphael Voice Models (RVC)
 
 Voice conversion weights and FAISS retrieval index for Wisdom King Raphael from *That Time I Got Reincarnated as a Slime*:
