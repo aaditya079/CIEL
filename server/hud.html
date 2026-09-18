@@ -1,27 +1,17 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-<!--
-reze ma queen 🥀
-reze ma queen 🥀
-reze ma queen 🥀
-reze ma queen 🥀
-reze ma queen 🥀
-reze ma queen 🥀
-reze ma queen 🥀
-reze ma queen 🥀
-reze ma queen 🥀
-reze ma queen 🥀
-reze ma queen 🥀
--->
 
-  <meta charset="UTF-8">
+<!-- reze ma queen 🥀 -->
+<head>
+<meta charset="UTF-8">
   <title>CIEL // WISDOM KING RAPHAEL (智慧之王) — Autonomous HUD</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700;900&family=IBM+Plex+Mono:wght@400;500;700&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
-  <style>
+
+<!-- reze ma queen 🥀 -->
+<style>
     :root {
       --bg: #06040b;
       --bg-card: rgba(14, 10, 24, 0.85);
@@ -685,10 +675,13 @@ reze ma queen 🥀
       flex-wrap: wrap;
       gap: 10px;
     }
-  </style>
+</style>
+
+<!-- reze ma queen 🥀 -->
 </head>
 <body>
 
+<!-- reze ma queen 🥀 -->
 <header>
   <div class="brand-wrap">
     <div class="brand-title">
@@ -710,10 +703,13 @@ reze ma queen 🥀
   </div>
 </header>
 
+<!-- reze ma queen 🥀 -->
 <main>
   <!-- Left Column: Command, Subskills, and Reasoning -->
   <div>
-    <div class="card" style="margin-bottom: 24px;">
+
+<!-- reze ma queen 🥀 -->
+<div class="card" style="margin-bottom: 24px;">
       <div class="card-title">
         <span>Directive Authority 《指揮命令》</span>
         <span class="sub">Voice &amp; Vision Autonomous Execution</span>
@@ -734,7 +730,9 @@ reze ma queen 🥀
       </div>
 
       <!-- Raphael's 5 Ultimate Sub-Skills -->
-      <div class="subskills-grid" id="subskills-container">
+
+<!-- reze ma queen 🥀 -->
+<div class="subskills-grid" id="subskills-container">
         <div class="subskill-card">
           <div class="subskill-kanji">《思考加速》</div>
           <div class="subskill-name">Thought Acceleration</div>
@@ -763,7 +761,9 @@ reze ma queen 🥀
       </div>
 
       <!-- Hardware Telemetry -->
-      <div class="gauges">
+
+<!-- reze ma queen 🥀 -->
+<div class="gauges">
         <div class="gauge">
           <div class="gauge-lbl">CPU Calculation</div>
           <div id="gauge-cpu" class="gauge-val">0%</div>
@@ -780,7 +780,9 @@ reze ma queen 🥀
     </div>
 
     <!-- Reasoning & Stream Card -->
-    <div class="card">
+
+<!-- reze ma queen 🥀 -->
+<div class="card">
       <div class="card-title">
         <span>Reasoning &amp; Analytical Stream 《思考推論》</span>
         <span class="sub">Tensura Analytical Appraisal Feed</span>
@@ -813,7 +815,8 @@ reze ma queen 🥀
       </div>
     </div>
 
-    <div class="card">
+<!-- reze ma queen 🥀 -->
+<div class="card">
       <div class="card-title">
         <span>Observation Viewport 《鑑定視野》</span>
         <span class="sub">Real-Time Windows 11 Feed</span>
@@ -835,6 +838,8 @@ reze ma queen 🥀
 </main>
 
 <!-- Sacred Codex / Compliance & Privacy Modal -->
+
+<!-- reze ma queen 🥀 -->
 <div class="modal-overlay" id="codex-modal" onclick="if(event.target===this) closeCodexModal()">
   <div class="modal-card" role="dialog" aria-modal="true" aria-labelledby="codex-title">
     <div class="modal-header">
@@ -868,6 +873,7 @@ reze ma queen 🥀
   </div>
 </div>
 
+<!-- reze ma queen 🥀 -->
 <footer class="site-footer">
   <div>
     <span>CIEL: Autonomous Windows 11 Desktop Agent // Inspired by Wisdom King Raphael (Tensura).</span>
@@ -877,6 +883,7 @@ reze ma queen 🥀
   </div>
 </footer>
 
+<!-- reze ma queen 🥀 -->
 <script>
   function openCodexModal() {
     document.getElementById('codex-modal').classList.add('open');
@@ -889,7 +896,8 @@ reze ma queen 🥀
   document.addEventListener('keydown', (e) => {
     if (e.key === 'Escape') closeCodexModal();
   });
-
+  
+  // reze ma queen 🥀
   async function triggerSound(name) {
     try {
       appendLog('《発声》 Invoking sound: ' + name, 'tag-notice');
@@ -898,7 +906,8 @@ reze ma queen 🥀
       appendLog('[SFX ERROR] ' + e.message, 'tag-alert');
     }
   }
-
+  
+  // reze ma queen 🥀
   async function pollStatus() {
     try {
       const res = await fetch('/api/status');
@@ -950,7 +959,8 @@ reze ma queen 🥀
       screenImg.src = '/api/screenshot?t=' + Date.now();
     }
   }
-
+  
+  // reze ma queen 🥀
   async function executeTask() {
     const input = document.getElementById('goal-input');
     const goal = input.value.trim();
@@ -971,14 +981,16 @@ reze ma queen 🥀
       appendLog('《警告》 Execution anomaly: ' + e.message, 'tag-alert');
     }
   }
-
+  
+  // reze ma queen 🥀
   async function stopAgent() {
     try {
       await fetch('/api/stop', { method: 'POST' });
       appendLog('《警告》 EMERGENCY KILL SWITCH ENGAGED. All operations suspended.', 'tag-alert');
     } catch (e) {}
   }
-
+  
+  // reze ma queen 🥀
   function appendLog(text, tagClass = 'tag-report') {
     const stream = document.getElementById('log-stream');
     const d = new Date();
@@ -994,5 +1006,6 @@ reze ma queen 🥀
   pollStatus();
 </script>
 
+<!-- reze ma queen 🥀 -->
 </body>
 </html>

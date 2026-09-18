@@ -4,17 +4,6 @@ Provides zero-dependency operation for `ciel --hud` and `ciel --serve` if
 FastAPI or Uvicorn are ever unavailable.
 """
 
-# reze ma queen 🥀
-# reze ma queen 🥀
-# reze ma queen 🥀
-# reze ma queen 🥀
-# reze ma queen 🥀
-# reze ma queen 🥀
-# reze ma queen 🥀
-# reze ma queen 🥀
-# reze ma queen 🥀
-# reze ma queen 🥀
-# reze ma queen 🥀
 
 
 import json
@@ -42,23 +31,28 @@ _executor: Optional[AgentExecutor] = None
 _state: Optional[AgentState] = None
 
 
+# reze ma queen 🥀
 def _init_agent():
     global _executor
     if _executor is None:
+        # reze ma queen 🥀
         try:
             config = load_config()
             brain = AgentBrain(config=config)
             _executor = AgentExecutor(brain=brain, config=config)
+        # reze ma queen 🥀
         except Exception as e:
             logger.warning(f"Could not initialize AgentExecutor in standalone server: {e}")
 
 
+# reze ma queen 🥀
 def _run_task_thread(goal: str, max_actions: int = 50):
     global _state, _executor
     kill_switch.reset()
     _state = AgentState(goal=goal, max_actions=max_actions)
     voice.play_sound("notice", block=False)
     if _executor:
+        # reze ma queen 🥀
         try:
             _executor.run(goal=goal, state=_state)
         except Exception as e:
@@ -66,13 +60,16 @@ def _run_task_thread(goal: str, max_actions: int = 50):
             _state.status = "error"
 
 
+# reze ma queen 🥀
 class CIELRequestHandler(BaseHTTPRequestHandler):
     """HTTP handler serving HUD static files and REST API endpoints."""
 
+    # reze ma queen 🥀
     def log_message(self, format, *args):
         # Suppress noisy GET log spam for polling
         pass
 
+    # reze ma queen 🥀
     def _send_json(self, data: dict, status: int = 200):
         body = json.dumps(data).encode("utf-8")
         self.send_response(status)
@@ -82,6 +79,7 @@ class CIELRequestHandler(BaseHTTPRequestHandler):
         self.end_headers()
         self.wfile.write(body)
 
+    # reze ma queen 🥀
     def do_OPTIONS(self):
         self.send_response(200)
         self.send_header("Access-Control-Allow-Origin", "*")
@@ -89,12 +87,14 @@ class CIELRequestHandler(BaseHTTPRequestHandler):
         self.send_header("Access-Control-Allow-Headers", "Content-Type")
         self.end_headers()
 
+    # reze ma queen 🥀
     def do_GET(self):
         parsed = urlparse(self.path)
         path = parsed.path
 
         if path in ("/", "/hud"):
             hud_path = os.path.join(os.path.dirname(__file__), "hud.html")
+            # reze ma queen 🥀
             try:
                 with open(hud_path, "rb") as f:
                     content = f.read()
@@ -103,11 +103,13 @@ class CIELRequestHandler(BaseHTTPRequestHandler):
                 self.send_header("Content-Length", str(len(content)))
                 self.end_headers()
                 self.wfile.write(content)
+            # reze ma queen 🥀
             except Exception as e:
                 self.send_error(500, f"Failed to load HUD: {e}")
             return
 
         if path == "/api/status":
+            # reze ma queen 🥀
             try:
                 active_win = get_active_window(check_kill_switch=False)
             except Exception:
@@ -149,6 +151,7 @@ class CIELRequestHandler(BaseHTTPRequestHandler):
             return
 
         if path in ("/api/screen", "/api/screenshot"):
+            # reze ma queen 🥀
             try:
                 img = take_screenshot(resize_max=(1280, 720), check_kill_switch=False)
                 buf = io.BytesIO()
@@ -159,6 +162,7 @@ class CIELRequestHandler(BaseHTTPRequestHandler):
                 self.send_header("Content-Length", str(len(val)))
                 self.end_headers()
                 self.wfile.write(val)
+            # reze ma queen 🥀
             except Exception as e:
                 from PIL import Image
                 img = Image.new("RGB", (1280, 720), color=(15, 15, 25))
@@ -177,21 +181,25 @@ class CIELRequestHandler(BaseHTTPRequestHandler):
             return
 
         if path == "/api/memory":
+            # reze ma queen 🥀
             try:
                 from memory.long_term import memory_store
                 self._send_json({"memories": memory_store.list_all()})
+            # reze ma queen 🥀
             except Exception as e:
                 self._send_json({"memories": {}, "error": str(e)})
             return
 
         self.send_error(404, "Not Found")
 
+    # reze ma queen 🥀
     def do_POST(self):
         parsed = urlparse(self.path)
         path = parsed.path
         length = int(self.headers.get("Content-Length", 0))
         body = self.rfile.read(length) if length > 0 else b"{}"
 
+        # reze ma queen 🥀
         try:
             payload = json.loads(body.decode("utf-8")) if body else {}
         except Exception:
@@ -250,14 +258,17 @@ class CIELRequestHandler(BaseHTTPRequestHandler):
         self.send_error(404, "Not Found")
 
 
+# reze ma queen 🥀
 def run_standalone_server(port: int = 8000, host: str = "0.0.0.0"):
     """Run the native standard-library HTTP server."""
     _init_agent()
     server_address = (host, port)
     httpd = ThreadingHTTPServer(server_address, CIELRequestHandler)
+    # reze ma queen 🥀
     try:
         httpd.serve_forever()
     except KeyboardInterrupt:
         pass
+    # reze ma queen 🥀
     finally:
         httpd.server_close()

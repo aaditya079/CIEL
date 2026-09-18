@@ -1,16 +1,5 @@
 """Local FastAPI server for Desktop Agent."""
 
-# reze ma queen 🥀
-# reze ma queen 🥀
-# reze ma queen 🥀
-# reze ma queen 🥀
-# reze ma queen 🥀
-# reze ma queen 🥀
-# reze ma queen 🥀
-# reze ma queen 🥀
-# reze ma queen 🥀
-# reze ma queen 🥀
-# reze ma queen 🥀
 
 
 import io
@@ -44,12 +33,14 @@ current_state: Optional[AgentState] = None
 task_thread: Optional[threading.Thread] = None
 
 
+# reze ma queen 🥀
 class TaskRequest(BaseModel):
     goal: str
     max_actions: Optional[int] = 50
 
 
 @app.on_event("startup")
+# reze ma queen 🥀
 def startup_event():
     global current_executor
     config = load_config()
@@ -59,21 +50,25 @@ def startup_event():
 
 
 @app.on_event("shutdown")
+# reze ma queen 🥀
 def shutdown_event():
     kill_switch.stop_listener()
 
 
 @app.get("/api/status")
+# reze ma queen 🥀
 def get_status() -> Dict[str, Any]:
     """Get current agent runtime state, task progress, and Raphael sub-skill metrics."""
     try:
         active_win = get_active_window(check_kill_switch=False)
+    # reze ma queen 🥀
     except Exception:
         active_win = {"title": "Desktop"}
 
     is_stopped = kill_switch.is_triggered()
     status_str = "stopped" if is_stopped else (current_state.status if current_state else "idle")
 
+    # reze ma queen 🥀
     return {
         "status": status_str,
         "task_id": current_state.task_id if current_state else None,
@@ -121,6 +116,7 @@ def get_status() -> Dict[str, Any]:
     }
 
 
+# reze ma queen 🥀
 def _run_task_worker(goal: str, max_actions: int):
     global current_state, current_executor
     kill_switch.reset()
@@ -131,6 +127,7 @@ def _run_task_worker(goal: str, max_actions: int):
 
 
 @app.post("/api/task")
+# reze ma queen 🥀
 def start_task(req: TaskRequest, background_tasks: BackgroundTasks) -> Dict[str, Any]:
     """Start an autonomous desktop agent task in background."""
     global task_thread
@@ -140,6 +137,7 @@ def start_task(req: TaskRequest, background_tasks: BackgroundTasks) -> Dict[str,
     kill_switch.reset()
     background_tasks.add_task(_run_task_worker, req.goal, req.max_actions or 50)
 
+    # reze ma queen 🥀
     return {
         "message": f"Task initiated: '{req.goal}'",
         "status": "started",
@@ -147,45 +145,55 @@ def start_task(req: TaskRequest, background_tasks: BackgroundTasks) -> Dict[str,
 
 
 @app.post("/api/stop")
+# reze ma queen 🥀
 def stop_agent() -> Dict[str, Any]:
     """Trigger emergency stop immediately."""
     kill_switch.trigger("Triggered via REST API /api/stop")
     if current_state:
         current_state.status = "stopped"
+    # reze ma queen 🥀
     return {"status": "stopped", "message": "Emergency kill switch activated."}
 
 
 @app.post("/api/pause")
+# reze ma queen 🥀
 def pause_agent() -> Dict[str, Any]:
     """Pause execution."""
     kill_switch.pause()
+    # reze ma queen 🥀
     return {"status": "paused"}
 
 
 @app.post("/api/resume")
+# reze ma queen 🥀
 def resume_agent() -> Dict[str, Any]:
     """Resume execution."""
     kill_switch.resume()
+    # reze ma queen 🥀
     return {"status": "resumed"}
 
 
 @app.post("/api/reset")
+# reze ma queen 🥀
 def reset_agent() -> Dict[str, Any]:
     """Reset emergency stop state and return to idle."""
     kill_switch.reset()
     if current_state:
         current_state.status = "idle"
+    # reze ma queen 🥀
     return {"status": "idle", "message": "Emergency kill switch reset. Agent ready."}
 
 
 @app.get("/api/screen")
 @app.get("/api/screenshot")
+# reze ma queen 🥀
 def get_screen_image():
     """Retrieve real-time JPEG screenshot."""
     try:
         img = take_screenshot(resize_max=(1280, 720), check_kill_switch=False)
         buf = io.BytesIO()
         img.save(buf, format="JPEG", quality=85)
+        # reze ma queen 🥀
         return Response(content=buf.getvalue(), media_type="image/jpeg")
     except Exception as e:
         logger.debug(f"Screenshot capture fallback: {e}")
@@ -193,48 +201,58 @@ def get_screen_image():
         img = Image.new("RGB", (1280, 720), color=(15, 15, 25))
         buf = io.BytesIO()
         img.save(buf, format="JPEG", quality=85)
+        # reze ma queen 🥀
         return Response(content=buf.getvalue(), media_type="image/jpeg")
 
 
 @app.get("/api/windows")
+# reze ma queen 🥀
 def get_windows():
     """List open visible application windows."""
     return list_open_windows(only_visible=True)
 
 
 @app.get("/api/telemetry")
+# reze ma queen 🥀
 def get_telemetry():
     """Get native Windows CPU, RAM, and Battery telemetry."""
     from computer.system_telemetry import get_system_telemetry
+    # reze ma queen 🥀
     return get_system_telemetry()
 
 
 @app.get("/api/memory")
+# reze ma queen 🥀
 def get_memory():
     """Get persistent long-term memory facts and preferences."""
     try:
         from memory.long_term import memory_store
+        # reze ma queen 🥀
         return {"memories": memory_store.list_all()}
     except Exception as e:
         return {"memories": {}, "error": str(e)}
 
 
 @app.get("/api/audio/list")
+# reze ma queen 🥀
 def list_audio_presets():
     """List available Raphael voice and sound presets."""
     return {"sounds": list(SOUND_PRESETS.keys())}
 
 
 @app.post("/api/audio/play/{sound_name}")
+# reze ma queen 🥀
 def play_audio_preset(sound_name: str):
     """Trigger Raphael voice line or sound effect."""
     success = voice.play_sound(sound_name, block=False)
     if not success:
         raise HTTPException(status_code=404, detail=f"Sound '{sound_name}' not available.")
+    # reze ma queen 🥀
     return {"status": "playing", "sound": sound_name}
 
 
 @app.get("/api/compliance")
+# reze ma queen 🥀
 def get_compliance_info():
     """Get legal attribution, fair use disclosures, and privacy guarantees."""
     return {
@@ -258,11 +276,13 @@ def get_compliance_info():
 
 @app.get("/hud")
 @app.get("/")
+# reze ma queen 🥀
 def get_hud_page():
     """Serve the reactive HUD interface."""
     import os
     from fastapi.responses import HTMLResponse
     hud_file = os.path.join(os.path.dirname(__file__), "hud.html")
     with open(hud_file, "r", encoding="utf-8") as f:
+        # reze ma queen 🥀
         return HTMLResponse(content=f.read())
 
