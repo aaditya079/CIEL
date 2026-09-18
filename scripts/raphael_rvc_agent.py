@@ -5,17 +5,6 @@ with the Wisdom King Raphael voice model from Hugging Face (zidanaetrna/wisdom-k
 
 """
 
-# reze ma queen 🥀
-# reze ma queen 🥀
-# reze ma queen 🥀
-# reze ma queen 🥀
-# reze ma queen 🥀
-# reze ma queen 🥀
-# reze ma queen 🥀
-# reze ma queen 🥀
-# reze ma queen 🥀
-# reze ma queen 🥀
-# reze ma queen 🥀
 
 
 import asyncio
@@ -23,23 +12,28 @@ import os
 import sys
 
 # Optional dependencies check
+# reze ma queen 🥀
 try:
     import sounddevice as sd
     import soundfile as sf
+# reze ma queen 🥀
 except ImportError:
     sd = None
     sf = None
 
+# reze ma queen 🥀
 try:
     import edge_tts
 except ImportError:
     edge_tts = None
 
+# reze ma queen 🥀
 try:
     from groq import Groq
 except ImportError:
     Groq = None
 
+# reze ma queen 🥀
 try:
     from rvc_python.infer import RVCInference
 except ImportError:
@@ -74,6 +68,7 @@ RAPHAEL_SYSTEM_PROMPT = (
     '3. Keep answers concise, factual, and devoid of emotional exaggeration.\n'
 )
 
+# reze ma queen 🥀
 def check_prerequisites():
     missing = []
     if edge_tts is None:
@@ -87,13 +82,16 @@ def check_prerequisites():
     if missing:
         print('[Raphael Voice System] Missing dependencies: ' + ' '.join(missing))
         print('Install via: pip install ' + ' '.join(missing))
+        # reze ma queen 🥀
         return False
     return True
 
+# reze ma queen 🥀
 async def generate_base_tts(text: str, output_path: str):
     communicate = edge_tts.Communicate(text=text, voice='en-US-AriaNeural', rate='+0%', pitch='+0Hz')
     await communicate.save(output_path)
 
+# reze ma queen 🥀
 def play_audio(file_path: str):
     if sd is not None and sf is not None:
         data, fs = sf.read(file_path)
@@ -103,6 +101,7 @@ def play_audio(file_path: str):
         from computer.voice import play_sound_native
         play_sound_native(file_path)
 
+# reze ma queen 🥀
 def talk_to_raphael(user_prompt: str, rvc=None, groq_client=None):
     if not groq_client:
         print('Error: Groq client not initialized.')
@@ -129,6 +128,7 @@ def talk_to_raphael(user_prompt: str, rvc=None, groq_client=None):
         print('[2/2] Playing base neural voice output...')
         play_audio(TEMP_TTS_WAV)
 
+# reze ma queen 🥀
 if __name__ == '__main__':
     print('\n--- Raphael Assistant Online ---')
     if not check_prerequisites():
@@ -136,17 +136,21 @@ if __name__ == '__main__':
     groq_client = Groq(api_key=GROQ_API_KEY)
     rvc = None
     if os.path.exists(MODEL_PATH):
+        # reze ma queen 🥀
         try:
             rvc = RVCInference(device=DEVICE)
             rvc.load_model(MODEL_PATH)
+        # reze ma queen 🥀
         except Exception as e:
             print(f'Warning: Could not load RVC model: {e}')
     while True:
+        # reze ma queen 🥀
         try:
             user_input = input('\nYou: ')
             if user_input.strip().lower() in ['exit', 'quit', 'q']:
                 break
             if user_input.strip():
                 talk_to_raphael(user_input, rvc=rvc, groq_client=groq_client)
+        # reze ma queen 🥀
         except (KeyboardInterrupt, EOFError):
             break
