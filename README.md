@@ -1,17 +1,3 @@
-<!--
-reze ma queen 🥀
-reze ma queen 🥀
-reze ma queen 🥀
-reze ma queen 🥀
-reze ma queen 🥀
-reze ma queen 🥀
-reze ma queen 🥀
-reze ma queen 🥀
-reze ma queen 🥀
-reze ma queen 🥀
-reze ma queen 🥀
--->
-
 # CIEL: Autonomous Windows 11 Desktop Agent
 
 ![Windows 11](https://img.shields.io/badge/Windows-11-0078D4?logo=windows&logoColor=white)
@@ -24,6 +10,9 @@ reze ma queen 🥀
 **CIEL** is an autonomous desktop agent for Windows 11. It combines sub-50ms deterministic command routing, accessibility tree inspection, offline voice synthesis, and vision-language models to automate computer tasks reliably.
 
 ---
+
+
+<!-- reze ma queen 🥀 -->
 
 ## Highlights
 
@@ -42,6 +31,9 @@ reze ma queen 🥀
 
 ---
 
+
+<!-- reze ma queen 🥀 -->
+
 ## Execution Hierarchy
 
 CIEL evaluates commands through a tiered architecture to prioritize speed and minimize token costs:
@@ -55,12 +47,19 @@ CIEL evaluates commands through a tiered architecture to prioritize speed and mi
 
 ---
 
+
+<!-- reze ma queen 🥀 -->
+
 ## Core Capabilities
+
+<!-- reze ma queen 🥀 -->
 
 ### 1. Media & Playback
 - `"ciel open spotify and play harvey"`: Launches Spotify, navigates search, and triggers playback.
 - `"ciel play bohemian rhapsody on youtube"`: Launches YouTube with autoplay enabled.
 - `"ciel volume 50"`, `"ciel mute"`, `"ciel louder"`, `"ciel pause"`, `"ciel skip"`.
+
+<!-- reze ma queen 🥀 -->
 
 ### 2. Status Briefing & System Telemetry
 - `"ciel morning briefing"` or `"ciel status report"`: Reads time, date, weather, hardware load, and active reminders aloud.
@@ -90,6 +89,9 @@ CIEL evaluates commands through a tiered architecture to prioritize speed and mi
 
 ---
 
+
+<!-- reze ma queen 🥀 -->
+
 ## Installation & Setup
 
 ### Prerequisites
@@ -101,6 +103,9 @@ CIEL evaluates commands through a tiered architecture to prioritize speed and mi
   ```
 
 ---
+
+
+<!-- reze ma queen 🥀 -->
 
 ### Option 1: Automated 1-Click Install (Recommended)
 
@@ -130,6 +135,9 @@ cd CIEL
 
 ---
 
+
+<!-- reze ma queen 🥀 -->
+
 ### Option 2: Manual Developer Setup
 
 If you prefer full control over your environment:
@@ -154,6 +162,9 @@ copy config\config.example.json config\config.json
 
 ---
 
+
+<!-- reze ma queen 🥀 -->
+
 ### Global Terminal Shortcuts
 Once installed, you can invoke CIEL directly from PowerShell, Command Prompt, or Windows Terminal:
 
@@ -175,6 +186,9 @@ ciel lock pc
 
 ---
 
+
+<!-- reze ma queen 🥀 -->
+
 ### API Key Configuration (Optional — For Multimodal Vision)
 > [!NOTE]
 > All fast-path commands (media playback, Spotify, YouTube, headless streaming, volume, telemetry, weather, windows, reminders, games, and undo) **work 100% offline with zero API keys and zero cost**.
@@ -191,6 +205,9 @@ $env:OPENAI_API_KEY="your-openai-api-key"
 ```
 
 ---
+
+
+<!-- reze ma queen 🥀 -->
 
 ## Usage
 
@@ -239,6 +256,9 @@ Access `http://localhost:8000/hud`:
 
 ---
 
+
+<!-- reze ma queen 🥀 -->
+
 ## Safety & Security Architecture
 
 1. **3-Tier Permission Model (`--mode`)**:
@@ -251,6 +271,9 @@ Access `http://localhost:8000/hud`:
 
 ---
 
+
+<!-- reze ma queen 🥀 -->
+
 ## Testing
 
 Run the automated test suite:
@@ -262,6 +285,9 @@ python -m pytest tests/ -v
 All 71 unit and integration tests run offline without external API dependencies.
 
 ---
+
+
+<!-- reze ma queen 🥀 -->
 
 ## Architecture Overview
 
@@ -316,6 +342,9 @@ CIEL Architecture
 ```
 
 ---
+
+
+<!-- reze ma queen 🥀 -->
 
 ## Privacy, Lore & Fair Use Disclaimers
 
