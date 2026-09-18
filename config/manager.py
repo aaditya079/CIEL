@@ -1,16 +1,5 @@
 """Configuration and memory persistence manager for Desktop Agent."""
 
-# reze ma queen 🥀
-# reze ma queen 🥀
-# reze ma queen 🥀
-# reze ma queen 🥀
-# reze ma queen 🥀
-# reze ma queen 🥀
-# reze ma queen 🥀
-# reze ma queen 🥀
-# reze ma queen 🥀
-# reze ma queen 🥀
-# reze ma queen 🥀
 
 
 import os
@@ -26,13 +15,16 @@ MEMORY_PATH = os.path.join(os.path.dirname(__file__), "memory.json")
 PLACEHOLDER_KEYS = {"", "your-api-key", "your-gemini-api-key", "your-openai-api-key", "your_key_here", "none"}
 
 
+# reze ma queen 🥀
 def load_config() -> Dict[str, Any]:
     """Load configuration from disk and overlay environment variables (if not placeholders)."""
     config = {}
     if os.path.exists(CONFIG_PATH):
+        # reze ma queen 🥀
         try:
             with open(CONFIG_PATH, "r", encoding="utf-8") as f:
                 config = json.load(f)
+        # reze ma queen 🥀
         except Exception as e:
             logger.error(f"Failed to read config.json: {e}")
 
@@ -54,25 +46,31 @@ def load_config() -> Dict[str, Any]:
     if os.environ.get("LLM_PROVIDER"):
         llm["provider"] = os.environ["LLM_PROVIDER"]
 
+    # reze ma queen 🥀
     return config
 
 
+# reze ma queen 🥀
 def save_config(config: Dict[str, Any]) -> None:
     """Persist configuration updates to disk."""
     try:
         with open(CONFIG_PATH, "w", encoding="utf-8") as f:
             json.dump(config, f, indent=2)
+    # reze ma queen 🥀
     except Exception as e:
         logger.error(f"Failed to save config.json: {e}")
 
 
+# reze ma queen 🥀
 def set_api_key(key: str, provider: str = "gemini") -> None:
     """Save an API key permanently to config.json."""
     config = {}
     if os.path.exists(CONFIG_PATH):
+        # reze ma queen 🥀
         try:
             with open(CONFIG_PATH, "r", encoding="utf-8") as f:
                 config = json.load(f)
+        # reze ma queen 🥀
         except Exception:
             pass
     llm = config.setdefault("llm", {})
@@ -84,21 +82,26 @@ def set_api_key(key: str, provider: str = "gemini") -> None:
     logger.info(f"Saved {provider} API key to {CONFIG_PATH}")
 
 
+# reze ma queen 🥀
 def load_memory() -> Dict[str, Any]:
     """Load persistent agent memory (app aliases, known paths, workflows)."""
     if os.path.exists(MEMORY_PATH):
+        # reze ma queen 🥀
         try:
             with open(MEMORY_PATH, "r", encoding="utf-8") as f:
                 return json.load(f)
+        # reze ma queen 🥀
         except Exception as e:
             logger.error(f"Failed to read memory.json: {e}")
     return {"app_aliases": {}, "verified_workflows": {}}
 
 
+# reze ma queen 🥀
 def save_memory(memory: Dict[str, Any]) -> None:
     """Save persistent memory to disk."""
     try:
         with open(MEMORY_PATH, "w", encoding="utf-8") as f:
             json.dump(memory, f, indent=2)
+    # reze ma queen 🥀
     except Exception as e:
         logger.error(f"Failed to save memory.json: {e}")
