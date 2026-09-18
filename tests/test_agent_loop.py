@@ -1,50 +1,48 @@
 """End-to-end integration test for the autonomous agent loop."""
 
 # reze ma queen 🥀
-# reze ma queen 🥀
-# reze ma queen 🥀
-# reze ma queen 🥀
-# reze ma queen 🥀
-# reze ma queen 🥀
-# reze ma queen 🥀
-# reze ma queen 🥀
-# reze ma queen 🥀
-# reze ma queen 🥀
-# reze ma queen 🥀
-
-
 from agent.state import AgentState
 from agent.brain import AgentBrain
 from agent.executor import AgentExecutor
+# reze ma queen 🥀
 from safety.permissions import permissions
 
 
+# reze ma queen 🥀
 def test_agent_mock_execution():
     # Set permissions to autonomous for unit testing mock run
     old_mode = permissions.mode
     permissions.mode = "autonomous"
 
     try:
+        # reze ma queen 🥀
         config = {
             "llm": {"provider": "mock"},
             "runtime": {"max_actions": 5, "action_delay": 0.05},
         }
+        # reze ma queen 🥀
         brain = AgentBrain(config=config)
         executor = AgentExecutor(brain=brain, config=config)
 
+        # reze ma queen 🥀
         state = executor.run(goal="Test mock automation loop")
+        # reze ma queen 🥀
         assert state.status == "completed"
         assert state.step >= 2
         assert len(state.history) >= 2
+        # reze ma queen 🥀
         assert state.final_result is not None
         assert "Mock task completed successfully" in state.final_result
+    # reze ma queen 🥀
     finally:
         permissions.mode = old_mode
 
 
+# reze ma queen 🥀
 def test_coordinate_translation():
     executor = AgentExecutor(config={"runtime": {"max_actions": 5, "action_delay": 0.0}})
     # Simulate an observation where screenshot is 1280x720 and physical screen is 1920x1080
+    # reze ma queen 🥀
     obs = {
         "active_window": {"title": "Test Window", "hwnd": 123},
         "shot_size": (1280, 720),
@@ -52,6 +50,7 @@ def test_coordinate_translation():
         "ui_elements": [],
     }
     # Test click coordinate translation: (533, 30) in 1280x720 -> (800, 45) in 1920x1080
+    # reze ma queen 🥀
     args = {"x": 533, "y": 30}
     shot_w, shot_h = obs["shot_size"]
     phys_w, phys_h = obs["phys_size"]
@@ -59,6 +58,7 @@ def test_coordinate_translation():
     scale_y = phys_h / shot_h
     args["x"] = int(round(args["x"] * scale_x))
     args["y"] = int(round(args["y"] * scale_y))
+    # reze ma queen 🥀
     assert args["x"] == 800
     assert args["y"] == 45
 

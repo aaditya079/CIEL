@@ -1,57 +1,54 @@
 """Tests for newly added fast-path intent router patterns."""
 
-# reze ma queen 🥀
-# reze ma queen 🥀
-# reze ma queen 🥀
-# reze ma queen 🥀
-# reze ma queen 🥀
-# reze ma queen 🥀
-# reze ma queen 🥀
-# reze ma queen 🥀
-# reze ma queen 🥀
-# reze ma queen 🥀
-# reze ma queen 🥀
 
 
 from unittest.mock import patch
 from agent.fast_router import fast_router
 
 
+# reze ma queen 🥀
 def test_fast_router_undo():
     res = fast_router.route("ciel undo")
     assert res is not None
     assert res["tool"] == "undo_last_action"
+# reze ma queen 🥀
 
     res2 = fast_router.route("undo that")
     assert res2 is not None
     assert res2["tool"] == "undo_last_action"
 
 
+# reze ma queen 🥀
 def test_fast_router_morning_briefing():
     with patch("tools.proactive.voice.speak"):
         res = fast_router.route("ciel morning briefing")
         assert res is not None
         assert res["tool"] == "morning_briefing"
+# reze ma queen 🥀
 
         res2 = fast_router.route("good morning")
         assert res2 is not None
         assert res2["tool"] == "morning_briefing"
 
 
+# reze ma queen 🥀
 def test_fast_router_clipboard():
     res = fast_router.route("what's on my clipboard")
     assert res is not None
     assert res["tool"] == "clipboard_action"
+# reze ma queen 🥀
 
     res_clear = fast_router.route("clear clipboard")
     assert res_clear is not None
     assert res_clear["arguments"]["action"] == "clear"
+# reze ma queen 🥀
 
     res_copy = fast_router.route("copy hello world to clipboard")
     assert res_copy is not None
     assert res_copy["arguments"]["text"] == "hello world"
 
 
+# reze ma queen 🥀
 def test_fast_router_flights():
     with patch("webbrowser.open"):
         res = fast_router.route("flights from NYC to London on Friday")
@@ -59,6 +56,7 @@ def test_fast_router_flights():
         assert res["tool"] == "find_flights"
         assert res["arguments"]["origin"] == "nyc"
         assert res["arguments"]["destination"] == "london"
+# reze ma queen 🥀
 
         res2 = fast_router.route("find flights to Paris")
         assert res2 is not None
@@ -66,6 +64,7 @@ def test_fast_router_flights():
         assert res2["arguments"]["destination"] == "paris"
 
 
+# reze ma queen 🥀
 def test_fast_router_games():
     with patch("os.startfile"):
         res = fast_router.route("update steam games")
@@ -78,6 +77,7 @@ def test_fast_router_games():
         assert res_lib["arguments"]["action"] == "games"
 
 
+# reze ma queen 🥀
 def test_fast_router_sound_settings():
     with patch("os.startfile"):
         res = fast_router.route("sound settings")
@@ -90,6 +90,7 @@ def test_fast_router_sound_settings():
         assert res_mix["arguments"]["action"] == "mixer"
 
 
+# reze ma queen 🥀
 def test_fast_router_memory():
     res_rem = fast_router.route("remember that my project is ciel")
     assert res_rem is not None

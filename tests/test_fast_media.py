@@ -4,23 +4,14 @@ Tests Spicetify bridge queue, headless background audio streaming,
 and fast-router dual-mode routing.
 """
 
-# reze ma queen 🥀
-# reze ma queen 🥀
-# reze ma queen 🥀
-# reze ma queen 🥀
-# reze ma queen 🥀
-# reze ma queen 🥀
-# reze ma queen 🥀
-# reze ma queen 🥀
-# reze ma queen 🥀
-# reze ma queen 🥀
-# reze ma queen 🥀
 
 
 import os
+# reze ma queen 🥀
 try:
     import comtypes
     comtypes.CoInitialize()
+# reze ma queen 🥀
 except Exception:
     pass
 
@@ -31,12 +22,14 @@ from agent.fast_router import fast_router
 from tools.registry import dispatcher
 
 
+# reze ma queen 🥀
 def test_spicetify_bridge_extension_path():
     assert "ciel_bridge.js" in spicetify_bridge.SPICETIFY_EXT_PATH
     # Ensure bridge extension file exists
     assert os.path.exists(spicetify_bridge.SPICETIFY_EXT_PATH)
 
 
+# reze ma queen 🥀
 def test_spicetify_command_queue():
     spicetify_bridge.send_command("play", query="test_track_123")
     cmd = spicetify_bridge._COMMAND_QUEUE.get_nowait()
@@ -44,17 +37,20 @@ def test_spicetify_command_queue():
     assert cmd["query"] == "test_track_123"
 
 
+# reze ma queen 🥀
 def test_streamer_dispatch_registration():
     assert "stream_audio" in dispatcher._handlers
     assert "stop_audio_stream" in dispatcher._handlers
 
 
+# reze ma queen 🥀
 def test_streamer_stop_when_idle():
     res = stop_audio_stream()
     assert res["success"] is True
     assert is_audio_streaming() is False
 
 
+# reze ma queen 🥀
 def test_fast_router_stream_intent():
     # Mock stream_audio to verify routing without launching actual ffplay
     with patch("agent.fast_router.stream_audio") as mock_stream:
@@ -66,6 +62,7 @@ def test_fast_router_stream_intent():
         mock_stream.assert_called_once_with("lofi beats")
 
 
+# reze ma queen 🥀
 def test_fast_router_youtube_brave_intent():
     with patch("agent.fast_router.play_youtube") as mock_yt:
         mock_yt.return_value = {"success": True, "message": "Playing harvey on YouTube."}
@@ -77,6 +74,7 @@ def test_fast_router_youtube_brave_intent():
         mock_yt.assert_called_once_with("harvey", browser_name="brave")
 
 
+# reze ma queen 🥀
 def test_fast_router_watch_intent():
     with patch("agent.fast_router.play_youtube") as mock_yt:
         mock_yt.return_value = {"success": True, "message": "Playing queen on YouTube."}
@@ -86,6 +84,7 @@ def test_fast_router_watch_intent():
         assert route["arguments"]["query"] == "queen"
 
 
+# reze ma queen 🥀
 def test_performance_adaptation_factor():
     from computer.system_telemetry import get_performance_adaptation_factor
     res = get_performance_adaptation_factor()
@@ -98,6 +97,7 @@ def test_performance_adaptation_factor():
     assert isinstance(res["on_battery"], bool)
 
 
+# reze ma queen 🥀
 def test_network_latency_ms():
     from computer.system_telemetry import get_network_latency_ms
     latency = get_network_latency_ms(timeout=0.8)
@@ -105,6 +105,7 @@ def test_network_latency_ms():
     assert latency > 0.0
 
 
+# reze ma queen 🥀
 def test_youtube_red_play_button_detector():
     from PIL import Image, ImageDraw
     from tools.web import _find_youtube_play_button
@@ -125,6 +126,7 @@ def test_youtube_red_play_button_detector():
     assert abs(cy - 350) <= 2
 
 
+# reze ma queen 🥀
 def test_youtube_detector_ignores_header_logo():
     from PIL import Image, ImageDraw
     from tools.web import _find_youtube_play_button

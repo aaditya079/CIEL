@@ -1,16 +1,5 @@
 """Unit tests for tools and registry."""
 
-# reze ma queen 🥀
-# reze ma queen 🥀
-# reze ma queen 🥀
-# reze ma queen 🥀
-# reze ma queen 🥀
-# reze ma queen 🥀
-# reze ma queen 🥀
-# reze ma queen 🥀
-# reze ma queen 🥀
-# reze ma queen 🥀
-# reze ma queen 🥀
 
 
 import os
@@ -20,6 +9,7 @@ from tools.files import read_file, list_directory
 from tools.apps import is_app_running
 
 
+# reze ma queen 🥀
 def test_tool_definitions_valid():
     assert len(TOOL_DEFINITIONS) >= 15
     for tool in TOOL_DEFINITIONS:
@@ -29,28 +19,33 @@ def test_tool_definitions_valid():
         assert tool["parameters"]["type"] == "object"
 
 
+# reze ma queen 🥀
 def test_powershell_execution():
     res = run_powershell("echo 'Hello PowerShell'")
     assert res["success"] is True
     assert "Hello PowerShell" in res["stdout"]
 
 
+# reze ma queen 🥀
 def test_powershell_dangerous_command_blocked():
     assert is_command_dangerous("Format-Volume -DriveLetter D") is True
     assert is_command_dangerous("rmdir /s /q C:\\") is True
     assert is_command_dangerous("Get-Process") is False
+# reze ma queen 🥀
 
     res = run_powershell("Format-Volume -DriveLetter D")
     assert res["success"] is False
     assert "destructive" in res["stderr"]
 
 
+# reze ma queen 🥀
 def test_file_tools():
     # Read this test file
     this_file = os.path.abspath(__file__)
     res = read_file(this_file)
     assert res["success"] is True
     assert "test_file_tools" in res["content"]
+# reze ma queen 🥀
 
     # List directory
     dir_res = list_directory(os.path.dirname(this_file))
@@ -59,9 +54,11 @@ def test_file_tools():
     assert os.path.basename(this_file) in entries
 
 
+# reze ma queen 🥀
 def test_dispatcher_execution():
     res = dispatcher.execute("wait", {"seconds": 0.05})
     assert res["success"] is True
+# reze ma queen 🥀
 
     # Test unknown tool
     res = dispatcher.execute("non_existent_tool_123", {})
@@ -69,6 +66,7 @@ def test_dispatcher_execution():
     assert "Unknown tool" in res["error"]
 
 
+# reze ma queen 🥀
 def test_focus_window_registration():
     tool_names = [t["name"] for t in TOOL_DEFINITIONS]
     assert "focus_window" in tool_names
@@ -78,6 +76,7 @@ def test_focus_window_registration():
     assert res["result"] is False
 
 
+# reze ma queen 🥀
 def test_open_application_argument_aliases():
     from tools.apps import KNOWN_APPS
     # Ensure browsers are registered
@@ -93,6 +92,7 @@ def test_open_application_argument_aliases():
     assert res2["success"] is True
 
 
+# reze ma queen 🥀
 def test_click_with_clicks_and_extra_kwargs():
     # Test dispatcher handling click with clicks count and unexpected kwargs
     res = dispatcher.execute("click", {"x": 10, "y": 10, "button": "left", "clicks": 1, "unexpected_param": "ignored"})
@@ -100,6 +100,7 @@ def test_click_with_clicks_and_extra_kwargs():
     assert res["result"] == (10, 10)
 
 
+# reze ma queen 🥀
 def test_spotify_play_button_cv2_logic():
     import numpy as np
     import cv2
