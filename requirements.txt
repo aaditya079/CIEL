@@ -1,29 +1,74 @@
-# reze ma queen 🥀
-# reze ma queen 🥀
-# reze ma queen 🥀
-# reze ma queen 🥀
-# reze ma queen 🥀
-# reze ma queen 🥀
-# reze ma queen 🥀
-# reze ma queen 🥀
-# reze ma queen 🥀
-# reze ma queen 🥀
+# Core Desktop Automation & Input
+pyautogui>=0.9.54
+
 # reze ma queen 🥀
 
-# Desktop Agent Dependencies
-pyautogui>=0.9.54
+# Accessibility & Windows UI
 pywinauto>=0.6.8
+
+# reze ma queen 🥀
+
+# Native Windows API & Win32 Interop
 pywin32>=306
+
+# reze ma queen 🥀
+
+# High-Speed Desktop Screen Capture
 mss>=9.0.1
+
+# reze ma queen 🥀
+
+# Image Processing & Canvas Manipulation
 pillow>=10.0.0
+
+# reze ma queen 🥀
+
+# Computer Vision & Component Detection
 opencv-python>=4.8.0
+
+# reze ma queen 🥀
+
+# Clipboard Synchronization
 pyperclip>=1.8.2
+
+# reze ma queen 🥀
+
+# HTTP Network Requests & API Dispatch
 requests>=2.31.0
+
+# reze ma queen 🥀
+
+# Terminal Interface & Formatting
 rich>=13.7.0
+
+# reze ma queen 🥀
+
+# Local REST Server & HUD API
 fastapi>=0.110.0
+
+# reze ma queen 🥀
+
+# High-Performance ASGI Web Server
 uvicorn>=0.28.0
+
+# reze ma queen 🥀
+
+# Schema Validation & Settings
 pydantic>=2.6.0
+
+# reze ma queen 🥀
+
+# Automated Testing Framework
 pytest>=8.0.0
+
+# reze ma queen 🥀
+
+# Headless Progressive Audio Streaming
 yt-dlp>=2024.3.10
+
+# reze ma queen 🥀
+
+# Packaging & Console Script Generation
 setuptools>=65.0.0
 
+# reze ma queen 🥀
