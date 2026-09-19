@@ -113,11 +113,35 @@ def play_spotify(query: str = "", **kwargs) -> Dict[str, Any]:
                 logger.debug(f"Spicetify bridge check failed: {e}")
 
             # Tier 2: Instant Search Hotkey Pipeline
-            # Focus Spotify window
-            windows.focus_window("Spotify")
-            time.sleep(0.15)
+            # 1. Ensure Spotify is running / open
+            spot_win = windows.find_window("spotify")
+            if not spot_win:
+                apps.open_application("Spotify")
+                # Wait for Spotify window to mount
+                for _ in range(10):
+                    time.sleep(0.25)
+                    spot_win = windows.find_window("spotify")
+                    if spot_win:
+                        break
 
-            # Ctrl+L focuses search bar and clears any old query, preventing stale click race condition
+            # 2. Verify Spotify window focus
+            focused = False
+            if spot_win:
+                focused = windows.focus_window(spot_win["hwnd"])
+            else:
+                focused = windows.focus_window("Spotify")
+
+            # SAFETY GATE: Ensure the foreground window is ACTUALLY Spotify before sending Ctrl+L!
+            # If Spotify cannot be focused, DO NOT press Ctrl+L or type into unintended windows (e.g. browser).
+            time.sleep(0.15)
+            active_win = windows.get_active_window(check_kill_switch=False)
+            active_title = (active_win.get("title") or "").lower()
+            if not focused and "spotify" not in active_title:
+                logger.warning(f"Spotify could not be focused (active window: '{active_win.get('title')}'). Redirecting to YouTube fallback.")
+                from tools.web import play_youtube
+                return play_youtube(clean_q)
+
+            # Ctrl+L focuses Spotify search bar and clears any old query
             keyboard.hotkey("ctrl", "l")
             time.sleep(0.08)
             keyboard.type_text(clean_q)
