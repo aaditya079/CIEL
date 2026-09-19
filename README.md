@@ -16,9 +16,11 @@
 
 ## Highlights
 
-- **Wisdom King Raphael HUD (`ciel --hud`)**: Sacred-geometry arcane HUD inspired by *Wisdom King Raphael* (《智慧之王》) and *Manas: Ciel* from *That Time I Got Reincarnated as a Slime*. Displays real-time calculations across 5 Sub-Skills (*Thought Acceleration*, *Analytical Appraisal*, *Parallel Operation*, *Chant Annulment*, *All of Creation*), live observation viewport with targeting reticle, and soundboard controls.
-- **Authentic Raphael Voice Pack & SAPI Speech**: Plays authentic anime chimes and voice clips (`notice.mp3`, `imagination.mp3`, `magic_circle.mp3`, `power_up.mp3`), paired with calm female Windows SAPI voice synthesis (Microsoft Zira) using canon announcement phrasing (`《告》 Notice:`, `《報告》 Report:`).
-- **Fast-Path Command Routing (<50ms)**: High-frequency commands (volume, media keys, telemetry, Spotify/YouTube playback, weather, window management, reminders, games, flights, memory) execute via direct OS APIs without API tokens or network latency.
+- **Wisdom King Raphael HUD (`ciel --hud`)**: Sacred-geometry arcane HUD built on the **Hallmark atmospheric Workbench** design system. Features an N5 Floating Pill navigation bar, real-time calculations across 5 Sub-Skills (*Thought Acceleration*, *Analytical Appraisal*, *Parallel Operation*, *Chant Annulment*, *All of Creation*), an interactive Arcana Matrix canvas that dynamically accelerates during directive execution, live observation viewport with targeting reticle, and analytical datalog feed.
+- **PC-Wide File & Directory Search**: Instant multi-drive file search across the entire PC (`C:\`, `D:\`, etc.) and user folders. Supports glob wildcards (e.g. `*.pdf`, `*invoice*`, `report*.docx`) and substring queries with sub-second response times, returning full paths, formatted file sizes, and modification timestamps.
+- **Authentic Raphael Voice Pack & SAPI Speech**: Plays authentic anime chimes and voice clips (`notice.mp3`, `magic_circle.mp3`), paired with calm female Windows SAPI voice synthesis (Microsoft Zira) using canon announcement phrasing (`《告》 Notice:`, `《報告》 Report:`).
+- **Fast-Path Command Routing (<50ms)**: High-frequency commands (file search, volume, media keys, telemetry, Spotify/YouTube playback, weather, window management, reminders, games, flights, memory) execute via direct OS APIs without API tokens or network latency.
+- **Spotify Tray & Minimized Auto-Restore**: Seamless Spotify automation that detects and restores Spotify even when minimized to the taskbar or system tray, with strict foreground focus verification and graceful YouTube fallback.
 - **Offline SAPI Voice Engine**: Zero-latency speech feedback using the native Windows Speech API (`SAPI.SpVoice`). Provides spoken confirmations and daily briefings without external cloud endpoints.
 - **Action Undo Stack**: Reversible desktop actions (file changes, Recycle Bin actions, volume adjustments, clipboard writes) can be rolled back instantly with `"ciel undo"`.
 - **Persistent Long-Term Memory**: Stores facts, user preferences, and notes across sessions in JSON.
@@ -26,7 +28,7 @@
 - **Flight Search**: Pre-populates and launches flight searches on Google Flights or Skyscanner.
 - **Game Launcher & Updater**: Protocol-level interaction with Steam and Epic Games to check updates, open libraries, or launch games.
 - **Clipboard Intelligence**: Inspect, copy, and clear clipboard contents from the command line.
-- **Multimodal Vision & UIA Fallback**: For complex GUIs, CIEL falls back to Windows UI Automation (UIA) or takes desktop screenshots analyzed by Gemini 3.5 Flash or GPT-4o.
+- **Multimodal Vision & UIA Fallback**: For complex GUIs, CIEL falls back to Windows UI Automation (UIA) or takes desktop screenshots analyzed by Gemini 3.6 Flash / Gemini 3.5 Flash or GPT-4o with automatic capacity failover.
 - **Failsafe Controls**: Slam the mouse to `(0, 0)` or press `Ctrl + Alt + X` to abort instantly. Global hotkey `Ctrl + Alt + C` summons the agent.
 
 ---
@@ -40,7 +42,7 @@ CIEL evaluates commands through a tiered architecture to prioritize speed and mi
 
 | Tier | Layer | Latency | Description |
 |---|---|---|---|
-| **Tier 1** | **Fast-Path Router** | `< 50ms` | Direct OS APIs, media keys, Windows shell, and browser deep links without model inference. |
+| **Tier 1** | **Fast-Path Router** | `< 50ms` | Direct OS APIs, file search, media keys, Windows shell, and browser deep links without model inference. |
 | **Tier 2** | **Windows UI Automation** | `< 200ms` | Accessibility tree inspection to click buttons, type in text fields, and switch tabs without coordinate guessing. |
 | **Tier 3** | **Multimodal Vision** | `~ 1-2s` | Screen capture processed by Gemini or GPT-4o for custom GUIs lacking accessibility tags. |
 | **Tier 4** | **Precision Coordinates** | `< 100ms` | Fallback mouse clicks and coordinate interactions when UI elements cannot be targeted directly. |
@@ -54,36 +56,45 @@ CIEL evaluates commands through a tiered architecture to prioritize speed and mi
 
 <!-- reze ma queen 🥀 -->
 
-### 1. Media & Playback
-- `"ciel open spotify and play harvey"`: Launches Spotify, navigates search, and triggers playback.
+### 1. PC-Wide File & Directory Search
+- `"ciel search for file budget.xlsx"`: Searches across all PC drives (`C:\`, `D:\`) and user directories.
+- `"ciel find file *.pdf in Documents"`: Wildcard search within specific folders.
+- `"ciel where is contract.docx"`: Locates file matches with path, formatted size, and modification date.
+- `"ciel find directory projects"`: Searches for folders across all drives.
+
+<!-- reze ma queen 🥀 -->
+
+### 2. Media & Playback
+- `"ciel open spotify and play harvey"`: Launches/restores Spotify, navigates search, and triggers playback.
 - `"ciel play bohemian rhapsody on youtube"`: Launches YouTube with autoplay enabled.
+- `"ciel stream lofi beats"`: Headless background audio streaming via `yt-dlp` and `ffplay`.
 - `"ciel volume 50"`, `"ciel mute"`, `"ciel louder"`, `"ciel pause"`, `"ciel skip"`.
 
 <!-- reze ma queen 🥀 -->
 
-### 2. Status Briefing & System Telemetry
+### 3. Status Briefing & System Telemetry
 - `"ciel morning briefing"` or `"ciel status report"`: Reads time, date, weather, hardware load, and active reminders aloud.
-- `"ciel system stats"`: Real-time CPU usage, RAM utilization, and battery status.
+- `"ciel system stats"`: Real-time CPU usage, RAM utilization, battery status, and display resolution.
 
-### 3. Action Rollback (Undo)
+### 4. Action Rollback (Undo)
 - `"ciel undo"` / `"ciel undo that"`: Restores the previous state after file modifications, volume changes, or clipboard updates.
 
-### 4. Long-Term Memory
+### 5. Long-Term Memory
 - `"ciel remember that my favorite artist is queen"`: Saves to persistent store.
 - `"ciel recall my favorite artist"`: Returns `"Queen"`.
 - `"ciel what do you remember"`: Displays stored preferences and facts.
 
-### 5. Flights & Games
+### 6. Flights & Games
 - `"ciel flights from NYC to London on Friday"`: Opens flight search directly in your browser.
 - `"ciel update steam games"`: Launches Steam download and update monitor.
 - `"ciel open steam library"`, `"ciel play cs2"`.
 
-### 6. Desktop & Window Management
+### 7. Desktop & Window Management
 - `"ciel lock screen"`, `"ciel show desktop"`, `"ciel task manager"`, `"ciel open settings"`.
 - `"ciel sleep display"`, `"ciel maximize"`, `"ciel fullscreen"`.
 - `"ciel sound settings"`, `"ciel volume mixer"`.
 
-### 7. Browser & Reminders
+### 8. Browser & Reminders
 - `"ciel new tab"`, `"ciel close tab"`, `"ciel reopen tab"`, `"ciel refresh"`.
 - `"ciel remind me in 15 minutes to take a break"`.
 
@@ -172,6 +183,10 @@ Once installed, you can invoke CIEL directly from PowerShell, Command Prompt, or
 # Launch the Raphael Arcane Web HUD
 ciel --hud
 
+# Instant file search across PC
+ciel search for file report
+ciel find file budget.xlsx
+
 # Instant music & media commands (Zero-token offline fast-path)
 ciel play harvey on youtube
 ciel open spotify and play stress relief
@@ -191,7 +206,7 @@ ciel lock pc
 
 ### API Key Configuration (Optional — For Multimodal Vision)
 > [!NOTE]
-> All fast-path commands (media playback, Spotify, YouTube, headless streaming, volume, telemetry, weather, windows, reminders, games, and undo) **work 100% offline with zero API keys and zero cost**.
+> All fast-path commands (file search, media playback, Spotify, YouTube, headless streaming, volume, telemetry, weather, windows, reminders, games, and undo) **work 100% offline with zero API keys and zero cost**.
 
 An API key is only required if you ask CIEL to perform complex visual desktop interactions via multimodal LLMs:
 
@@ -213,7 +228,11 @@ $env:OPENAI_API_KEY="your-openai-api-key"
 
 ### Command Line
 ```powershell
-# Media playback (Spotify / YouTube / Headless Gemini-style stream)
+# File & directory search across PC
+ciel search for file invoice.pdf
+ciel find directory projects
+
+# Media playback (Spotify / YouTube / Headless stream)
 ciel play harvey on spotify
 ciel play bohemian rhapsody on youtube
 ciel stream lofi beats
@@ -249,9 +268,11 @@ ciel --hud
 
 Access `http://localhost:8000/hud`:
 - **System Telemetry**: Real-time CPU, RAM, and battery gauges.
+- **Arcana Matrix**: Concentric animated canvas with execution-driven rotation.
 - **Runtime Status**: Execution state indicator and current task progress.
 - **Live Observation**: Real-time desktop screenshot preview.
-- **Directive Input**: Interactive task dispatch box and event stream.
+- **Directive Input**: Interactive task dispatch box with quick preset chips.
+- **Datalog Stream**: Live categorized logs with filter controls.
 - **Kill Switch**: Immediate emergency halt button.
 
 ---
@@ -262,7 +283,7 @@ Access `http://localhost:8000/hud`:
 ## Safety & Security Architecture
 
 1. **3-Tier Permission Model (`--mode`)**:
-   - `balanced` (default): Executes safe navigation, media, volume, and telemetry autonomously; prompts for PowerShell commands and application termination.
+   - `balanced` (default): Executes safe navigation, media, volume, file search, and telemetry autonomously; prompts for PowerShell commands and application termination.
    - `strict`: Requires interactive confirmation for any state-altering action.
    - `autonomous`: Auto-approves standard operations; prompts only for destructive actions (file deletion, system shutdowns).
 2. **Emergency Kill Switch (`Ctrl + Alt + X`)**: Halts execution immediately, releases keyboard and mouse locks, and stops background workers.
@@ -300,7 +321,7 @@ CIEL Architecture
 ├── main.py                  # CLI entry point and argument dispatcher
 ├── agent/
 │   ├── fast_router.py       # Low-latency regex intent dispatcher
-│   ├── brain.py             # Multimodal LLM client (Gemini, GPT-4o, Ollama)
+│   ├── brain.py             # Multimodal LLM client (Gemini 3.6/3.5 Flash, GPT-4o, Ollama)
 │   ├── executor.py          # Observe-Decide-Act-Verify autonomous loop
 │   ├── planner.py           # Goal decomposition and recovery
 │   ├── hotkey_listener.py   # Global summon hotkey (Ctrl+Alt+C)
@@ -333,12 +354,12 @@ CIEL Architecture
 │   ├── desktop_control.py   # Desktop and window management
 │   ├── browser.py           # Browser navigation and tab management
 │   ├── reminders.py         # Scheduled reminders and timers
-│   ├── files.py             # File operations with Recycle Bin and undo
+│   ├── files.py             # File operations, PC-wide search, Recycle Bin, and undo
 │   └── powershell.py        # Sandboxed PowerShell execution
 └── server/
     ├── api.py               # FastAPI REST service and HUD endpoint
     ├── standalone_server.py # Standard-library HTTP server fallback
-    └── hud.html             # Local HUD web interface
+    └── hud.html             # Local HUD web interface (Hallmark Workbench)
 ```
 
 ---
@@ -349,7 +370,7 @@ CIEL Architecture
 ## Privacy, Lore & Fair Use Disclaimers
 
 ### 1. Local-Only Privacy Guarantee
-- **100% Offline Processing**: CIEL processes all vision capture, telemetry, accessibility trees, and SAPI voice synthesis locally on your Windows 11 machine.
+- **100% Offline Processing**: CIEL processes all vision capture, telemetry, accessibility trees, file searches, and SAPI voice synthesis locally on your Windows 11 machine.
 - **Zero Cloud Telemetry**: CIEL does not track user behavior or send background analytics to remote servers. Screen captures exist strictly in volatile memory during autonomous reasoning steps.
 - **Failsafe Controls**: Press `Ctrl + Alt + X` or slam your mouse to `(0, 0)` at any moment to instantly trigger the emergency kill switch.
 
