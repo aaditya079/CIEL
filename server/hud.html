@@ -466,6 +466,22 @@
       transform: translateY(1px);
     }
 
+    .btn-cast:disabled {
+      opacity: 0.65;
+      cursor: not-allowed;
+      transform: none !important;
+    }
+
+    .btn-cast.is-loading {
+      background: linear-gradient(135deg, #c41038 0%, #880e2a 100%);
+      animation: pulseRunic 1.2s infinite alternate ease-in-out;
+    }
+
+    @keyframes pulseRunic {
+      from { box-shadow: 0 0 16px rgba(255, 23, 68, 0.4); }
+      to { box-shadow: 0 0 36px rgba(255, 23, 68, 0.95); }
+    }
+
     /* Quick Action Chips */
     .quick-chips-wrap {
       margin-top: 16px;
@@ -1405,13 +1421,29 @@
   }
 
   // reze ma queen 🥀
+  function quickFill(directive) {
+    const input = document.getElementById('goalInput');
+    if (input) {
+      input.value = directive;
+      castDirective();
+    }
+  }
+
+  // reze ma queen 🥀
   async function castDirective() {
     const input = document.getElementById('goalInput');
+    const btn = document.querySelector('.btn-cast');
     const goal = input.value.trim();
     if (!goal) return;
 
     appendLog('Directive dispatched: ' + goal, '《詠唱》 CAST', 'badge-action', 'ACTIONS');
     input.value = '';
+
+    if (btn) {
+      btn.disabled = true;
+      btn.classList.add('is-loading');
+      btn.textContent = 'ACCELERATING...';
+    }
 
     // Animate audio spectrum
     triggerVisualizerPulse(2500);
@@ -1423,9 +1455,19 @@
         body: JSON.stringify({ goal })
       });
       const data = await res.json();
-      appendLog(data.message || 'Cognitive task commenced.', '《思考》 TASK', 'badge-report', 'ACTIONS');
+      if (data.fast_path) {
+        appendLog(data.message || 'Directive executed via Chant Annulment.', '《詠唱破棄》 FAST-PATH', 'badge-report', 'ACTIONS');
+      } else {
+        appendLog(data.message || 'Cognitive task commenced.', '《思考》 TASK', 'badge-report', 'ACTIONS');
+      }
     } catch (e) {
       appendLog('Directive error: ' + e.message, '《警告》 ERROR', 'badge-alert', 'NOTICES');
+    } finally {
+      if (btn) {
+        btn.disabled = false;
+        btn.classList.remove('is-loading');
+        btn.textContent = 'CAST DIRECTIVE';
+      }
     }
   }
 
@@ -1465,6 +1507,10 @@
     }, durationMs);
   }
 
+  let lastKnownStatus = 'idle';
+  let lastKnownTaskId = null;
+  const renderedActionKeys = new Set();
+
   // reze ma queen 🥀
   async function pollStatus() {
     try {
@@ -1499,6 +1545,31 @@
         if (s.analytical_appraisal) document.getElementById('skillAnalysis').textContent = (s.analytical_appraisal.target || 'VIEWPORT').substring(0, 16);
         if (s.parallel_operation) document.getElementById('skillParallel').textContent = 'THREADS: ' + (s.parallel_operation.threads || '4');
       }
+
+      // Stream live actions from current task into the Analytical Appraisal feed
+      if (Array.isArray(data.recent_actions)) {
+        data.recent_actions.forEach(act => {
+          const actKey = (act.timestamp || '') + (act.tool || '') + (act.step || '');
+          if (actKey && !renderedActionKeys.has(actKey)) {
+            renderedActionKeys.add(actKey);
+            const tool = act.tool || 'Action';
+            const thought = act.thought || (act.arguments ? JSON.stringify(act.arguments) : 'Executing');
+            const badgeClass = act.success ? 'badge-report' : 'badge-alert';
+            const statusIcon = act.success ? '《行動》' : '《警告》';
+            appendLog(`[${tool}] ${thought}`, `${statusIcon} ${tool.toUpperCase()}`, badgeClass, 'ACTIONS');
+          }
+        });
+      }
+
+      // Detect task completion or failure transitions
+      if (data.status === 'completed' && lastKnownStatus === 'running') {
+        appendLog('Task Completed: ' + (data.final_result || data.goal || 'Goal accomplished.'), '《完了》 SUCCESS', 'badge-report', 'NOTICES');
+        triggerVisualizerPulse(1500);
+      } else if (data.status === 'failed' && lastKnownStatus === 'running') {
+        appendLog('Task Failed: ' + (data.error_message || 'Irregularity detected during execution.'), '《異常》 FAILED', 'badge-alert', 'NOTICES');
+      }
+      lastKnownStatus = data.status;
+      lastKnownTaskId = data.task_id;
     } catch (e) {}
 
     try {
@@ -1528,6 +1599,7 @@
     if (!canvas) return;
     const ctx = canvas.getContext('2d');
     let angle = 0;
+    let currentSpeed = 0.008;
 
     function draw() {
       ctx.clearRect(0, 0, canvas.width, canvas.height);
@@ -1613,7 +1685,10 @@
 
       ctx.restore();
 
-      angle += 0.008;
+      // Accelerate rotation when Thought Acceleration is executing
+      const targetSpeed = (lastKnownStatus === 'running') ? 0.028 : 0.008;
+      currentSpeed += (targetSpeed - currentSpeed) * 0.05;
+      angle += currentSpeed;
       requestAnimationFrame(draw);
     }
 
@@ -1638,6 +1713,25 @@
     initSpectrum();
     setInterval(pollStatus, 1800);
     pollStatus();
+
+    // Directive input key handlers
+    const goalInput = document.getElementById('goalInput');
+    if (goalInput) {
+      goalInput.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter') {
+          e.preventDefault();
+          castDirective();
+        }
+      });
+    }
+
+    // Ctrl+K or Cmd+K shortcut to focus directive input
+    window.addEventListener('keydown', (e) => {
+      if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'k') {
+        e.preventDefault();
+        if (goalInput) goalInput.focus();
+      }
+    });
   });
 </script>
 <!-- reze ma queen 🥀 -->
