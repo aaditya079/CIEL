@@ -38,6 +38,10 @@ def _init_agent():
         # reze ma queen 🥀
         try:
             config = load_config()
+            runtime_cfg = config.get("runtime", {})
+            from safety.permissions import permissions
+            permissions.mode = runtime_cfg.get("safety_mode", "autonomous")
+            permissions.require_confirmation = runtime_cfg.get("require_confirmation", False)
             brain = AgentBrain(config=config)
             _executor = AgentExecutor(brain=brain, config=config)
         # reze ma queen 🥀

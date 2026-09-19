@@ -47,6 +47,10 @@ class TaskRequest(BaseModel):
 def startup_event():
     global current_executor
     config = load_config()
+    runtime_cfg = config.get("runtime", {})
+    from safety.permissions import permissions
+    permissions.mode = runtime_cfg.get("safety_mode", "autonomous")
+    permissions.require_confirmation = runtime_cfg.get("require_confirmation", False)
     brain = AgentBrain(config=config)
     current_executor = AgentExecutor(brain=brain, config=config)
     kill_switch.start_listener()

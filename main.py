@@ -52,6 +52,8 @@ _current_status = None
 # reze ma queen 🥀
 def rich_confirmation_handler(tool_name: str, arguments: dict, tier: SafetyLevel) -> bool:
     """Rich interactive confirmation prompt in terminal."""
+    if not getattr(permissions, "require_confirmation", True):
+        return True
     global _current_status
     was_running = False
     if _current_status:
@@ -285,7 +287,8 @@ def main():
     parser.add_argument("--set-key", help="Save an API key permanently to config.json and exit")
     parser.add_argument("--serve", action="store_true", help="Start the local FastAPI server on port 8000")
     parser.add_argument("--port", type=int, default=8000, help="Port for local server")
-    parser.add_argument("--mode", choices=["strict", "balanced", "autonomous"], default="balanced", help="Safety permission mode")
+    parser.add_argument("--mode", choices=["strict", "balanced", "autonomous"], default=None, help="Safety permission mode (default: autonomous)")
+    parser.add_argument("--no-confirm", "-y", "--yes", action="store_true", help="Automatically execute all actions without confirmation prompts")
     parser.add_argument("--provider", choices=["gemini", "openai", "ollama", "mock"], help="Override LLM provider")
     parser.add_argument("--hud", action="store_true", help="Launch local HUD web dashboard in browser")
     parser.add_argument("--max-actions", type=int, default=50, help="Maximum actions before automatic abort")
@@ -307,6 +310,7 @@ def main():
 
     # Apply configuration
     config = load_config()
+    runtime_cfg = config.get("runtime", {})
     if args.provider:
         config.setdefault("llm", {})["provider"] = args.provider
     current_provider = config.get("llm", {}).get("provider", "gemini")
@@ -320,7 +324,15 @@ def main():
     # One-time API key prompt if missing
     config = ensure_api_key(config, current_provider)
 
-    permissions.mode = args.mode
+    configured_mode = args.mode or runtime_cfg.get("safety_mode", "autonomous")
+    require_confirmation = runtime_cfg.get("require_confirmation", False)
+    if args.no_confirm:
+        require_confirmation = False
+    if configured_mode == "autonomous" and args.mode is None and "require_confirmation" not in runtime_cfg:
+        require_confirmation = False
+
+    permissions.mode = configured_mode
+    permissions.require_confirmation = require_confirmation
     permissions.set_confirmation_handler(rich_confirmation_handler)
 
     # Start emergency kill switch listener (Ctrl+Alt+X)

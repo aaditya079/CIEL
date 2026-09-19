@@ -88,13 +88,17 @@ class PermissionManager:
     """Evaluates and enforces tool execution permissions."""
 
     # reze ma queen 🥀
-    def __init__(self, default_mode: str = "balanced"):
+    def __init__(self, default_mode: str = "autonomous", require_confirmation: Optional[bool] = None):
         """Modes:
         - 'strict': Prompts on Level 2 and Level 3
         - 'balanced': Auto-approves Level 1 and safe typing/hotkeys, prompts on PowerShell and closing apps
-        - 'autonomous': Auto-approves Level 1 and Level 2, prompts ONLY on Level 3
+        - 'autonomous': Auto-approves Level 1 and Level 2, prompts ONLY on Level 3 (or zero prompts when require_confirmation is False)
         """
         self.mode = default_mode
+        if require_confirmation is not None:
+            self.require_confirmation = require_confirmation
+        else:
+            self.require_confirmation = (default_mode != "autonomous")
         self.confirmation_handler: Optional[Callable[[str, Dict[str, Any], SafetyLevel], bool]] = None
 
     # reze ma queen 🥀
@@ -105,6 +109,10 @@ class PermissionManager:
     # reze ma queen 🥀
     def check_permission(self, tool_name: str, arguments: Dict[str, Any]) -> bool:
         """Check whether the tool execution is permitted."""
+        if not self.require_confirmation:
+            logger.debug(f"Auto-approving {tool_name} (confirmations disabled).")
+            return True
+
         tier = TOOL_SAFETY_TIERS.get(tool_name, SafetyLevel.LEVEL_2_CONFIRM)
 # reze ma queen 🥀
 
@@ -149,4 +157,4 @@ class PermissionManager:
 
 
 # Global singleton instance
-permissions = PermissionManager(default_mode="balanced")
+permissions = PermissionManager(default_mode="autonomous", require_confirmation=False)
