@@ -180,30 +180,50 @@ class FastPathRouter:
                 "data": telemetry,
             }
 
-        # 6. YouTube Browser Playback: "open youtube on brave and play harvey", "watch harvey on youtube", "play harvey on youtube"
-        yt_match = re.search(r"^open\s+youtube(?:\s+on\s+(\w+))?\s+and\s+play\s+(.+)$", clean) or \
-                   re.search(r"^(?:open\s+(\w+)\s+and\s+)?(?:play|watch)\s+(.+?)\s+on\s+youtube$", clean) or \
-                   re.search(r"^watch\s+(.+?)(?:\s+on\s+(?:youtube|brave))?$", clean) or \
-                   re.search(r"^youtube\s+(?:play\s+)?(.+)$", clean)
-        if yt_match:
-            groups = [g for g in yt_match.groups() if g]
-            target_browser = ""
-            if len(groups) >= 2 and groups[0].lower() in ("brave", "chrome", "firefox", "edge"):
-                target_browser = groups[0].lower()
-                query = groups[1].strip()
-            elif len(groups) == 1:
-                query = groups[0].strip()
-            else:
-                query = groups[-1].strip()
+        # 6. YouTube Browser Playback: "open youtube on brave and play harvey", "open brave and play harvey", "play harvey on youtube"
+        target_browser = ""
+        yt_query = ""
+        m_yt = re.search(r"^open\s+youtube(?:\s+on\s+(brave|chrome|firefox|edge))?\s+and\s+play\s+(.+)$", clean)
+        if m_yt:
+            target_browser = (m_yt.group(1) or "").lower()
+            yt_query = m_yt.group(2).strip()
+        if not yt_query:
+            m_yt = re.search(r"^open\s+(brave|chrome|firefox|edge)\s+and\s+(?:play|watch)\s+(.+)$", clean)
+            if m_yt:
+                target_browser = m_yt.group(1).lower()
+                yt_query = m_yt.group(2).strip()
+        if not yt_query:
+            m_yt = re.search(r"^(?:open\s+(brave|chrome|firefox|edge)\s+and\s+)?(?:play|watch)\s+(.+?)\s+on\s+youtube$", clean)
+            if m_yt:
+                target_browser = (m_yt.group(1) or "").lower()
+                yt_query = m_yt.group(2).strip()
+        if not yt_query:
+            m_yt = re.search(r"^(?:play|watch)\s+(.+?)\s+on\s+(brave|chrome|firefox|edge)$", clean)
+            if m_yt:
+                yt_query = m_yt.group(1).strip()
+                target_browser = m_yt.group(2).lower()
+        if not yt_query:
+            m_yt = re.search(r"^(?:play|watch)\s+(.+?)\s+(?:in|on)\s+browser$", clean)
+            if m_yt:
+                yt_query = m_yt.group(1).strip()
+        if not yt_query:
+            m_yt = re.search(r"^watch\s+(.+?)(?:\s+on\s+(?:youtube|brave))?$", clean)
+            if m_yt:
+                yt_query = m_yt.group(1).strip()
+        if not yt_query:
+            m_yt = re.search(r"^youtube\s+(?:play\s+)?(.+)$", clean)
+            if m_yt:
+                yt_query = m_yt.group(1).strip()
 
-            res = play_youtube(query, browser_name=target_browser)
+        if yt_query:
+            res = play_youtube(yt_query, browser_name=target_browser)
             return {
                 "handled": True,
                 "success": res.get("success", True),
                 "tool": "play_youtube",
-                "arguments": {"query": query, "browser_name": target_browser},
-                "message": res.get("message", f"Playing {query} on YouTube."),
-                "spoken": f"Playing {query} on YouTube.",
+                "arguments": {"query": yt_query, "browser_name": target_browser},
+                "message": res.get("message", f"Playing {yt_query} on YouTube."),
+                "spoken": f"Playing {yt_query} on YouTube.",
             }
 
         # 7. Spotify Search & Play: "open spotify and play stress relief", "play harvey on spotify"
@@ -236,7 +256,7 @@ class FastPathRouter:
                 "spoken": f"Streaming {query}.",
             }
 
-        # 9. Smart Instant Play: "play stress relief", "play harvey" (Spotify if open, else Headless Gemini stream)
+        # 9. Smart Instant Play: "play stress relief", "play harvey" (Spotify if open, else YouTube if browser open, else Headless Gemini stream)
         play_match = re.search(r"^(?:play|listen\s+to)\s+(.+)$", clean)
         if play_match:
             query = play_match.group(1).strip()
@@ -250,16 +270,28 @@ class FastPathRouter:
                     "message": res.get("message", f"Playing {query} on Spotify."),
                     "spoken": f"Playing {query} on Spotify.",
                 }
-            else:
-                res = stream_audio(query)
-                return {
-                    "handled": True,
-                    "success": res.get("success", True),
-                    "tool": "stream_audio",
-                    "arguments": {"query": query},
-                    "message": res.get("message", f"Streaming {query} in the background (Gemini/Bixby mode)."),
-                    "spoken": f"Streaming {query}.",
-                }
+            # If a browser is running, play directly on YouTube
+            for b_name in ("brave", "chrome", "firefox", "msedge"):
+                if is_app_running(b_name):
+                    res = play_youtube(query, browser_name=b_name)
+                    return {
+                        "handled": True,
+                        "success": res.get("success", True),
+                        "tool": "play_youtube",
+                        "arguments": {"query": query, "browser_name": b_name},
+                        "message": res.get("message", f"Playing {query} on YouTube in {b_name.capitalize()}."),
+                        "spoken": f"Playing {query} on YouTube.",
+                    }
+            # Otherwise, headless background stream (Gemini/Bixby mode)
+            res = stream_audio(query)
+            return {
+                "handled": True,
+                "success": res.get("success", True),
+                "tool": "stream_audio",
+                "arguments": {"query": query},
+                "message": res.get("message", f"Streaming {query} in the background (Gemini/Bixby mode)."),
+                "spoken": f"Streaming {query}.",
+            }
 
         # 10. Weather: "weather", "weather in london", "what's the weather"
         weather_match = re.search(r"^(?:what(?:'s| is) the\s+)?weather(?:\s+(?:like\s+)?in\s+(.+))?$", clean)

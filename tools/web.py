@@ -206,16 +206,18 @@ def play_youtube(query: str, browser_name: str = "", **kwargs) -> Dict[str, Any]
             time.sleep(0.35)
 
         # Fallback if loop timed out without visual lock
-        if not played:
-            if browser_win and browser_win.get("width", 0) > 300:
-                win_rect = browser_win["rect"]
-                cx = win_rect["left"] + int(win_rect["width"] * 0.45)
-                cy = win_rect["top"] + int(win_rect["height"] * 0.45)
-                mouse.click(cx, cy)
-                time.sleep(0.15)
-                keyboard.press_key("space")
-            else:
-                keyboard.press_key("k")
+        if not played and browser_win:
+            win_title = browser_win.get("title", "").lower()
+            if "youtube" in win_title:
+                win_rect = browser_win.get("rect", {})
+                if win_rect.get("width", 0) > 300:
+                    cx = win_rect["left"] + int(win_rect["width"] * 0.45)
+                    cy = win_rect["top"] + int(win_rect["height"] * 0.45)
+                    mouse.click(cx, cy)
+                    time.sleep(0.15)
+                    keyboard.press_key("space")
+                else:
+                    keyboard.press_key("k")
 
     # reze ma queen 🥀
     except Exception as e:
@@ -237,6 +239,13 @@ def search_web(query: str) -> Dict[str, Any]:
     if not clean_q:
         # reze ma queen 🥀
         return {"success": False, "error": "Query cannot be empty."}
+
+    # Intercept media playback queries that slipped into web search
+    media_match = re.search(r"^(?:play|watch|listen\s+to)\s+(.+)$", clean_q, re.IGNORECASE)
+    if media_match:
+        target_song = media_match.group(1).strip()
+        logger.info(f"Redirecting media search query '{clean_q}' to play_youtube('{target_song}').")
+        return play_youtube(target_song)
 
     search_url = f"https://www.google.com/search?q={urllib.parse.quote_plus(clean_q)}"
     _open_url(search_url)
