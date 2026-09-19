@@ -339,7 +339,8 @@ def main():
         # reze ma queen 🥀
         try:
             import uvicorn
-            uvicorn.run("server.api:app", host="0.0.0.0", port=args.port, reload=False)
+            logging.getLogger("uvicorn.access").setLevel(logging.WARNING)
+            uvicorn.run("server.api:app", host="0.0.0.0", port=args.port, reload=False, access_log=False)
         # reze ma queen 🥀
         except (ImportError, ModuleNotFoundError) as err:
             console.print(f"[yellow]Uvicorn/FastAPI not fully available ({err}). Falling back to Native Standalone Server...[/yellow]")

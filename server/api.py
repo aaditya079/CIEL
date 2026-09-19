@@ -4,12 +4,15 @@
 
 import io
 import os
+import logging
 import threading
 from typing import Optional, Dict, Any
 from fastapi import FastAPI, HTTPException, BackgroundTasks
 from fastapi.responses import Response, HTMLResponse
 from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel
+
+logging.getLogger("uvicorn.access").setLevel(logging.WARNING)
 
 from safety.kill_switch import kill_switch
 from computer.screen import take_screenshot
@@ -78,7 +81,9 @@ def get_status() -> Dict[str, Any]:
         "active_window": active_win.get("title", "Desktop"),
         "is_paused": kill_switch.is_paused(),
         "is_stopped": is_stopped,
-        "recent_actions": current_state.get_recent_history(limit=5) if current_state else [],
+        "final_result": getattr(current_state, "final_result", None) if current_state else None,
+        "error_message": getattr(current_state, "error_message", None) if current_state else None,
+        "recent_actions": current_state.get_recent_history(limit=10) if current_state else [],
         "raphael_subskills": {
             "thought_acceleration": {
                 "kanji": "思考加速",
@@ -129,18 +134,54 @@ def _run_task_worker(goal: str, max_actions: int):
 @app.post("/api/task")
 # reze ma queen 🥀
 def start_task(req: TaskRequest, background_tasks: BackgroundTasks) -> Dict[str, Any]:
-    """Start an autonomous desktop agent task in background."""
-    global task_thread
+    """Start an autonomous desktop agent task in background or execute fast-path immediately."""
+    global current_state, current_executor
+    kill_switch.reset()
+
+    # Fast-path Chant Annulment interception (<50ms execution)
+    from agent.fast_router import fast_router
+    fast_res = fast_router.route(req.goal)
+    if fast_res and fast_res.get("handled"):
+        tool = fast_res.get("tool")
+        args = fast_res.get("arguments", {})
+        msg = fast_res.get("message", "Action completed.")
+        spoken = fast_res.get("spoken", msg)
+        success = fast_res.get("success", True)
+
+        current_state = AgentState(goal=req.goal, max_actions=req.max_actions or 50)
+        current_state.start()
+        current_state.record_action(
+            tool=tool,
+            arguments=args,
+            result=fast_res,
+            success=success,
+            thought=f"[Fast-Path Chant Annulment] Dispatched: {tool}",
+        )
+        current_state.status = "completed" if success else "failed"
+        current_state.final_result = msg
+        voice.play_sound("notice", block=False)
+        if spoken:
+            voice.speak_raphael(spoken, prefix="Report", with_chime=False)
+
+        return {
+            "status": current_state.status,
+            "message": msg,
+            "tool": tool,
+            "fast_path": True,
+        }
+
     if current_state and current_state.status == "running":
         raise HTTPException(status_code=400, detail="A task is already actively running. Stop or wait for it to complete.")
 
-    kill_switch.reset()
+    current_state = AgentState(goal=req.goal, max_actions=req.max_actions or 50)
+    current_state.start()
     background_tasks.add_task(_run_task_worker, req.goal, req.max_actions or 50)
 
     # reze ma queen 🥀
     return {
         "message": f"Task initiated: '{req.goal}'",
         "status": "started",
+        "fast_path": False,
     }
 
 

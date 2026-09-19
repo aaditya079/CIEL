@@ -125,7 +125,9 @@ class CIELRequestHandler(BaseHTTPRequestHandler):
                 "active_window": active_win.get("title", "Desktop"),
                 "is_paused": kill_switch.is_paused(),
                 "is_stopped": is_stopped,
-                "recent_actions": _state.get_recent_history(limit=5) if _state else [],
+                "final_result": getattr(_state, "final_result", None) if _state else None,
+                "error_message": getattr(_state, "error_message", None) if _state else None,
+                "recent_actions": _state.get_recent_history(limit=10) if _state else [],
                 "raphael_subskills": {
                     "thought_acceleration": {"kanji": "思考加速", "name": "Thought Acceleration", "status": "ACTIVE // 1,000,000x"},
                     "analytical_appraisal": {"kanji": "解析鑑定", "name": "Analytical Appraisal", "status": "TARGETING", "target": active_win.get("title", "Desktop Viewport")},
@@ -212,6 +214,32 @@ class CIELRequestHandler(BaseHTTPRequestHandler):
                 self._send_json({"error": "Missing goal"}, status=400)
                 return
 
+            # Fast-path Chant Annulment interception (<50ms execution)
+            from agent.fast_router import fast_router
+            fast_res = fast_router.route(goal)
+            if fast_res and fast_res.get("handled"):
+                tool = fast_res.get("tool")
+                args = fast_res.get("arguments", {})
+                msg = fast_res.get("message", "Action completed.")
+                spoken = fast_res.get("spoken", msg)
+                success = fast_res.get("success", True)
+                _state = AgentState(goal=goal, max_actions=max_actions)
+                _state.start()
+                _state.record_action(
+                    tool=tool,
+                    arguments=args,
+                    result=fast_res,
+                    success=success,
+                    thought=f"[Fast-Path Chant Annulment] Dispatched: {tool}",
+                )
+                _state.status = "completed" if success else "failed"
+                _state.final_result = msg
+                voice.play_sound("notice", block=False)
+                if spoken:
+                    voice.speak_raphael(spoken, prefix="Report", with_chime=False)
+                self._send_json({"status": _state.status, "message": msg, "tool": tool, "fast_path": True})
+                return
+
             if _state and _state.status == "running":
                 self._send_json({"error": "A task is already actively running"}, status=400)
                 return
@@ -219,7 +247,7 @@ class CIELRequestHandler(BaseHTTPRequestHandler):
             _init_agent()
             t = threading.Thread(target=_run_task_thread, args=(goal, max_actions), daemon=True)
             t.start()
-            self._send_json({"status": "started", "message": f"Task initiated: '{goal}'"})
+            self._send_json({"status": "started", "message": f"Task initiated: '{goal}'", "fast_path": False})
             return
 
         if path == "/api/stop":
