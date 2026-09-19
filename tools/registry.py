@@ -652,6 +652,43 @@ TOOL_DEFINITIONS = [
             "required": ["code_or_file"],
         },
     },
+    {
+        "name": "search_files",
+        "description": "Search for files across any directory or all drives on the PC using pattern matching, wildcards (e.g. '*.pdf', '*invoice*', 'budget.xlsx'), or substrings.",
+        "parameters": {
+            "type": "object",
+            "properties": {
+                "pattern": {"type": "string", "description": "Search query, filename, or wildcard pattern (e.g. '*.pdf', '*invoice*', 'contract.docx')"},
+                "root_dir": {"type": "string", "description": "Optional directory path to search within. If omitted, searches all drives (C:\\, D:\\, etc.) and user folders."},
+                "max_results": {"type": "integer", "description": "Maximum number of file matches to return (default: 50)"},
+                "recursive": {"type": "boolean", "description": "Whether to search subdirectories recursively (default: true)"},
+                "file_type": {"type": "string", "description": "Optional category filter: 'pdf', 'doc', 'image', 'video', 'audio', 'code', 'archive'"},
+            },
+            "required": ["pattern"],
+        },
+    },
+    {
+        "name": "find_directory",
+        "description": "Search for directories or folders matching a name across the PC or specified path.",
+        "parameters": {
+            "type": "object",
+            "properties": {
+                "name": {"type": "string", "description": "Directory or folder name to find"},
+                "root_dir": {"type": "string", "description": "Optional starting directory. If omitted, searches all drives."},
+                "max_results": {"type": "integer", "description": "Maximum number of directory matches to return (default: 25)"},
+            },
+            "required": ["name"],
+        },
+    },
+    {
+        "name": "get_available_drives",
+        "description": "List all logical disk drives (C:\\, D:\\, etc.) on the PC with total, used, and free capacity.",
+        "parameters": {
+            "type": "object",
+            "properties": {},
+            "required": [],
+        },
+    },
 ]
 
 
@@ -718,6 +755,9 @@ class ToolDispatcher:
             "delete_file": files.delete_file,
             "move_file": files.move_file,
             "check_python_syntax": code_helper.check_python_syntax,
+            "search_files": files.search_files,
+            "find_directory": files.find_directory,
+            "get_available_drives": files.get_available_drives,
         }
 
     # reze ma queen 🥀

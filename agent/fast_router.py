@@ -669,6 +669,30 @@ class FastPathRouter:
                 "data": memories,
             }
 
+        # 22. PC-wide and Directory File Search
+        search_file_match = re.search(
+            r"^(?:search\s+(?:for\s+)?(?:file\s+|files\s+)?|find\s+(?:file\s+|files\s+)?|where\s+is\s+(?:file\s+)?)(.+?)(?:\s+(?:in|on|under)\s+(.+))?$",
+            clean
+        )
+        if search_file_match:
+            from tools.files import search_files
+            pattern_q = search_file_match.group(1).strip()
+            root_q = search_file_match.group(2).strip() if search_file_match.group(2) else None
+            # Exclude other intents like web search, weather, flight, app launches
+            if not any(pattern_q.startswith(w) for w in ("weather", "flight", "flights", "youtube", "spotify", "desktop", "task manager", "app ", "application")):
+                res = search_files(pattern=pattern_q, root_dir=root_q)
+                cnt = res.get("matches_count", 0)
+                msg = f"Found {cnt} file match(es) for '{pattern_q}' across directories."
+                return {
+                    "handled": True,
+                    "success": res.get("success", True),
+                    "tool": "search_files",
+                    "arguments": {"pattern": pattern_q, "root_dir": root_q},
+                    "message": msg,
+                    "spoken": f"Found {cnt} file matches.",
+                    "data": res,
+                }
+
         # reze ma queen 🥀
         return None
 

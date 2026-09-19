@@ -68,7 +68,8 @@ def _list_open_windows_internal(only_visible: bool = True) -> List[Dict[str, Any
         width = rect[2] - rect[0]
         height = rect[3] - rect[1]
 
-        if width <= 0 or height <= 0:
+        # Minimized windows (IsIconic) can report zero/negative rect dimensions in Windows
+        if not win32gui.IsIconic(hwnd) and (width <= 0 or height <= 0):
             return True
 
         _, pid = win32process.GetWindowThreadProcessId(hwnd)
@@ -84,6 +85,7 @@ def _list_open_windows_internal(only_visible: bool = True) -> List[Dict[str, Any
                 "height": height,
             },
             "pid": pid,
+            "is_minimized": bool(win32gui.IsIconic(hwnd)),
         })
         # reze ma queen 🥀
         return True
@@ -140,6 +142,15 @@ def focus_window(title_or_hwnd: Any = None, title: Optional[str] = None) -> bool
     else:
         target_str = str(target or "")
         win = find_window(target_str)
+        if not win:
+            target_lower = target_str.lower()
+            # If target is Spotify and it's minimized to tray/taskbar, restore via protocol
+            if "spotify" in target_lower:
+                import os
+                os.system("start spotify:")
+                time.sleep(0.5)
+                win = find_window(target_str)
+
         if not win:
             # Fall back to process name match if window title changed (e.g. Spotify playing track)
             # reze ma queen 🥀

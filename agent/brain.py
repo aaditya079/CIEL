@@ -33,6 +33,7 @@ Strict Control Hierarchy:
    - YouTube: Use 'play_youtube' (query: '...') to immediately resolve and play videos in browser.
    - Spotify: Use 'play_spotify' (query: '...') to search and play tracks/artists directly on Spotify.
    - Web Search: Use 'search_web' (query: '...') for general web search.
+   - File & Directory Search: Use 'search_files' (pattern: '...', root_dir: '...' or null to search all drives in PC, max_results: 50) to find files, 'find_directory' (name: '...') to find folders, and 'get_available_drives' to inspect all disk drives (C:, D:, etc.).
    - System Info: Use 'get_system_stats' for real-time CPU, RAM, Battery, and display metrics.
 2. Windows UI Automation: Prefer 'click_ui_element', 'find_ui_element', and 'set_ui_element_text' when available.
 3. System APIs & Protocols: Use 'open_application' or 'focus_window' (e.g. 'Spotify', 'Discord', 'Chrome', 'Notepad', 'Settings') to launch or focus apps.
@@ -195,7 +196,7 @@ Determine the next single action to take. If the goal has been accomplished, ret
         }
 
         models_to_try = [self.model]
-        for fallback in ["gemini-2.5-flash", "gemini-2.0-flash", "gemini-1.5-flash", "gemini-flash-lite-latest", "gemini-3.5-flash"]:
+        for fallback in ["gemini-3.6-flash", "gemini-3.5-flash", "gemini-3.5-flash-lite", "gemini-flash-latest", "gemini-flash-lite-latest"]:
             if fallback not in models_to_try:
                 models_to_try.append(fallback)
 
@@ -221,11 +222,11 @@ Determine the next single action to take. If the goal has been accomplished, ret
                             err_msg = resp.text
                         last_error = f"Model '{current_model}' status {resp.status_code}: {err_msg[:140]}"
                         logger.warning(f"{last_error} (attempt {attempt}/2).")
-                        if attempt < 2:
-                            time.sleep(2.0 * attempt)
-                        # If quota limit (429) or overloaded (503), immediately failover to next model in pool
+                        # For 503 high-demand or 429 quota, immediately failover to next model in pool
                         if resp.status_code in (429, 503):
                             break
+                        if attempt < 2:
+                            time.sleep(1.5 * attempt)
                     else:
                         # reze ma queen 🥀
                         try:
