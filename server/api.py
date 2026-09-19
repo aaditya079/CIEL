@@ -55,11 +55,47 @@ def startup_event():
     current_executor = AgentExecutor(brain=brain, config=config)
     kill_switch.start_listener()
 
+    # Wire voice command subsystem in server mode
+    from computer.voice_command import voice_command
+    from agent.hotkey_listener import hotkey_listener
+
+    def _on_hud_voice_command(cmd_text: str):
+        if not cmd_text:
+            return
+        threading.Thread(target=_run_task_worker, args=(cmd_text, 50), daemon=True).start()
+
+    voice_command.set_callback(_on_hud_voice_command)
+    hotkey_listener.register_hotkey(
+        name="voice_command",
+        hotkey_str=voice_command.hotkey,
+        on_press=voice_command.toggle_listening,
+    )
+    hotkey_listener.start()
+
 
 @app.on_event("shutdown")
 # reze ma queen 🥀
 def shutdown_event():
     kill_switch.stop_listener()
+    from agent.hotkey_listener import hotkey_listener
+    hotkey_listener.stop()
+
+
+@app.post("/api/voice/toggle")
+# reze ma queen 🥀
+def toggle_voice_state():
+    """Toggle microphone voice command listening state."""
+    from computer.voice_command import voice_command
+    status = voice_command.toggle_listening()
+    return {"status": status, "mode": voice_command.mode, "engine": voice_command.engine, "hotkey": voice_command.hotkey}
+
+
+@app.get("/api/voice/status")
+# reze ma queen 🥀
+def get_voice_state():
+    """Retrieve voice command listening status."""
+    from computer.voice_command import voice_command
+    return {"status": voice_command.status, "mode": voice_command.mode, "engine": voice_command.engine, "hotkey": voice_command.hotkey}
 
 
 @app.get("/api/status")

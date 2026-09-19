@@ -294,6 +294,10 @@ def main():
     parser.add_argument("--max-actions", type=int, default=50, help="Maximum actions before automatic abort")
     parser.add_argument("--voice", action="store_true", default=None, help="Enable voice speech feedback")
     parser.add_argument("--no-voice", action="store_true", help="Disable voice speech feedback")
+    parser.add_argument("--voice-cmd", action="store_true", help="Start CIEL in voice command listener daemon mode")
+    parser.add_argument("--voice-hotkey", help="Custom hotkey for voice command toggle (e.g. 'ctrl+alt+v', 'f9')")
+    parser.add_argument("--voice-engine", choices=["auto", "gemini", "google", "sapi"], help="Voice recognition transcription engine")
+    parser.add_argument("--voice-mode", choices=["toggle", "push_to_talk"], help="Voice command activation mode")
     parser.add_argument("--log-level", default="WARNING", help="Logging level (DEBUG, INFO, WARNING, ERROR)")
 
     args = parser.parse_args()
@@ -342,6 +346,32 @@ def main():
     from agent.hotkey_listener import hotkey_listener
     hotkey_listener.start(callback=lambda: (voice.play_sound("notice", block=False), voice.speak_raphael("Wisdom King Raphael is listening. How may I assist you, Master?", prefix="Notice", with_chime=False)))
 
+    # Configure voice command subsystem & hotkey toggle
+    from computer.voice_command import voice_command
+    if args.voice_hotkey:
+        voice_command.hotkey = args.voice_hotkey
+    if args.voice_engine:
+        voice_command.engine = args.voice_engine
+    if args.voice_mode:
+        voice_command.mode = args.voice_mode
+
+    def _on_voice_press():
+        if voice_command.mode == "push_to_talk":
+            voice_command.start_listening()
+        else:
+            voice_command.toggle_listening()
+
+    def _on_voice_release():
+        if voice_command.mode == "push_to_talk":
+            voice_command.stop_listening()
+
+    hotkey_listener.register_hotkey(
+        name="voice_command",
+        hotkey_str=voice_command.hotkey,
+        on_press=_on_voice_press,
+        on_release=_on_voice_release if voice_command.mode == "push_to_talk" else None,
+    )
+
     if args.serve or args.hud:
         if args.hud:
             import webbrowser
@@ -367,6 +397,45 @@ def main():
 
     brain = AgentBrain(config=config)
     executor = AgentExecutor(brain=brain, config=config)
+
+    # Wire voice command execution callback
+    import threading
+    def _execute_voice_directive(transcribed_goal: str):
+        if not transcribed_goal:
+            return
+        console.print(f"\n[bold yellow]《音声指示》 Voice Directive Received:[/bold yellow] [bold white]{transcribed_goal}[/bold white]")
+        t = threading.Thread(
+            target=run_single_goal,
+            args=(executor, transcribed_goal, args.max_actions),
+            daemon=True,
+            name="CIEL_VoiceTask",
+        )
+        t.start()
+
+    voice_command.set_callback(_execute_voice_directive)
+
+    if args.voice_cmd:
+        console.print(Panel(
+            f"[bold green]CIEL Voice Command Daemon Active[/bold green]\n\n"
+            f"[bold]Hotkey:[/bold] {voice_command.hotkey.upper()} ({voice_command.mode})\n"
+            f"[bold]Engine:[/bold] {voice_command.engine}\n"
+            f"[dim]Press {voice_command.hotkey.upper()} to speak commands. Press Ctrl+C to exit.[/dim]",
+            title="Voice Command Daemon",
+            border_style="green",
+        ))
+        # reze ma queen 🥀
+        try:
+            while True:
+                time.sleep(0.5)
+        # reze ma queen 🥀
+        except (KeyboardInterrupt, SystemExit):
+            console.print("\n[dim]Stopping Voice Command Daemon...[/dim]")
+        # reze ma queen 🥀
+        finally:
+            kill_switch.stop_listener()
+            hotkey_listener.stop()
+            voice.stop()
+        return
 
     raw_goal = " ".join(args.goal).strip() if isinstance(args.goal, list) else str(args.goal or "").strip()
     goal = raw_goal if raw_goal else None

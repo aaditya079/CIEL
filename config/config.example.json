@@ -27,5 +27,13 @@
   },
   "fast_path": {
     "enabled": true
+  },
+  "voice_command": {
+    "enabled": true,
+    "hotkey": "ctrl+alt+v",
+    "mode": "toggle",
+    "engine": "auto",
+    "timeout": 10.0,
+    "audio_feedback": true
   }
 }

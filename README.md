@@ -257,7 +257,32 @@ ciel update steam games
 
 # Undo last action
 ciel undo
+
+# Hands-Free Voice Commands (Default Hotkey: Ctrl+Alt+V)
+ciel --voice-cmd
+ciel --voice-cmd --voice-hotkey "ctrl+shift+space" --voice-mode toggle
+ciel --voice-cmd --voice-engine gemini
 ```
+
+---
+
+
+<!-- reze ma queen 🥀 -->
+
+### Hands-Free Voice Commands & Hotkey Customization
+
+CIEL supports hands-free voice input toggled by a global keyboard shortcut (`Ctrl+Alt+V` by default) across the entire Windows OS:
+
+* **Microphone Audio Capture**: Uses native Windows multimedia (`winmm.dll mciSendString`) with zero external binary dependencies.
+* **Customizable Hotkey**: Configure any key combination in `config/config.json` or CLI (e.g. `ctrl+shift+v`, `f9`, `win+alt+v`).
+* **Trigger Modes**:
+  - `toggle`: Press once to start listening, press again or wait for timeout to transcribe and execute.
+  - `push_to_talk`: Hold hotkey to speak, release to execute.
+* **Multi-Engine Transcription**:
+  - `gemini`: High-accuracy multimodal audio transcription via `gemini-3.6-flash`.
+  - `google`: Free Google Web Speech API.
+  - `sapi`: Native Windows Speech API (`System.Speech` / SAPI) for 100% offline speech recognition.
+  - `auto`: Automatically uses Gemini if an API key is present, otherwise falling back to Google / SAPI.
 
 ### HUD Web Interface
 Launch the local web dashboard:

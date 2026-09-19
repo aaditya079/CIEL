@@ -509,6 +509,40 @@
       to { box-shadow: 0 0 35px var(--neon-amber-glow); }
     }
 
+    .btn-voice {
+      background: rgba(255, 119, 0, 0.08);
+      border: 1px solid var(--border-line);
+      color: var(--text-bright);
+      font-family: var(--font-mono);
+      font-size: 11px;
+      padding: 0 16px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      transition: all 0.2s ease;
+      white-space: nowrap;
+    }
+
+    .btn-voice:hover {
+      background: var(--neon-amber-dim);
+      border-color: var(--neon-amber);
+      box-shadow: 0 0 12px var(--neon-amber-glow);
+    }
+
+    .btn-voice.listening {
+      background: linear-gradient(180deg, #660011 0%, #330008 100%);
+      border-color: var(--neon-red);
+      color: #fff;
+      animation: voicePulse 1s infinite alternate;
+      box-shadow: 0 0 20px var(--neon-red-glow);
+    }
+
+    @keyframes voicePulse {
+      from { box-shadow: 0 0 10px var(--neon-red-glow); transform: scale(1); }
+      to { box-shadow: 0 0 25px var(--neon-red-glow); transform: scale(1.02); }
+    }
+
     /* Cyber Chip Presets */
     .chip-matrix {
       display: flex;
@@ -948,6 +982,10 @@
           >
           <button class="btn-fire" id="btnExecute" onclick="castDirective()" aria-label="Execute Directive">
             EXECUTE
+          </button>
+          <button class="btn-voice" id="btnVoice" onclick="toggleVoiceCommand()" title="Toggle Voice Command (Ctrl+Alt+V)" aria-label="Toggle Voice Command">
+            <span id="voiceMicIcon">🎙️</span>
+            <span id="voiceMicText">VOICE</span>
           </button>
         </div>
 
@@ -1565,11 +1603,58 @@
     draw();
   }
 
+  // Voice Command integration
+  async function toggleVoiceCommand() {
+    const btn = document.getElementById('btnVoice');
+    const micText = document.getElementById('voiceMicText');
+    try {
+      const resp = await fetch('/api/voice/toggle', { method: 'POST' });
+      const data = await resp.json();
+      if (data.status === 'listening') {
+        if (btn) btn.classList.add('listening');
+        if (micText) micText.innerText = 'LISTENING...';
+        appendLog(`Voice Command active: Listening on mic (${data.hotkey ? data.hotkey.toUpperCase() : 'Ctrl+Alt+V'})...`, '《音声》 VOICE', 'tag-notice', 'NOTICES');
+      } else if (data.status === 'transcribing') {
+        if (btn) btn.classList.remove('listening');
+        if (micText) micText.innerText = 'TRANSCRIBING...';
+        appendLog('Voice Command: Transcribing audio directive...', '《解析》 STT', 'tag-notice', 'NOTICES');
+      } else {
+        if (btn) btn.classList.remove('listening');
+        if (micText) micText.innerText = 'VOICE';
+      }
+    } catch (e) {
+      console.error('Voice toggle error:', e);
+    }
+  }
+
+  async function checkVoiceStatus() {
+    try {
+      const resp = await fetch('/api/voice/status');
+      const data = await resp.json();
+      const btn = document.getElementById('btnVoice');
+      const micText = document.getElementById('voiceMicText');
+      if (btn && micText) {
+        if (data.status === 'listening') {
+          btn.classList.add('listening');
+          micText.innerText = 'LISTENING...';
+        } else if (data.status === 'transcribing') {
+          btn.classList.remove('listening');
+          micText.innerText = 'TRANSCRIBING...';
+        } else {
+          btn.classList.remove('listening');
+          micText.innerText = 'VOICE';
+        }
+      }
+    } catch (e) {}
+  }
+
   // reze ma queen 🥀
   window.addEventListener('DOMContentLoaded', () => {
     initNeuralCore();
     setInterval(pollStatus, 1800);
+    setInterval(checkVoiceStatus, 1200);
     pollStatus();
+    checkVoiceStatus();
 
     const goalInput = document.getElementById('goalInput');
     if (goalInput) {

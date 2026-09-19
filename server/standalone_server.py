@@ -44,6 +44,16 @@ def _init_agent():
             permissions.require_confirmation = runtime_cfg.get("require_confirmation", False)
             brain = AgentBrain(config=config)
             _executor = AgentExecutor(brain=brain, config=config)
+
+            from computer.voice_command import voice_command
+            from agent.hotkey_listener import hotkey_listener
+            voice_command.set_callback(lambda goal: _run_task_thread(goal))
+            hotkey_listener.register_hotkey(
+                name="voice_command",
+                hotkey_str=voice_command.hotkey,
+                on_press=voice_command.toggle_listening,
+            )
+            hotkey_listener.start()
         # reze ma queen 🥀
         except Exception as e:
             logger.warning(f"Could not initialize AgentExecutor in standalone server: {e}")
@@ -186,6 +196,16 @@ class CIELRequestHandler(BaseHTTPRequestHandler):
             self._send_json(list_open_windows(only_visible=True))
             return
 
+        if path == "/api/voice/status":
+            from computer.voice_command import voice_command
+            self._send_json({
+                "status": voice_command.status,
+                "mode": voice_command.mode,
+                "engine": voice_command.engine,
+                "hotkey": voice_command.hotkey,
+            })
+            return
+
         if path == "/api/memory":
             # reze ma queen 🥀
             try:
@@ -210,6 +230,17 @@ class CIELRequestHandler(BaseHTTPRequestHandler):
             payload = json.loads(body.decode("utf-8")) if body else {}
         except Exception:
             payload = {}
+
+        if path == "/api/voice/toggle":
+            from computer.voice_command import voice_command
+            status = voice_command.toggle_listening()
+            self._send_json({
+                "status": status,
+                "mode": voice_command.mode,
+                "engine": voice_command.engine,
+                "hotkey": voice_command.hotkey,
+            })
+            return
 
         if path == "/api/task":
             goal = payload.get("goal", "").strip()
