@@ -3,58 +3,45 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>CIEL // WISDOM KING RAPHAEL - Tactical Workbench</title>
+  <title>CIEL // MAGI-RAPHAEL TACTICAL COMMAND MATRIX</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;700;900&family=JetBrains+Mono:wght@300;400;500;700&family=Noto+Sans+JP:wght@400;500;700;900&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@500;600;700&family=Share+Tech+Mono&family=Noto+Sans+JP:wght@500;700;900&display=swap" rel="stylesheet">
   <!-- reze ma queen 🥀 -->
   <style>
-    /* Hallmark · pre-emit critique: P5 H5 E5 S5 R5 V5 */
-    /* Hallmark · genre: atmospheric · macrostructure: Workbench · theme: Midnight · nav: N5 · footer: Ft2 */
-
+    /* CIEL NERV-MAGI x RAPHAEL TACTICAL COMMAND DECK */
     :root {
-      --color-paper: oklch(13% 0.015 260);
-      --color-paper-2: oklch(17% 0.02 260);
-      --color-paper-3: oklch(22% 0.025 260);
+      --bg-dark: #040508;
+      --bg-card: rgba(8, 12, 18, 0.92);
+      --bg-card-hover: rgba(14, 20, 30, 0.95);
+      --bg-inner: #020305;
       
-      --color-ink: oklch(96% 0.01 260);
-      --color-ink-2: oklch(72% 0.02 260);
-      --color-ink-dim: oklch(46% 0.02 260);
+      --neon-amber: #ff7700;
+      --neon-amber-glow: rgba(255, 119, 0, 0.45);
+      --neon-amber-dim: rgba(255, 119, 0, 0.12);
       
-      --color-rule: oklch(26% 0.025 260);
-      --color-rule-glow: oklch(58% 0.24 25 / 0.4);
+      --neon-gold: #ffbe0b;
+      --neon-gold-glow: rgba(255, 190, 11, 0.4);
+      --neon-gold-dim: rgba(255, 190, 11, 0.1);
       
-      --color-accent: oklch(58% 0.24 25);
-      --color-accent-hover: oklch(64% 0.26 25);
-      --color-accent-glow: oklch(58% 0.24 25 / 0.35);
-      --color-accent-dim: oklch(58% 0.24 25 / 0.12);
+      --neon-red: #ff003c;
+      --neon-red-glow: rgba(255, 0, 60, 0.5);
+      --neon-red-dim: rgba(255, 0, 60, 0.15);
       
-      --color-accent-gold: oklch(80% 0.16 85);
-      --color-accent-gold-glow: oklch(80% 0.16 85 / 0.3);
-      --color-accent-gold-dim: oklch(80% 0.16 85 / 0.1);
+      --neon-cyan: #00f5d4;
+      --neon-cyan-glow: rgba(0, 245, 212, 0.4);
+      --neon-cyan-dim: rgba(0, 245, 212, 0.1);
       
-      --color-accent-cyan: oklch(78% 0.16 210);
-      --color-accent-cyan-glow: oklch(78% 0.16 210 / 0.3);
-      --color-accent-cyan-dim: oklch(78% 0.16 210 / 0.1);
+      --text-bright: #ffffff;
+      --text-muted: #8e9baa;
+      --text-dim: #434d5a;
       
-      --color-focus: var(--color-accent);
-      --color-alert: oklch(62% 0.22 28);
-      --color-alert-dim: oklch(62% 0.22 28 / 0.15);
+      --border-line: rgba(255, 119, 0, 0.25);
+      --border-bright: rgba(255, 119, 0, 0.6);
       
-      --font-display: 'Orbitron', -apple-system, sans-serif;
-      --font-body: 'JetBrains Mono', monospace;
-      --font-jp: 'Noto Sans JP', sans-serif;
-      
-      --space-3xs: 0.25rem;
-      --space-2xs: 0.5rem;
-      --space-xs: 0.75rem;
-      --space-sm: 1rem;
-      --space-md: 1.5rem;
-      --space-lg: 2rem;
-      --space-xl: 3rem;
-      
-      --chamfer: 10px;
-      --radius-pill: 9999px;
+      --font-ui: 'Rajdhani', -apple-system, sans-serif;
+      --font-mono: 'Share Tech Mono', monospace;
+      --font-kanji: 'Noto Sans JP', sans-serif;
     }
 
     * {
@@ -64,691 +51,774 @@
     }
 
     html, body {
-      overflow-x: clip;
-      background-color: var(--color-paper);
-      color: var(--color-ink);
-      font-family: var(--font-body);
+      background-color: var(--bg-dark);
+      color: var(--text-bright);
+      font-family: var(--font-mono);
       min-height: 100vh;
-      -webkit-font-smoothing: antialiased;
+      overflow-x: hidden;
+      position: relative;
     }
 
-    /* Atmospheric Ground: Two fixed radial blooms */
-    body {
-      background-image: 
-        radial-gradient(ellipse 65% 45% at 50% 0%, var(--color-accent-dim) 0%, transparent 70%),
-        radial-gradient(ellipse 50% 35% at 85% 60%, var(--color-accent-gold-dim) 0%, transparent 60%);
-      background-attachment: fixed;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      padding: var(--space-md) var(--space-md) var(--space-xl);
+    /* Animated CRT Scanline Beam */
+    body::before {
+      content: "";
+      position: fixed;
+      inset: 0;
+      background: linear-gradient(
+        to bottom,
+        rgba(255,255,255,0),
+        rgba(255,255,255,0) 50%,
+        rgba(0, 0, 0, 0.3) 50%,
+        rgba(0, 0, 0, 0.3)
+      );
+      background-size: 100% 4px;
+      pointer-events: none;
+      z-index: 1000;
+      opacity: 0.7;
+    }
+
+    /* Moving Radar Scan Sweep */
+    body::after {
+      content: "";
+      position: fixed;
+      top: -100%;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(
+        180deg,
+        transparent 0%,
+        rgba(255, 119, 0, 0.05) 50%,
+        rgba(255, 119, 0, 0.15) 99%,
+        rgba(255, 119, 0, 0.4) 100%
+      );
+      animation: crtSweep 6s linear infinite;
+      pointer-events: none;
+      z-index: 999;
+    }
+
+    @keyframes crtSweep {
+      0% { transform: translateY(0); }
+      100% { transform: translateY(200%); }
     }
 
     /* reze ma queen 🥀 */
-    /* Hallmark Workbench Framing */
-    .tactical-panel {
-      background: var(--color-paper-2);
-      border: 1px solid var(--color-rule);
+    /* Cyber Bracket Panel Utility */
+    .cyber-panel {
+      background: var(--bg-card);
+      border: 1px solid var(--border-line);
       position: relative;
+      box-shadow: 0 4px 24px rgba(0, 0, 0, 0.8), inset 0 0 20px rgba(0, 0, 0, 0.5);
       clip-path: polygon(
-        var(--chamfer) 0,
-        100% 0,
-        100% calc(100% - var(--chamfer)),
-        calc(100% - var(--chamfer)) 100%,
-        0 100%,
-        0 var(--chamfer)
+        0 12px,
+        12px 0,
+        calc(100% - 12px) 0,
+        100% 12px,
+        100% calc(100% - 12px),
+        calc(100% - 12px) 100%,
+        12px 100%,
+        0 calc(100% - 12px)
       );
-      transition: border-color 0.2s ease, box-shadow 0.2s ease;
     }
 
-    .tactical-panel:hover {
-      border-color: var(--color-rule-glow);
-    }
-
-    .tactical-panel::before {
+    .cyber-panel::before {
       content: "";
       position: absolute;
       top: 0;
       left: 0;
-      width: var(--chamfer);
-      height: var(--chamfer);
-      border-top: 2px solid var(--color-accent);
-      border-left: 2px solid var(--color-accent);
-      pointer-events: none;
-    }
-
-    .tactical-panel::after {
-      content: "";
-      position: absolute;
-      bottom: 0;
       right: 0;
-      width: var(--chamfer);
-      height: var(--chamfer);
-      border-bottom: 2px solid var(--color-accent-gold);
-      border-right: 2px solid var(--color-accent-gold);
+      height: 2px;
+      background: linear-gradient(90deg, transparent, var(--neon-amber), transparent);
+    }
+
+    /* Corner Accents */
+    .corner-tl, .corner-tr, .corner-bl, .corner-br {
+      position: absolute;
+      width: 8px;
+      height: 8px;
       pointer-events: none;
     }
+    .corner-tl { top: 0; left: 0; border-top: 2px solid var(--neon-amber); border-left: 2px solid var(--neon-amber); }
+    .corner-tr { top: 0; right: 0; border-top: 2px solid var(--neon-amber); border-right: 2px solid var(--neon-amber); }
+    .corner-bl { bottom: 0; left: 0; border-bottom: 2px solid var(--neon-amber); border-left: 2px solid var(--neon-amber); }
+    .corner-br { bottom: 0; right: 0; border-bottom: 2px solid var(--neon-amber); border-right: 2px solid var(--neon-amber); }
 
-    /* N5 Floating Pill Nav */
-    .nav-pill-wrapper {
-      position: sticky;
-      top: var(--space-sm);
-      z-index: 100;
-      width: 100%;
-      max-width: 1560px;
-      margin-bottom: var(--space-md);
-    }
-
-    .nav-pill {
-      background: color-mix(in srgb, var(--color-paper-2) 85%, transparent);
-      backdrop-filter: blur(20px);
-      border: 1px solid var(--color-rule);
-      border-radius: var(--radius-pill);
-      padding: var(--space-2xs) var(--space-md);
+    /* Top Command Header */
+    header {
+      background: rgba(4, 6, 10, 0.98);
+      border-bottom: 2px solid var(--neon-amber);
+      padding: 10px 24px;
       display: flex;
       align-items: center;
       justify-content: space-between;
-      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.45);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      box-shadow: 0 4px 30px var(--neon-amber-glow);
+    }
+
+    .brand-section {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+
+    /* Evangelion Hazard Stripe Strip */
+    .hazard-stripe {
+      height: 38px;
+      width: 14px;
+      background: repeating-linear-gradient(
+        -45deg,
+        var(--neon-amber),
+        var(--neon-amber) 6px,
+        #000 6px,
+        #000 12px
+      );
+      border: 1px solid var(--neon-amber);
     }
 
     /* reze ma queen 🥀 */
-    .nav-brand {
+    .brand-text {
       display: flex;
-      align-items: center;
-      gap: var(--space-sm);
+      flex-direction: column;
     }
 
-    .nav-sigil {
-      width: 34px;
-      height: 34px;
-      animation: sigilSpin 30s linear infinite;
-    }
-
-    @keyframes sigilSpin {
-      from { transform: rotate(0deg); }
-      to { transform: rotate(360deg); }
-    }
-
-    .nav-title {
-      font-family: var(--font-display);
-      font-weight: 900;
-      font-size: 15px;
-      letter-spacing: 1.5px;
-      color: var(--color-ink);
-      font-style: normal;
+    .brand-title-wrap {
       display: flex;
-      align-items: center;
-      gap: var(--space-xs);
+      align-items: baseline;
+      gap: 10px;
     }
 
-    .nav-title-sub {
-      font-family: var(--font-jp);
-      font-size: 10px;
+    .brand-name {
+      font-family: var(--font-ui);
+      font-size: 24px;
       font-weight: 700;
-      color: var(--color-accent-gold);
-      letter-spacing: 1.5px;
+      letter-spacing: 3px;
+      color: #fff;
+      text-shadow: 0 0 12px var(--neon-amber-glow);
     }
 
-    .nav-telemetry {
+    .brand-kanji {
+      font-family: var(--font-kanji);
+      font-size: 13px;
+      font-weight: 900;
+      color: var(--neon-amber);
+      letter-spacing: 2px;
+    }
+
+    .brand-sub {
+      font-size: 10px;
+      color: var(--text-muted);
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+    }
+
+    /* Header Telemetry Cluster */
+    .header-metrics {
       display: flex;
       align-items: center;
-      gap: var(--space-md);
+      gap: 24px;
     }
 
-    .telemetry-cell {
+    .metric-block {
       display: flex;
       flex-direction: column;
       align-items: flex-end;
-      gap: 1px;
+      gap: 2px;
     }
 
-    .cell-label {
+    .metric-label {
       font-size: 9px;
-      color: var(--color-ink-dim);
-      text-transform: uppercase;
+      color: var(--text-muted);
       letter-spacing: 1px;
     }
 
-    .cell-val {
-      font-size: 11px;
+    .metric-val {
+      font-size: 13px;
       font-weight: 700;
-      color: var(--color-accent-cyan);
+      color: var(--neon-cyan);
+      letter-spacing: 1px;
       font-variant-numeric: tabular-nums;
     }
 
-    /* reze ma queen 🥀 */
+    /* Status Pill with Radar Dot */
     .status-badge {
       display: inline-flex;
       align-items: center;
-      gap: var(--space-2xs);
-      padding: var(--space-3xs) var(--space-sm);
-      border: 1px solid var(--color-accent-cyan);
-      background: var(--color-accent-cyan-dim);
-      color: var(--color-accent-cyan);
-      font-size: 10px;
+      gap: 8px;
+      background: var(--neon-amber-dim);
+      border: 1px solid var(--neon-amber);
+      color: var(--neon-amber);
+      padding: 6px 14px;
+      font-size: 11px;
       font-weight: 700;
-      letter-spacing: 1px;
-      border-radius: var(--radius-pill);
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      clip-path: polygon(6px 0, 100% 0, 100% calc(100% - 6px), calc(100% - 6px) 100%, 0 100%, 0 6px);
+      box-shadow: 0 0 12px var(--neon-amber-glow);
     }
 
     .status-badge.active {
-      border-color: var(--color-accent);
-      background: var(--color-accent-dim);
-      color: var(--color-accent);
-      box-shadow: 0 0 12px var(--color-accent-glow);
+      background: var(--neon-red-dim);
+      border-color: var(--neon-red);
+      color: #fff;
+      box-shadow: 0 0 20px var(--neon-red-glow);
+      animation: alertBlink 1s infinite alternate;
+    }
+
+    @keyframes alertBlink {
+      from { box-shadow: 0 0 8px var(--neon-red-glow); }
+      to { box-shadow: 0 0 24px var(--neon-red-glow); }
     }
 
     .status-badge.stopped {
-      border-color: var(--color-alert);
-      background: var(--color-alert-dim);
-      color: var(--color-alert);
+      background: rgba(100, 100, 100, 0.3);
+      border-color: #666;
+      color: #aaa;
+      box-shadow: none;
     }
 
+    /* Emergency Abort Button */
     .btn-abort {
-      background: var(--color-alert);
-      color: var(--color-ink);
-      border: none;
-      font-family: var(--font-display);
-      font-size: 10px;
-      font-weight: 800;
-      letter-spacing: 1px;
-      font-style: normal;
-      padding: var(--space-2xs) var(--space-sm);
-      border-radius: var(--radius-pill);
+      background: linear-gradient(180deg, var(--neon-red) 0%, #88001e 100%);
+      color: #fff;
+      border: 1px solid var(--neon-red);
+      font-family: var(--font-ui);
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 2px;
+      padding: 8px 18px;
       cursor: pointer;
-      transition: background 0.15s ease, transform 0.15s ease;
-      white-space: nowrap;
+      clip-path: polygon(8px 0, 100% 0, 100% calc(100% - 8px), calc(100% - 8px) 100%, 0 100%, 0 8px);
+      box-shadow: 0 0 16px var(--neon-red-glow);
+      transition: all 0.2s ease;
     }
 
     .btn-abort:hover {
-      background: oklch(68% 0.24 28);
-      transform: scale(1.02);
+      background: linear-gradient(180deg, #ff2255 0%, var(--neon-red) 100%);
+      box-shadow: 0 0 28px var(--neon-red-glow);
+      transform: translateY(-1px);
     }
 
-    /* Workbench Grid Layout */
-    .workbench-grid {
-      width: 100%;
-      max-width: 1560px;
+    /* Main HUD Matrix Layout */
+    .matrix-layout {
+      max-width: 1600px;
+      margin: 20px auto;
+      padding: 0 20px;
       display: grid;
-      grid-template-columns: 1fr 410px;
-      gap: var(--space-md);
+      grid-template-columns: 1fr 440px;
+      gap: 20px;
     }
 
-    @media (max-width: 1150px) {
-      .workbench-grid {
+    @media (max-width: 1200px) {
+      .matrix-layout {
         grid-template-columns: 1fr;
       }
     }
 
-    .workbench-primary {
+    .left-operations {
       display: flex;
       flex-direction: column;
-      gap: var(--space-md);
+      gap: 20px;
     }
 
-    /* Arcana Matrix Focal Chamber */
-    .chamber-workbench {
-      padding: var(--space-lg);
+    /* Central Quantum Hologram Canvas */
+    .quantum-core-card {
+      padding: 20px;
+      position: relative;
       display: flex;
       flex-direction: column;
       align-items: center;
       justify-content: center;
-      position: relative;
-      min-height: 360px;
-      background: radial-gradient(circle at center, var(--color-paper-3) 0%, var(--color-paper-2) 100%);
+      min-height: 380px;
+      background: radial-gradient(circle at center, rgba(16, 24, 36, 0.95) 0%, var(--bg-inner) 100%);
     }
 
-    /* reze ma queen 🥀 */
-    .canvas-box {
-      width: 300px;
-      height: 300px;
+    .canvas-wrap {
       position: relative;
+      width: 360px;
+      height: 360px;
     }
 
     #magicCircleCanvas {
-      width: 300px;
-      height: 300px;
+      width: 360px;
+      height: 360px;
       display: block;
     }
 
-    .chamber-caption {
+    /* reze ma queen 🥀 */
+    .core-header-overlay {
       position: absolute;
-      bottom: var(--space-sm);
-      left: var(--space-md);
-      font-family: var(--font-jp);
-      font-size: 10px;
-      color: var(--color-ink-dim);
-      letter-spacing: 1.5px;
+      top: 14px;
+      left: 20px;
       display: flex;
       align-items: center;
-      gap: var(--space-2xs);
+      gap: 10px;
     }
 
-    .chamber-caption::before {
-      content: "";
-      width: 6px;
-      height: 6px;
-      border-radius: 50%;
-      background: var(--color-accent-gold);
-      box-shadow: 0 0 8px var(--color-accent-gold-glow);
-    }
-
-    .viewport-pill {
-      position: absolute;
-      top: var(--space-sm);
-      right: var(--space-md);
+    .core-tag {
       font-size: 10px;
-      color: var(--color-accent-cyan);
-      background: var(--color-accent-cyan-dim);
-      border: 1px solid var(--color-rule);
-      padding: var(--space-3xs) var(--space-xs);
-      border-radius: var(--radius-pill);
+      color: var(--neon-amber);
+      background: var(--neon-amber-dim);
+      border: 1px solid var(--border-line);
+      padding: 2px 8px;
       letter-spacing: 1px;
     }
 
-    /* Directive Invocation Workbench */
-    .directive-workbench {
-      padding: var(--space-md);
+    .core-subtag {
+      font-size: 10px;
+      color: var(--text-dim);
+      letter-spacing: 1px;
     }
 
-    .workbench-section-head {
+    .core-focus-overlay {
+      position: absolute;
+      top: 14px;
+      right: 20px;
+      font-size: 11px;
+      color: var(--neon-cyan);
+      background: var(--neon-cyan-dim);
+      border: 1px solid rgba(0, 245, 212, 0.3);
+      padding: 3px 10px;
+      letter-spacing: 1px;
+    }
+
+    .core-bottom-legend {
+      position: absolute;
+      bottom: 14px;
+      left: 20px;
+      right: 20px;
+      display: flex;
+      justify-content: space-between;
+      font-size: 10px;
+      color: var(--text-dim);
+      letter-spacing: 1.5px;
+    }
+
+    /* Directive Command Console */
+    .directive-deck {
+      padding: 20px;
+    }
+
+    .deck-head {
       display: flex;
       align-items: center;
       justify-content: space-between;
-      border-bottom: 1px solid var(--color-rule);
-      padding-bottom: var(--space-2xs);
-      margin-bottom: var(--space-sm);
+      border-bottom: 1px solid var(--border-line);
+      padding-bottom: 10px;
+      margin-bottom: 14px;
     }
 
-    .workbench-head-title {
-      font-family: var(--font-display);
-      font-size: 12px;
+    .deck-title {
+      font-family: var(--font-ui);
+      font-size: 14px;
       font-weight: 700;
-      color: var(--color-accent);
-      letter-spacing: 1.5px;
-      font-style: normal;
+      color: var(--neon-amber);
+      letter-spacing: 2px;
       display: flex;
       align-items: center;
-      gap: var(--space-2xs);
+      gap: 8px;
     }
 
-    .workbench-head-sub {
-      font-size: 9px;
-      color: var(--color-ink-dim);
+    .deck-status {
+      font-size: 10px;
+      color: var(--text-muted);
       letter-spacing: 1px;
     }
 
-    /* reze ma queen 🥀 */
-    .directive-bar {
+    .input-row {
       display: flex;
-      gap: var(--space-2xs);
+      gap: 10px;
       position: relative;
     }
 
-    .directive-prompt {
+    .input-bracket {
       display: flex;
       align-items: center;
-      padding: 0 var(--space-sm);
-      background: var(--color-accent-dim);
-      border: 1px solid var(--color-rule);
-      color: var(--color-accent);
+      padding: 0 14px;
+      background: var(--neon-amber-dim);
+      border: 1px solid var(--border-line);
+      color: var(--neon-amber);
+      font-size: 13px;
       font-weight: 700;
-      font-size: 13px;
     }
 
-    .directive-input {
+    /* reze ma queen 🥀 */
+    .directive-field {
       flex: 1;
-      background: var(--color-paper);
-      border: 1px solid var(--color-rule);
-      color: var(--color-ink);
-      font-family: var(--font-body);
+      background: var(--bg-inner);
+      border: 1px solid var(--border-line);
+      color: #fff;
+      font-family: var(--font-mono);
       font-size: 13px;
-      padding: var(--space-xs) var(--space-sm);
+      padding: 12px 16px;
       outline: none;
-      transition: border-color 0.15s ease, box-shadow 0.15s ease;
+      transition: all 0.2s ease;
     }
 
-    .directive-input:focus {
-      border-color: var(--color-accent);
-      box-shadow: 0 0 16px var(--color-accent-glow);
+    .directive-field:focus {
+      border-color: var(--neon-amber);
+      box-shadow: 0 0 16px var(--neon-amber-glow), inset 0 0 10px var(--neon-amber-dim);
     }
 
-    .directive-input::placeholder {
-      color: var(--color-ink-dim);
+    .directive-field::placeholder {
+      color: var(--text-dim);
       font-size: 12px;
     }
 
-    .btn-execute {
-      background: var(--color-accent);
-      color: var(--color-ink);
-      border: 1px solid var(--color-accent-hover);
-      font-family: var(--font-display);
-      font-size: 11px;
+    .btn-fire {
+      background: linear-gradient(180deg, var(--neon-amber) 0%, #cc5500 100%);
+      color: #000;
+      border: 1px solid var(--neon-gold);
+      font-family: var(--font-ui);
+      font-size: 13px;
       font-weight: 800;
-      letter-spacing: 1.5px;
-      font-style: normal;
-      padding: 0 var(--space-lg);
+      letter-spacing: 2px;
+      padding: 0 28px;
       cursor: pointer;
-      clip-path: polygon(8px 0, 100% 0, 100% calc(100% - 8px), calc(100% - 8px) 100%, 0 100%, 0 8px);
-      transition: background 0.15s ease, box-shadow 0.15s ease, transform 0.15s ease;
+      clip-path: polygon(10px 0, 100% 0, 100% calc(100% - 10px), calc(100% - 10px) 100%, 0 100%, 0 10px);
+      box-shadow: 0 0 20px var(--neon-amber-glow);
+      transition: all 0.2s ease;
       white-space: nowrap;
     }
 
-    .btn-execute:hover {
-      background: var(--color-accent-hover);
-      box-shadow: 0 0 24px var(--color-accent-glow);
+    .btn-fire:hover {
+      background: linear-gradient(180deg, var(--neon-gold) 0%, var(--neon-amber) 100%);
+      box-shadow: 0 0 32px var(--neon-amber-glow);
       transform: translateY(-1px);
     }
 
-    .btn-execute:active {
+    .btn-fire:active {
       transform: translateY(1px);
     }
 
-    .btn-execute:disabled {
+    .btn-fire:disabled {
       opacity: 0.5;
       cursor: not-allowed;
       transform: none !important;
     }
 
-    .btn-execute.is-loading {
-      background: oklch(40% 0.18 25);
-      animation: pulseExecute 1.2s infinite alternate ease-in-out;
+    .btn-fire.is-loading {
+      background: linear-gradient(180deg, #662200 0%, #331100 100%);
+      color: var(--neon-amber);
+      animation: firingPulse 1s infinite alternate;
     }
 
-    @keyframes pulseExecute {
-      from { box-shadow: 0 0 10px var(--color-accent-glow); }
-      to { box-shadow: 0 0 30px var(--color-accent-glow); }
+    @keyframes firingPulse {
+      from { box-shadow: 0 0 10px var(--neon-amber-glow); }
+      to { box-shadow: 0 0 35px var(--neon-amber-glow); }
     }
 
-    /* Quick Preset Chips */
-    .quick-chips-row {
+    /* Cyber Chip Presets */
+    .chip-matrix {
       display: flex;
       flex-wrap: wrap;
-      gap: var(--space-2xs);
-      margin-top: var(--space-sm);
+      gap: 8px;
+      margin-top: 14px;
+    }
+
+    .cyber-chip {
+      background: rgba(255, 119, 0, 0.05);
+      border: 1px solid var(--border-line);
+      color: var(--text-muted);
+      font-size: 11px;
+      padding: 6px 12px;
+      cursor: pointer;
+      transition: all 0.15s ease;
+      clip-path: polygon(6px 0, 100% 0, 100% calc(100% - 6px), calc(100% - 6px) 100%, 0 100%, 0 6px);
+      display: flex;
+      align-items: center;
+      gap: 6px;
     }
 
     /* reze ma queen 🥀 */
-    .chip-item {
-      background: var(--color-paper-3);
-      border: 1px solid var(--color-rule);
-      color: var(--color-ink-2);
-      font-size: 10px;
-      padding: var(--space-3xs) var(--space-xs);
-      cursor: pointer;
-      transition: all 0.15s ease;
-      clip-path: polygon(5px 0, 100% 0, 100% calc(100% - 5px), calc(100% - 5px) 100%, 0 100%, 0 5px);
-      display: inline-flex;
-      align-items: center;
-      gap: var(--space-3xs);
-    }
-
-    .chip-item:hover {
-      background: var(--color-accent-gold-dim);
-      border-color: var(--color-accent-gold);
-      color: var(--color-accent-gold);
-      box-shadow: 0 0 12px var(--color-accent-gold-glow);
+    .cyber-chip:hover {
+      background: var(--neon-amber-dim);
+      border-color: var(--neon-amber);
+      color: var(--neon-amber);
+      box-shadow: 0 0 12px var(--neon-amber-glow);
       transform: translateY(-1px);
     }
 
-    /* Arcane Voice Soundboard */
-    .voice-deck {
-      margin-top: var(--space-sm);
-      padding-top: var(--space-2xs);
-      border-top: 1px solid var(--color-rule);
+    /* Voice Soundboard */
+    .audio-sfx-dock {
+      margin-top: 14px;
+      padding-top: 12px;
+      border-top: 1px solid rgba(255, 119, 0, 0.15);
       display: flex;
       align-items: center;
-      gap: var(--space-sm);
+      gap: 12px;
     }
 
-    .voice-title {
-      font-size: 9px;
-      color: var(--color-ink-dim);
-      text-transform: uppercase;
-      letter-spacing: 1px;
-    }
-
-    .btn-sound {
-      background: var(--color-paper-3);
-      border: 1px solid var(--color-rule);
-      color: var(--color-ink-2);
-      padding: var(--space-3xs) var(--space-sm);
-      font-family: var(--font-body);
+    .sfx-label {
       font-size: 10px;
+      color: var(--text-dim);
+      letter-spacing: 1px;
+      text-transform: uppercase;
+    }
+
+    .btn-sfx {
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid var(--border-line);
+      color: var(--text-muted);
+      padding: 5px 14px;
+      font-family: var(--font-mono);
+      font-size: 11px;
       cursor: pointer;
       transition: all 0.15s ease;
-      display: inline-flex;
-      align-items: center;
-      gap: var(--space-3xs);
     }
 
-    .btn-sound:hover {
-      background: var(--color-accent-dim);
-      border-color: var(--color-accent);
-      color: var(--color-ink);
+    .btn-sfx:hover {
+      background: var(--neon-amber-dim);
+      border-color: var(--neon-amber);
+      color: #fff;
     }
 
-    /* Datalog Feed */
-    .datalog-workbench {
-      padding: var(--space-md);
+    /* Tactical Datalog Feed */
+    .datalog-deck {
+      padding: 20px;
     }
 
-    .feed-actions {
+    .log-filter-row {
       display: flex;
-      gap: var(--space-2xs);
+      gap: 8px;
     }
 
-    .btn-filter {
+    .filter-btn {
       background: transparent;
-      border: 1px solid var(--color-rule);
-      color: var(--color-ink-dim);
-      font-size: 9px;
-      padding: 2px var(--space-xs);
+      border: 1px solid var(--border-line);
+      color: var(--text-dim);
+      font-size: 10px;
+      padding: 4px 10px;
       cursor: pointer;
-      font-family: var(--font-body);
+      font-family: var(--font-mono);
       transition: all 0.15s ease;
     }
 
-    .btn-filter.active, .btn-filter:hover {
-      background: var(--color-paper-3);
-      color: var(--color-ink);
-      border-color: var(--color-rule-glow);
+    .filter-btn.active, .filter-btn:hover {
+      background: var(--neon-amber-dim);
+      color: var(--neon-amber);
+      border-color: var(--neon-amber);
     }
 
     /* reze ma queen 🥀 */
-    .log-stream {
-      background: var(--color-paper);
-      border: 1px solid var(--color-rule);
-      height: 310px;
+    .log-stream-box {
+      background: var(--bg-inner);
+      border: 1px solid var(--border-line);
+      height: 300px;
       overflow-y: auto;
-      padding: var(--space-sm);
-      margin-top: var(--space-2xs);
-      font-size: 11px;
+      padding: 14px;
+      margin-top: 12px;
+      font-size: 12px;
       display: flex;
       flex-direction: column;
-      gap: var(--space-2xs);
+      gap: 8px;
       scroll-behavior: smooth;
     }
 
-    .log-item {
+    .log-row {
       display: flex;
       align-items: flex-start;
-      gap: var(--space-xs);
-      line-height: 1.5;
+      gap: 10px;
+      line-height: 1.4;
     }
 
-    .log-timestamp {
-      color: var(--color-ink-dim);
-      font-size: 9px;
+    .log-stamp {
+      color: var(--text-dim);
+      font-size: 10px;
       white-space: nowrap;
-      margin-top: 2px;
+      margin-top: 1px;
     }
 
     .log-tag {
       font-size: 9px;
       font-weight: 700;
       padding: 1px 6px;
-      border-radius: 2px;
       white-space: nowrap;
       letter-spacing: 0.5px;
+      border-radius: 2px;
     }
 
     .tag-notice {
-      background: var(--color-accent-gold-dim);
-      color: var(--color-accent-gold);
-      border: 1px solid var(--color-accent-gold-glow);
+      background: var(--neon-gold-dim);
+      color: var(--neon-gold);
+      border: 1px solid rgba(255, 190, 11, 0.4);
     }
 
     .tag-action {
-      background: var(--color-accent-cyan-dim);
-      color: var(--color-accent-cyan);
-      border: 1px solid var(--color-accent-cyan-glow);
+      background: var(--neon-cyan-dim);
+      color: var(--neon-cyan);
+      border: 1px solid rgba(0, 245, 212, 0.4);
     }
 
     .tag-fast {
-      background: var(--color-accent-dim);
-      color: var(--color-accent);
-      border: 1px solid var(--color-accent);
-      box-shadow: 0 0 8px var(--color-accent-glow);
+      background: var(--neon-amber-dim);
+      color: var(--neon-amber);
+      border: 1px solid var(--neon-amber);
+      box-shadow: 0 0 8px var(--neon-amber-glow);
     }
 
     .tag-alert {
-      background: var(--color-alert-dim);
-      color: var(--color-alert);
-      border: 1px solid var(--color-alert);
+      background: var(--neon-red-dim);
+      color: var(--neon-red);
+      border: 1px solid var(--neon-red);
     }
 
-    .log-text {
-      color: var(--color-ink);
+    .log-message {
+      color: #fff;
       word-break: break-word;
     }
 
-    /* Right Sidebar: Sub-Skills & Telemetry */
-    .workbench-secondary {
+    /* Right Sidebar Modules */
+    .right-sidebar {
       display: flex;
       flex-direction: column;
-      gap: var(--space-md);
+      gap: 20px;
     }
 
-    /* Raphael 5 Subskills */
-    .subskills-box {
-      padding: var(--space-md);
+    /* MAGI Triad Consensus System (Evangelion MAGI x Raphael) */
+    .magi-card {
+      padding: 20px;
     }
 
-    .subskills-list {
-      display: flex;
-      flex-direction: column;
-      gap: var(--space-2xs);
-    }
-
-    /* reze ma queen 🥀 */
-    .subskill-item {
-      background: var(--color-paper-3);
-      border: 1px solid var(--color-rule);
-      padding: var(--space-xs) var(--space-sm);
+    .magi-head {
       display: flex;
       align-items: center;
       justify-content: space-between;
-      transition: border-color 0.15s ease, transform 0.15s ease;
+      margin-bottom: 14px;
+      border-bottom: 1px solid var(--border-line);
+      padding-bottom: 8px;
     }
 
-    .subskill-item:hover {
-      border-color: var(--color-accent-gold);
+    .magi-title {
+      font-family: var(--font-ui);
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--neon-amber);
+      letter-spacing: 2px;
+    }
+
+    .magi-sub {
+      font-size: 9px;
+      color: var(--text-dim);
+    }
+
+    .subskills-container {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    /* reze ma queen 🥀 */
+    .skill-block {
+      background: rgba(15, 22, 32, 0.6);
+      border: 1px solid var(--border-line);
+      padding: 8px 12px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      transition: all 0.2s ease;
+    }
+
+    .skill-block:hover {
+      border-color: var(--neon-amber);
+      background: rgba(25, 35, 50, 0.8);
       transform: translateX(2px);
     }
 
-    .subskill-name-col {
+    .skill-info {
       display: flex;
       align-items: center;
-      gap: var(--space-xs);
+      gap: 10px;
     }
 
-    .subskill-kanji {
-      font-family: var(--font-jp);
+    .skill-kanji-stamp {
+      font-family: var(--font-kanji);
       font-weight: 900;
-      color: var(--color-accent-gold);
+      color: var(--neon-amber);
       font-size: 12px;
+      letter-spacing: 1px;
     }
 
-    .subskill-label {
+    .skill-title {
       font-size: 11px;
-      color: var(--color-ink);
+      color: #fff;
       font-weight: 600;
     }
 
-    .subskill-status {
+    .skill-metric {
       font-size: 9px;
-      color: var(--color-accent-cyan);
+      color: var(--neon-cyan);
       letter-spacing: 0.5px;
     }
 
-    /* Hardware Telemetry Rings */
-    .telemetry-box {
-      padding: var(--space-md);
+    /* Hardware Telemetry Hex Gauges */
+    .telemetry-card {
+      padding: 20px;
     }
 
-    .rings-grid {
+    .gauge-triad {
       display: grid;
-      grid-template-columns: repeat(3, minmax(0, 1fr));
-      gap: var(--space-xs);
-      margin-top: var(--space-2xs);
+      grid-template-columns: repeat(3, 1fr);
+      gap: 12px;
+      margin-top: 12px;
     }
 
-    .gauge-wrapper {
+    .gauge-item {
       display: flex;
       flex-direction: column;
       align-items: center;
-      gap: var(--space-3xs);
+      gap: 6px;
     }
 
-    .gauge-svg {
-      width: 72px;
-      height: 72px;
+    .gauge-svg-wrap {
+      width: 74px;
+      height: 74px;
       transform: rotate(-90deg);
     }
 
-    .gauge-track {
+    .ring-bg {
       fill: none;
-      stroke: var(--color-rule);
+      stroke: rgba(255, 255, 255, 0.05);
       stroke-width: 6;
     }
 
-    .gauge-meter {
+    .ring-bar {
       fill: none;
       stroke-width: 6;
       stroke-linecap: round;
       transition: stroke-dashoffset 0.6s ease;
     }
 
-    .meter-cpu { stroke: var(--color-accent); }
-    .meter-ram { stroke: var(--color-accent-cyan); }
-    .meter-pwr { stroke: var(--color-accent-gold); }
+    .ring-cpu { stroke: var(--neon-red); }
+    .ring-ram { stroke: var(--neon-cyan); }
+    .ring-pwr { stroke: var(--neon-amber); }
 
-    .gauge-val {
-      font-size: 12px;
+    .gauge-num {
+      font-size: 13px;
       font-weight: 700;
-      color: var(--color-ink);
+      color: #fff;
       font-variant-numeric: tabular-nums;
     }
 
-    .gauge-label {
-      font-size: 8px;
-      color: var(--color-ink-dim);
-      text-transform: uppercase;
+    .gauge-tag {
+      font-size: 9px;
+      color: var(--text-dim);
       letter-spacing: 1px;
+      text-transform: uppercase;
     }
 
-    /* Recon Optical Viewport */
-    .recon-box {
-      padding: var(--space-md);
+    /* Reconnaissance Camera Terminal */
+    .recon-card {
+      padding: 20px;
     }
 
-    .recon-screen {
-      border: 1px solid var(--color-rule);
+    .recon-viewport {
+      border: 1px solid var(--border-line);
       background: #000;
       position: relative;
       overflow: hidden;
-      margin-top: var(--space-2xs);
+      margin-top: 10px;
       aspect-ratio: 16 / 9;
     }
 
@@ -759,56 +829,31 @@
       display: block;
     }
 
-    .recon-crosshair-x, .recon-crosshair-y {
+    .crosshair-horiz, .crosshair-vert {
       position: absolute;
-      background: var(--color-accent-glow);
+      background: rgba(255, 119, 0, 0.35);
       pointer-events: none;
     }
 
-    .recon-crosshair-x {
-      top: 50%;
-      left: 0;
-      right: 0;
-      height: 1px;
-    }
+    .crosshair-horiz { top: 50%; left: 0; right: 0; height: 1px; }
+    .crosshair-vert { left: 50%; top: 0; bottom: 0; width: 1px; }
 
-    .recon-crosshair-y {
-      left: 50%;
-      top: 0;
-      bottom: 0;
-      width: 1px;
-    }
-
-    /* reze ma queen 🥀 */
-    /* Ft2 Inline Single Line Footer */
-    .workbench-footer {
-      margin-top: var(--space-xl);
-      width: 100%;
-      max-width: 1560px;
-      border-top: 1px solid var(--color-rule);
-      padding-top: var(--space-sm);
+    /* Footer Strip */
+    footer {
+      max-width: 1600px;
+      margin: 20px auto 40px;
+      padding: 12px 20px;
+      border-top: 1px solid var(--border-line);
       display: flex;
       align-items: center;
       justify-content: space-between;
       font-size: 10px;
-      color: var(--color-ink-dim);
-      letter-spacing: 0.5px;
-    }
-
-    .footer-left {
-      display: flex;
-      align-items: center;
-      gap: var(--space-xs);
-    }
-
-    .footer-right {
-      display: flex;
-      align-items: center;
-      gap: var(--space-md);
+      color: var(--text-dim);
+      letter-spacing: 1px;
     }
 
     :focus-visible {
-      outline: 2px solid var(--color-focus);
+      outline: 2px solid var(--neon-amber);
       outline-offset: 2px;
     }
   </style>
@@ -816,129 +861,140 @@
 <body>
 <!-- reze ma queen 🥀 -->
 
-  <!-- N5 Floating Pill Navigation Bar -->
-  <nav class="nav-pill-wrapper" aria-label="Main Command Deck Navigation">
-    <div class="nav-pill">
-      <div class="nav-brand">
-        <svg class="nav-sigil" viewBox="0 0 100 100" aria-hidden="true">
-          <circle cx="50" cy="50" r="46" fill="none" stroke="var(--color-accent)" stroke-width="2"/>
-          <polygon points="50,6 88,72 12,72" fill="none" stroke="var(--color-accent-gold)" stroke-width="1.5"/>
-          <polygon points="50,94 12,28 88,28" fill="none" stroke="var(--color-accent)" stroke-width="1.5"/>
-          <circle cx="50" cy="50" r="14" fill="var(--color-accent)"/>
-        </svg>
-        <div class="nav-title">
-          MANAS: CIEL
-          <span class="nav-title-sub">《智慧之王》 RAPHAEL</span>
+  <!-- Top Tactical Command Header -->
+  <header>
+    <div class="brand-section">
+      <div class="hazard-stripe" aria-hidden="true"></div>
+      <div class="brand-text">
+        <div class="brand-title-wrap">
+          <span class="brand-name">CIEL // MAGI-RAPHAEL</span>
+          <span class="brand-kanji">《智慧之王》</span>
         </div>
-      </div>
-
-      <div class="nav-telemetry">
-        <div class="telemetry-cell">
-          <span class="cell-label">Clock</span>
-          <span class="cell-val" id="liveClock">00:00:00.000</span>
-        </div>
-        <div class="telemetry-cell">
-          <span class="cell-label">Synchro</span>
-          <span class="cell-val">99.98% ACCEL</span>
-        </div>
-        <div class="status-badge" id="statusBadge">
-          <span id="statusDot">●</span>
-          <span id="statusText">ONLINE // DORMANT</span>
-        </div>
-        <button class="btn-abort" onclick="triggerKillSwitch()" aria-label="Trigger Emergency Kill Switch">
-          ABORT SEAL
-        </button>
+        <span class="brand-sub">TACTICAL COMPUTER LOGIC MATRIX • AUTONOMOUS DESKTOP AGENT</span>
       </div>
     </div>
-  </nav>
+
+    <div class="header-metrics">
+      <div class="metric-block">
+        <span class="metric-label">CHRONO SYNC</span>
+        <span class="metric-val" id="liveClock">00:00:00.000</span>
+      </div>
+      <div class="metric-block">
+        <span class="metric-label">NEURAL ACCELERATION</span>
+        <span class="metric-val">1,000,000x</span>
+      </div>
+      <div class="status-badge" id="statusBadge">
+        <span id="statusDot">●</span>
+        <span id="statusText">ONLINE // DORMANT</span>
+      </div>
+      <button class="btn-abort" onclick="triggerKillSwitch()" aria-label="Trigger Emergency Kill Switch">
+        ABORT [KILL SWITCH]
+      </button>
+    </div>
+  </header>
 
 <!-- reze ma queen 🥀 -->
-  <!-- 05 · Workbench Macrostructure Container -->
-  <main class="workbench-grid">
+  <!-- Main Grid Operations Deck -->
+  <main class="matrix-layout">
     
-    <!-- Primary Workbench Column -->
-    <div class="workbench-primary">
+    <!-- Left Column: Hologram Core, Directives & Datalog -->
+    <div class="left-operations">
       
-      <!-- Focal Arcana Matrix Chamber -->
-      <section class="tactical-panel chamber-workbench" aria-label="Arcana Matrix Core">
-        <div class="viewport-pill" id="viewportTag">FOCUS: DESKTOP</div>
-        <div class="canvas-box">
-          <canvas id="magicCircleCanvas" width="300" height="300" aria-label="Wisdom King Raphael Arcana Matrix"></canvas>
+      <!-- Quantum Neural Hologram Core -->
+      <section class="cyber-panel quantum-core-card" aria-label="Quantum Neural Core">
+        <div class="corner-tl"></div><div class="corner-tr"></div>
+        <div class="corner-bl"></div><div class="corner-br"></div>
+        
+        <div class="core-header-overlay">
+          <span class="core-tag">SYS-CORE: RAPHAEL</span>
+          <span class="core-subtag">NEURAL SYNAPSE MATRIX</span>
         </div>
-        <div class="chamber-caption">
-          <span>THOUGHT ACCELERATION CORE</span>
-          <span style="color: var(--color-accent)">• 思考推論演算</span>
+        <div class="core-focus-overlay" id="viewportTag">FOCUS: WINDOWS DESKTOP</div>
+
+        <div class="canvas-wrap">
+          <canvas id="magicCircleCanvas" width="360" height="360" aria-label="MAGI Neural Synapse Visualizer"></canvas>
+        </div>
+
+        <div class="core-bottom-legend">
+          <span>TRIAD CONSENSUS: SYNCHRONIZED</span>
+          <span style="color: var(--neon-amber)">THOUGHT ACCELERATION • 思考推論演算</span>
         </div>
       </section>
 
 <!-- reze ma queen 🥀 -->
-      <!-- Directive Invocation Workbench -->
-      <section class="tactical-panel directive-workbench" aria-label="Directive Invocation Console">
-        <div class="workbench-section-head">
-          <h2 class="workbench-head-title">
-            <span>DIRECTIVE INVOCATION</span>
-            <span style="color: var(--color-accent-gold)">《指揮命令》</span>
-          </h2>
-          <span class="workbench-head-sub">CHANT ANNULMENT • SUB-50ms DETERMINISTIC EXECUTION</span>
+      <!-- Directive Command Console -->
+      <section class="cyber-panel directive-deck" aria-label="Directive Invocation Console">
+        <div class="corner-tl"></div><div class="corner-tr"></div>
+        <div class="corner-bl"></div><div class="corner-br"></div>
+        
+        <div class="deck-head">
+          <div class="deck-title">
+            <span>DIRECTIVE INVOCATION TERMINAL</span>
+            <span style="color: var(--neon-gold)">《指揮命令》</span>
+          </div>
+          <span class="deck-status">CHANT ANNULMENT • SUB-50ms ROUTING</span>
         </div>
 
-        <div class="directive-bar">
-          <div class="directive-prompt">RAPHAEL://&gt;</div>
+        <div class="input-row">
+          <div class="input-bracket">RAPHAEL://&gt;</div>
           <input 
             type="text" 
             id="goalInput" 
-            class="directive-input" 
-            placeholder="Cast directive (e.g. search for file budget.xlsx, play harvey on youtube, stream lofi)..." 
+            class="directive-field" 
+            placeholder="Cast directive (e.g. search for file report, play harvey on youtube, open spotify and play harvey)..." 
             autocomplete="off"
             spellcheck="false"
             aria-label="Directive Command Input"
           >
-          <button class="btn-execute" id="btnExecute" onclick="castDirective()" aria-label="Execute Directive">
-            EXECUTE DIRECTIVE
+          <button class="btn-fire" id="btnExecute" onclick="castDirective()" aria-label="Execute Directive">
+            EXECUTE
           </button>
         </div>
 
 <!-- reze ma queen 🥀 -->
-        <!-- Quick Preset Directive Matrix -->
-        <div class="quick-chips-row">
-          <button class="chip-item" onclick="quickFill('search for file report')">[🔍] Search PC Files</button>
-          <button class="chip-item" onclick="quickFill('find directory projects')">[📁] Find Directory</button>
-          <button class="chip-item" onclick="quickFill('open spotify and play harvey')">[🎵] Spotify Play</button>
-          <button class="chip-item" onclick="quickFill('play bohemian rhapsody on youtube')">[▶] YouTube Play</button>
-          <button class="chip-item" onclick="quickFill('stream lofi beats')">[📻] Stream Lofi</button>
-          <button class="chip-item" onclick="quickFill('system telemetry')">[⚡] Telemetry</button>
-          <button class="chip-item" onclick="quickFill('undo')">[↩] Undo Action</button>
+        <!-- Cyber Chip Fast Presets -->
+        <div class="chip-matrix">
+          <button class="cyber-chip" onclick="quickFill('search for file report')">[🔍] Search PC Files</button>
+          <button class="cyber-chip" onclick="quickFill('find directory projects')">[📁] Find Directory</button>
+          <button class="cyber-chip" onclick="quickFill('open spotify and play harvey')">[🎵] Spotify Play</button>
+          <button class="cyber-chip" onclick="quickFill('play bohemian rhapsody on youtube')">[▶] YouTube Play</button>
+          <button class="cyber-chip" onclick="quickFill('stream lofi beats')">[📻] Stream Lofi</button>
+          <button class="cyber-chip" onclick="quickFill('system telemetry')">[⚡] Telemetry</button>
+          <button class="cyber-chip" onclick="quickFill('undo')">[↩] Undo Action</button>
         </div>
 
-        <!-- Arcane Voice Soundboard -->
-        <div class="voice-deck">
-          <span class="voice-title">Arcane Soundboard:</span>
-          <button class="btn-sound" onclick="playSound('notice')">🔔 Notice Chime 《告》</button>
-          <button class="btn-sound" onclick="playSound('magic_circle')">🔮 Magic Circle</button>
+        <!-- Arcane Audio Soundboard -->
+        <div class="audio-sfx-dock">
+          <span class="sfx-label">Arcane Voice Pack:</span>
+          <button class="btn-sfx" onclick="playSound('notice')">🔔 Notice Chime 《告》</button>
+          <button class="btn-sfx" onclick="playSound('magic_circle')">🔮 Magic Circle</button>
         </div>
       </section>
 
 <!-- reze ma queen 🥀 -->
-      <!-- Analytical Appraisal Datalog Feed -->
-      <section class="tactical-panel datalog-workbench" aria-label="Analytical Appraisal Datalog">
-        <div class="workbench-section-head">
-          <h2 class="workbench-head-title">
+      <!-- Analytical Datalog Stream -->
+      <section class="cyber-panel datalog-deck" aria-label="Analytical Datalog Feed">
+        <div class="corner-tl"></div><div class="corner-tr"></div>
+        <div class="corner-bl"></div><div class="corner-br"></div>
+        
+        <div class="deck-head">
+          <div class="deck-title">
             <span>ANALYTICAL APPRAISAL LOG</span>
-            <span style="color: var(--color-accent-gold)">《思考推論記録》</span>
-          </h2>
-          <div class="feed-actions">
-            <button class="btn-filter active" onclick="filterLogs('ALL')">ALL</button>
-            <button class="btn-filter" onclick="filterLogs('NOTICES')">NOTICES</button>
-            <button class="btn-filter" onclick="filterLogs('ACTIONS')">ACTIONS</button>
-            <button class="btn-filter" onclick="clearStream()">CLEAR</button>
+            <span style="color: var(--neon-gold)">《思考推論記録》</span>
+          </div>
+          <div class="log-filter-row">
+            <button class="filter-btn active" onclick="filterLogs('ALL')">ALL</button>
+            <button class="filter-btn" onclick="filterLogs('NOTICES')">NOTICES</button>
+            <button class="filter-btn" onclick="filterLogs('ACTIONS')">ACTIONS</button>
+            <button class="filter-btn" onclick="clearStream()">CLEAR</button>
           </div>
         </div>
 
-        <div class="log-stream" id="logStream" role="log" aria-live="polite">
-          <div class="log-item" data-cat="NOTICES">
-            <span class="log-timestamp">[BOOT]</span>
+        <div class="log-stream-box" id="logStream" role="log" aria-live="polite">
+          <div class="log-row" data-cat="NOTICES">
+            <span class="log-stamp">[BOOT]</span>
             <span class="log-tag tag-notice">《告》 NOTICE</span>
-            <span class="log-text">Wisdom King Raphael autonomous nexus online. Tensura protocol synchronized with Windows 11.</span>
+            <span class="log-message">MAGI-Raphael autonomous logic matrix active. All sub-skills hooked into Windows 11 kernel.</span>
           </div>
         </div>
       </section>
@@ -946,111 +1002,123 @@
     </div>
 
 <!-- reze ma queen 🥀 -->
-    <!-- Secondary Workbench Column -->
-    <aside class="workbench-secondary" aria-label="System Capabilities and Telemetry">
+    <!-- Right Column: MAGI Triad, Telemetry & Recon -->
+    <aside class="right-sidebar">
       
-      <!-- Raphael's 5 Ultimate Sub-Skills -->
-      <section class="tactical-panel subskills-box" aria-label="Raphael Ultimate Sub-Skills">
-        <div class="workbench-section-head">
-          <h2 class="workbench-head-title">
-            <span>RAPHAEL'S 5 SUB-SKILLS</span>
-            <span style="color: var(--color-accent-gold)">《究極能力》</span>
-          </h2>
+      <!-- MAGI Triad & Raphael Sub-Skills -->
+      <section class="cyber-panel magi-card" aria-label="MAGI Sub-Skills Matrix">
+        <div class="corner-tl"></div><div class="corner-tr"></div>
+        <div class="corner-bl"></div><div class="corner-br"></div>
+        
+        <div class="magi-head">
+          <span class="magi-title">RAPHAEL 5 SUB-SKILLS</span>
+          <span class="magi-sub">《究極能力》 ULTIMATE SKILL</span>
         </div>
-        <div class="subskills-list">
-          <div class="subskill-item">
-            <div class="subskill-name-col">
-              <span class="subskill-kanji">思考加速</span>
-              <span class="subskill-label">Thought Acceleration</span>
+
+        <div class="subskills-container">
+          <div class="skill-block">
+            <div class="skill-info">
+              <span class="skill-kanji-stamp">思考加速</span>
+              <span class="skill-title">Thought Acceleration</span>
             </div>
-            <span class="subskill-status" id="skillThought">1,000,000x ACTIVE</span>
+            <span class="skill-metric" id="skillThought">1,000,000x ACTIVE</span>
           </div>
-          <div class="subskill-item">
-            <div class="subskill-name-col">
-              <span class="subskill-kanji">解析鑑定</span>
-              <span class="subskill-label">Analytical Appraisal</span>
+          <div class="skill-block">
+            <div class="skill-info">
+              <span class="skill-kanji-stamp">解析鑑定</span>
+              <span class="skill-title">Analytical Appraisal</span>
             </div>
-            <span class="subskill-status" id="skillAnalysis">VIEWPORT SYNC</span>
+            <span class="skill-metric" id="skillAnalysis">VIEWPORT SYNC</span>
           </div>
-          <div class="subskill-item">
-            <div class="subskill-name-col">
-              <span class="subskill-kanji">並列演算</span>
-              <span class="subskill-label">Parallel Operation</span>
+          <div class="skill-block">
+            <div class="skill-info">
+              <span class="skill-kanji-stamp">並列演算</span>
+              <span class="skill-title">Parallel Operation</span>
             </div>
-            <span class="subskill-status" id="skillParallel">THREADS: 6</span>
+            <span class="skill-metric" id="skillParallel">THREADS: 6</span>
           </div>
-          <div class="subskill-item">
-            <div class="subskill-name-col">
-              <span class="subskill-kanji">詠唱破棄</span>
-              <span class="subskill-label">Chant Annulment</span>
+          <div class="skill-block">
+            <div class="skill-info">
+              <span class="skill-kanji-stamp">詠唱破棄</span>
+              <span class="skill-title">Chant Annulment</span>
             </div>
-            <span class="subskill-status" id="skillChant">SUB-50ms PRIMED</span>
+            <span class="skill-metric" id="skillChant">SUB-50ms PRIMED</span>
           </div>
-          <div class="subskill-item">
-            <div class="subskill-name-col">
-              <span class="subskill-kanji">森羅万象</span>
-              <span class="subskill-label">All of Creation</span>
+          <div class="skill-block">
+            <div class="skill-info">
+              <span class="skill-kanji-stamp">森羅万象</span>
+              <span class="skill-title">All of Creation</span>
             </div>
-            <span class="subskill-status" id="skillCreation">WIN11 HOOKED</span>
+            <span class="skill-metric" id="skillCreation">WIN11 HOOKED</span>
           </div>
         </div>
       </section>
 
 <!-- reze ma queen 🥀 -->
-      <!-- Hardware Telemetry Cluster -->
-      <section class="tactical-panel telemetry-box" aria-label="Hardware Telemetry">
-        <div class="workbench-section-head">
-          <h2 class="workbench-head-title">
-            <span>QUANTUM TELEMETRY</span>
-            <span style="color: var(--color-accent-gold)">《遠隔測定》</span>
-          </h2>
+      <!-- Hardware Telemetry Hex Gauges -->
+      <section class="cyber-panel telemetry-card" aria-label="Hardware Telemetry">
+        <div class="corner-tl"></div><div class="corner-tr"></div>
+        <div class="corner-bl"></div><div class="corner-br"></div>
+        
+        <div class="magi-head">
+          <span class="magi-title">QUANTUM TELEMETRY</span>
+          <span class="magi-sub">HARDWARE METRICS</span>
         </div>
-        <div class="rings-grid">
+
+        <div class="gauge-triad">
           <!-- CPU Gauge -->
-          <div class="gauge-wrapper">
-            <svg class="gauge-svg" viewBox="0 0 100 100">
-              <circle class="gauge-track" cx="50" cy="50" r="40"/>
-              <circle class="gauge-meter meter-cpu" id="cpuRing" cx="50" cy="50" r="40" stroke-dasharray="251.2" stroke-dashoffset="180"/>
-            </svg>
-            <span class="gauge-val" id="cpuVal">--%</span>
-            <span class="gauge-label">CPU Load</span>
+          <div class="gauge-item">
+            <div class="gauge-svg-wrap">
+              <svg viewBox="0 0 100 100">
+                <circle class="ring-bg" cx="50" cy="50" r="40"/>
+                <circle class="ring-bar ring-cpu" id="cpuRing" cx="50" cy="50" r="40" stroke-dasharray="251.2" stroke-dashoffset="180"/>
+              </svg>
+            </div>
+            <span class="gauge-num" id="cpuVal">--%</span>
+            <span class="gauge-tag">CPU Load</span>
           </div>
 
           <!-- RAM Gauge -->
-          <div class="gauge-wrapper">
-            <svg class="gauge-svg" viewBox="0 0 100 100">
-              <circle class="gauge-track" cx="50" cy="50" r="40"/>
-              <circle class="gauge-meter meter-ram" id="ramRing" cx="50" cy="50" r="40" stroke-dasharray="251.2" stroke-dashoffset="140"/>
-            </svg>
-            <span class="gauge-val" id="ramVal">--%</span>
-            <span class="gauge-label">RAM Usage</span>
+          <div class="gauge-item">
+            <div class="gauge-svg-wrap">
+              <svg viewBox="0 0 100 100">
+                <circle class="ring-bg" cx="50" cy="50" r="40"/>
+                <circle class="ring-bar ring-ram" id="ramRing" cx="50" cy="50" r="40" stroke-dasharray="251.2" stroke-dashoffset="140"/>
+              </svg>
+            </div>
+            <span class="gauge-num" id="ramVal">--%</span>
+            <span class="gauge-tag">RAM Load</span>
           </div>
 
           <!-- Power Gauge -->
-          <div class="gauge-wrapper">
-            <svg class="gauge-svg" viewBox="0 0 100 100">
-              <circle class="gauge-track" cx="50" cy="50" r="40"/>
-              <circle class="gauge-meter meter-pwr" id="pwrRing" cx="50" cy="50" r="40" stroke-dasharray="251.2" stroke-dashoffset="50"/>
-            </svg>
-            <span class="gauge-val" id="pwrVal">--</span>
-            <span class="gauge-label">Power Core</span>
+          <div class="gauge-item">
+            <div class="gauge-svg-wrap">
+              <svg viewBox="0 0 100 100">
+                <circle class="ring-bg" cx="50" cy="50" r="40"/>
+                <circle class="ring-bar ring-pwr" id="pwrRing" cx="50" cy="50" r="40" stroke-dasharray="251.2" stroke-dashoffset="50"/>
+              </svg>
+            </div>
+            <span class="gauge-num" id="pwrVal">--</span>
+            <span class="gauge-tag">Power Core</span>
           </div>
         </div>
       </section>
 
 <!-- reze ma queen 🥀 -->
       <!-- Optical Recon Viewport -->
-      <section class="tactical-panel recon-box" aria-label="Optical Recon Viewport">
-        <div class="workbench-section-head">
-          <h2 class="workbench-head-title">
-            <span>OPTICAL RECON VIEWPORT</span>
-            <span style="color: var(--color-accent-gold)">《視界監視》</span>
-          </h2>
+      <section class="cyber-panel recon-card" aria-label="Optical Recon Viewport">
+        <div class="corner-tl"></div><div class="corner-tr"></div>
+        <div class="corner-bl"></div><div class="corner-br"></div>
+        
+        <div class="magi-head">
+          <span class="magi-title">OPTICAL RECON VIEWPORT</span>
+          <span class="magi-sub">LIVE WINDOW MONITOR</span>
         </div>
-        <div class="recon-screen">
+
+        <div class="recon-viewport">
           <img id="viewportImg" src="/api/screenshot" alt="Active Windows Screen Viewport" loading="lazy">
-          <div class="recon-crosshair-x"></div>
-          <div class="recon-crosshair-y"></div>
+          <div class="crosshair-horiz"></div>
+          <div class="crosshair-vert"></div>
         </div>
       </section>
 
@@ -1058,17 +1126,17 @@
   </main>
 
 <!-- reze ma queen 🥀 -->
-  <!-- Ft2 Inline Single Line Footer -->
-  <footer class="workbench-footer" role="contentinfo">
-    <div class="footer-left">
-      <span>CIEL // MANAS: WISDOM KING RAPHAEL</span>
-      <span>•</span>
-      <span>TENSURA CORE PROTOCOL</span>
+  <!-- Footer Strip -->
+  <footer>
+    <div>
+      <span>CIEL // MAGI-RAPHAEL TACTICAL OPERATING MATRIX</span>
+      <span> • </span>
+      <span>NERV PROTOCOL ENFORCED</span>
     </div>
-    <div class="footer-right">
-      <span>SHORTCUTS: [Ctrl+K] / [/] DIRECTIVE INVOCATION</span>
-      <span>•</span>
-      <span>DETERMINISTIC LATENCY: &lt;50ms</span>
+    <div>
+      <span>SHORTCUTS: [Ctrl+K] or [/] TO CAST</span>
+      <span> • </span>
+      <span>DETERMINISTIC LATENCY &lt;50ms</span>
     </div>
   </footer>
 
@@ -1097,16 +1165,16 @@
     const d = new Date();
     const timeStr = d.toTimeString().split(' ')[0] + '.' + String(d.getMilliseconds()).padStart(3, '0');
 
-    const entry = document.createElement('div');
-    entry.className = 'log-item';
-    entry.setAttribute('data-cat', category);
-    entry.innerHTML = `
-      <span class="log-timestamp">[${timeStr}]</span>
+    const row = document.createElement('div');
+    row.className = 'log-row';
+    row.setAttribute('data-cat', category);
+    row.innerHTML = `
+      <span class="log-stamp">[${timeStr}]</span>
       <span class="log-tag ${badgeClass}">${tag}</span>
-      <span class="log-text">${text}</span>
+      <span class="log-message">${text}</span>
     `;
 
-    stream.appendChild(entry);
+    stream.appendChild(row);
     stream.scrollTop = stream.scrollHeight;
   }
 
@@ -1121,11 +1189,11 @@
 
   // reze ma queen 🥀
   function filterLogs(category) {
-    const buttons = document.querySelectorAll('.btn-filter');
+    const buttons = document.querySelectorAll('.filter-btn');
     buttons.forEach(b => b.classList.remove('active'));
     event.target.classList.add('active');
 
-    const entries = document.querySelectorAll('.log-item');
+    const entries = document.querySelectorAll('.log-row');
     entries.forEach(e => {
       if (category === 'ALL') {
         e.style.display = 'flex';
@@ -1158,7 +1226,7 @@
     if (btn) {
       btn.disabled = true;
       btn.classList.add('is-loading');
-      btn.textContent = 'THOUGHT ACCELERATION...';
+      btn.textContent = 'EXECUTING...';
     }
 
     try {
@@ -1179,7 +1247,7 @@
       if (btn) {
         btn.disabled = false;
         btn.classList.remove('is-loading');
-        btn.textContent = 'EXECUTE DIRECTIVE';
+        btn.textContent = 'EXECUTE';
       }
     }
   }
@@ -1296,101 +1364,201 @@
   }
 
   // reze ma queen 🥀
-  // Animated Sacred Geometry Magic Circle on HTML5 Canvas
-  function initMagicCircle() {
+  // Animated MAGI Neural Synapse Core Canvas (New Evangelion / Tensura Triad Engine)
+  function initNeuralCore() {
     const canvas = document.getElementById('magicCircleCanvas');
     if (!canvas) return;
     const ctx = canvas.getContext('2d');
     let angle = 0;
-    let currentSpeed = 0.006;
+    let waveOffset = 0;
+
+    // Node coordinates in equilateral triad (Melchior, Balthasar, Casper)
+    const nodes = [
+      { name: "MELCHIOR-1", kanji: "思考加速", label: "ACCEL", angle: -Math.PI / 2, r: 100 },
+      { name: "BALTHASAR-2", kanji: "解析鑑定", label: "ANALYSIS", angle: Math.PI / 6, r: 100 },
+      { name: "CASPER-3", kanji: "並列演算", label: "PARALLEL", angle: (5 * Math.PI) / 6, r: 100 }
+    ];
+
+    // Particle field
+    const particles = [];
+    for (let i = 0; i < 28; i++) {
+      particles.push({
+        progress: Math.random(),
+        edge: Math.floor(Math.random() * 3),
+        speed: 0.005 + Math.random() * 0.01
+      });
+    }
 
     function draw() {
       ctx.clearRect(0, 0, canvas.width, canvas.height);
       const cx = canvas.width / 2;
       const cy = canvas.height / 2;
+      const isExecuting = (lastKnownStatus === 'running');
+      const speedMultiplier = isExecuting ? 3.5 : 1.0;
 
       ctx.save();
       ctx.translate(cx, cy);
 
-      // Outer Runic Ring (Clockwise)
+      // 1. Outer Azimuth Radar Ring with Degree Ticks
       ctx.save();
-      ctx.rotate(angle * 0.4);
+      ctx.rotate(angle * 0.2 * speedMultiplier);
+      ctx.strokeStyle = 'rgba(255, 119, 0, 0.35)';
+      ctx.lineWidth = 1;
       ctx.beginPath();
-      ctx.arc(0, 0, 130, 0, Math.PI * 2);
-      ctx.strokeStyle = 'rgba(255, 23, 68, 0.45)';
-      ctx.lineWidth = 1.5;
+      ctx.arc(0, 0, 160, 0, Math.PI * 2);
       ctx.stroke();
 
-      // Outer Glyphs / Ticks
-      for (let i = 0; i < 36; i++) {
-        const rad = (i * Math.PI * 2) / 36;
-        const x1 = Math.cos(rad) * 125;
-        const y1 = Math.sin(rad) * 125;
-        const x2 = Math.cos(rad) * (i % 3 === 0 ? 136 : 130);
-        const y2 = Math.sin(rad) * (i % 3 === 0 ? 136 : 130);
+      for (let i = 0; i < 48; i++) {
+        const rad = (i * Math.PI * 2) / 48;
+        const len = (i % 6 === 0) ? 10 : 4;
+        const x1 = Math.cos(rad) * 160;
+        const y1 = Math.sin(rad) * 160;
+        const x2 = Math.cos(rad) * (160 - len);
+        const y2 = Math.sin(rad) * (160 - len);
         ctx.beginPath();
         ctx.moveTo(x1, y1);
         ctx.lineTo(x2, y2);
-        ctx.strokeStyle = (i % 3 === 0) ? '#fbbf24' : 'rgba(255, 23, 68, 0.6)';
-        ctx.lineWidth = 1.2;
+        ctx.strokeStyle = (i % 6 === 0) ? '#ffbe0b' : 'rgba(255, 119, 0, 0.4)';
         ctx.stroke();
       }
       ctx.restore();
 
-      // Middle Sacred Heptagram (Counter-Clockwise)
+      // 2. Radar Sweep Beam
       ctx.save();
-      ctx.rotate(-angle * 0.65);
+      ctx.rotate(angle * 0.8 * speedMultiplier);
+      const sweepGrad = ctx.createRadialGradient(0, 0, 0, 0, 0, 158);
+      sweepGrad.addColorStop(0, 'rgba(255, 119, 0, 0.25)');
+      sweepGrad.addColorStop(0.5, 'rgba(255, 119, 0, 0.08)');
+      sweepGrad.addColorStop(1, 'transparent');
       ctx.beginPath();
-      ctx.arc(0, 0, 96, 0, Math.PI * 2);
-      ctx.strokeStyle = 'rgba(251, 191, 36, 0.4)';
-      ctx.lineWidth = 1.2;
-      ctx.stroke();
+      ctx.moveTo(0, 0);
+      ctx.arc(0, 0, 158, -0.4, 0.4);
+      ctx.closePath();
+      ctx.fillStyle = sweepGrad;
+      ctx.fill();
+      ctx.restore();
 
-      const points = 7;
+      // 3. Connective Triad Synapse Lattice (Hexagon Interconnects)
+      const calculatedNodes = nodes.map(n => ({
+        x: Math.cos(n.angle) * n.r,
+        y: Math.sin(n.angle) * n.r,
+        ...n
+      }));
+
+      // Draw Edges between nodes
+      ctx.strokeStyle = isExecuting ? 'rgba(255, 0, 60, 0.6)' : 'rgba(255, 119, 0, 0.35)';
+      ctx.lineWidth = 1.5;
+      for (let i = 0; i < 3; i++) {
+        const next = (i + 1) % 3;
+        ctx.beginPath();
+        ctx.moveTo(calculatedNodes[i].x, calculatedNodes[i].y);
+        ctx.lineTo(calculatedNodes[next].x, calculatedNodes[next].y);
+        ctx.stroke();
+      }
+
+      // 4. Animated Data Particles along edges
+      particles.forEach(p => {
+        p.progress += p.speed * speedMultiplier;
+        if (p.progress > 1) {
+          p.progress = 0;
+          p.edge = Math.floor(Math.random() * 3);
+        }
+        const n1 = calculatedNodes[p.edge];
+        const n2 = calculatedNodes[(p.edge + 1) % 3];
+        const px = n1.x + (n2.x - n1.x) * p.progress;
+        const py = n1.y + (n2.y - n1.y) * p.progress;
+
+        ctx.fillStyle = isExecuting ? '#ff003c' : '#00f5d4';
+        ctx.beginPath();
+        ctx.arc(px, py, 2.5, 0, Math.PI * 2);
+        ctx.fill();
+      });
+
+      // 5. Center Core Hologram (Central Hexagon Core)
+      ctx.save();
+      ctx.rotate(-angle * 0.5 * speedMultiplier);
       ctx.beginPath();
-      for (let i = 0; i < points * 2; i++) {
-        const r = (i % 2 === 0) ? 96 : 48;
-        const theta = (i * Math.PI) / points;
-        const x = Math.cos(theta) * r;
-        const y = Math.sin(theta) * r;
+      for (let i = 0; i < 6; i++) {
+        const rad = (i * Math.PI) / 3;
+        const x = Math.cos(rad) * 32;
+        const y = Math.sin(rad) * 32;
         if (i === 0) ctx.moveTo(x, y);
         else ctx.lineTo(x, y);
       }
       ctx.closePath();
-      ctx.strokeStyle = 'rgba(255, 23, 68, 0.7)';
-      ctx.lineWidth = 1.4;
-      ctx.stroke();
-      ctx.restore();
-
-      // Inner Mana Ring
-      ctx.save();
-      ctx.rotate(angle * 1.2);
-      ctx.beginPath();
-      ctx.arc(0, 0, 58, 0, Math.PI * 2);
-      ctx.strokeStyle = 'rgba(0, 240, 255, 0.6)';
-      ctx.lineWidth = 1;
-      ctx.stroke();
-      ctx.restore();
-
-      // Pulsating Sacred Core Glowing Orb
-      const pulse = Math.sin(angle * 3) * 5;
-      const radGrad = ctx.createRadialGradient(0, 0, 2, 0, 0, 26 + pulse);
-      radGrad.addColorStop(0, '#ffffff');
-      radGrad.addColorStop(0.25, '#ff1744');
-      radGrad.addColorStop(0.7, 'rgba(225, 29, 72, 0.35)');
-      radGrad.addColorStop(1, 'transparent');
-
-      ctx.beginPath();
-      ctx.arc(0, 0, 26 + pulse, 0, Math.PI * 2);
-      ctx.fillStyle = radGrad;
+      ctx.fillStyle = isExecuting ? 'rgba(255, 0, 60, 0.25)' : 'rgba(255, 119, 0, 0.15)';
       ctx.fill();
+      ctx.strokeStyle = isExecuting ? '#ff003c' : '#ffbe0b';
+      ctx.lineWidth = 2;
+      ctx.stroke();
+      ctx.restore();
+
+      // Central Core Text
+      ctx.font = "900 11px 'Noto Sans JP', sans-serif";
+      ctx.fillStyle = "#ffffff";
+      ctx.textAlign = "center";
+      ctx.textBaseline = "middle";
+      ctx.fillText(isExecuting ? "思考加速" : "神智核", 0, 0);
+
+      // 6. Draw 3 MAGI Triad Nodes
+      calculatedNodes.forEach((n, idx) => {
+        // Hexagon Node Frame
+        ctx.save();
+        ctx.translate(n.x, n.y);
+
+        // Node Glow
+        const nodeGlow = ctx.createRadialGradient(0, 0, 2, 0, 0, 36);
+        nodeGlow.addColorStop(0, 'rgba(255, 119, 0, 0.4)');
+        nodeGlow.addColorStop(1, 'transparent');
+        ctx.fillStyle = nodeGlow;
+        ctx.beginPath();
+        ctx.arc(0, 0, 36, 0, Math.PI * 2);
+        ctx.fill();
+
+        // Node Outline Hexagon
+        ctx.beginPath();
+        for (let i = 0; i < 6; i++) {
+          const rad = (i * Math.PI) / 3;
+          const x = Math.cos(rad) * 26;
+          const y = Math.sin(rad) * 26;
+          if (i === 0) ctx.moveTo(x, y);
+          else ctx.lineTo(x, y);
+        }
+        ctx.closePath();
+        ctx.fillStyle = '#060a10';
+        ctx.fill();
+        ctx.strokeStyle = isExecuting ? '#ff003c' : '#ff7700';
+        ctx.lineWidth = 1.5;
+        ctx.stroke();
+
+        // Node Text
+        ctx.font = "700 9px 'Share Tech Mono', monospace";
+        ctx.fillStyle = isExecuting ? "#ff003c" : "#ffbe0b";
+        ctx.fillText(n.name, 0, -8);
+
+        ctx.font = "900 10px 'Noto Sans JP', sans-serif";
+        ctx.fillStyle = "#ffffff";
+        ctx.fillText(n.kanji, 0, 6);
+
+        ctx.restore();
+      });
+
+      // 7. Bottom Oscilloscope Waveform
+      ctx.strokeStyle = isExecuting ? 'rgba(255, 0, 60, 0.7)' : 'rgba(0, 245, 212, 0.6)';
+      ctx.lineWidth = 1.5;
+      ctx.beginPath();
+      for (let x = -140; x <= 140; x += 4) {
+        const wave = Math.sin((x + waveOffset) * 0.06) * (isExecuting ? 12 : 5);
+        const y = 145 + wave;
+        if (x === -140) ctx.moveTo(x, y);
+        else ctx.lineTo(x, y);
+      }
+      ctx.stroke();
 
       ctx.restore();
 
-      // Dynamic acceleration during active execution
-      const targetSpeed = (lastKnownStatus === 'running') ? 0.035 : 0.006;
-      currentSpeed += (targetSpeed - currentSpeed) * 0.05;
-      angle += currentSpeed;
+      angle += 0.01;
+      waveOffset += isExecuting ? 6 : 1.8;
       requestAnimationFrame(draw);
     }
 
@@ -1399,7 +1567,7 @@
 
   // reze ma queen 🥀
   window.addEventListener('DOMContentLoaded', () => {
-    initMagicCircle();
+    initNeuralCore();
     setInterval(pollStatus, 1800);
     pollStatus();
 
