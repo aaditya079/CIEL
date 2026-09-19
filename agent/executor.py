@@ -210,6 +210,35 @@ class AgentExecutor:
 
         logger.info(f"Starting task [{agent_state.task_id}]: '{goal}'")
 
+        # Fast-Path deterministic intent interception (<50ms execution without LLM)
+        # reze ma queen 🥀
+        try:
+            from agent.fast_router import fast_router
+            fast_res = fast_router.route(goal)
+            if fast_res and fast_res.get("handled"):
+                tool = fast_res.get("tool")
+                args = fast_res.get("arguments", {})
+                msg = fast_res.get("message", "Action completed.")
+                spoken = fast_res.get("spoken", msg)
+                success = fast_res.get("success", True)
+
+                agent_state.record_action(
+                    tool=tool,
+                    arguments=args,
+                    result=fast_res,
+                    success=success,
+                    thought=f"[Fast-Path Chant Annulment] Dispatched: {tool}",
+                )
+                agent_state.status = "completed" if success else "failed"
+                agent_state.final_result = msg
+                from computer.voice import voice
+                voice.play_sound("notice", block=False)
+                if spoken:
+                    voice.speak_raphael(spoken, prefix="Report", with_chime=False)
+                return agent_state
+        except Exception as e:
+            logger.debug(f"Fast-path check in executor run exception: {e}")
+
         # reze ma queen 🥀
         try:
             while not agent_state.is_finished() and agent_state.step < agent_state.max_actions:

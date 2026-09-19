@@ -195,7 +195,7 @@ Determine the next single action to take. If the goal has been accomplished, ret
         }
 
         models_to_try = [self.model]
-        for fallback in ["gemini-3.5-flash", "gemini-3.5-flash-lite", "gemini-flash-lite-latest", "gemini-3-flash-preview"]:
+        for fallback in ["gemini-2.5-flash", "gemini-2.0-flash", "gemini-1.5-flash", "gemini-flash-lite-latest", "gemini-3.5-flash"]:
             if fallback not in models_to_try:
                 models_to_try.append(fallback)
 
